@@ -281,15 +281,7 @@ function my_theme_register_required_plugins() {
             'required'  => true,
         ),
 
-        // Require WP LazySizes
-        array(
-            'name'      => 'WP LazySizes',
-            'slug'      => 'wp-lazysizes-master',
-            'source'    => 'http://drumcreative.com/wp-content/required-plugins/wp-lazysizes-master.zip', // The plugin source.
-            'required'  => true,
-        ),
-
-        // Require WP Featherlight Field
+        // Require WP Featherlight
         array(
             'name'      => 'WP Featherlight',
             'slug'      => 'wp-featherlight',
