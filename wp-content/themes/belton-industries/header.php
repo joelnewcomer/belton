@@ -59,16 +59,6 @@
 			</div> <!-- top-bar-left -->
 			<div class="top-bar-right">
 				<?php foundationpress_main_menu(); ?>
-				<div class="icon-wrapper">
-					<?php
-					// WooCommerce Cart Icon
-					if (is_woocommerce_activated()) {
-						get_template_part('template-parts/cart-icon'); 
-					}
-					// Search Icon
-					get_template_part('assets/images/search.svg');
-					?>
-				</div> <!-- icon-wrapper -->
 			</div> <!-- top-bar-right -->
 		</nav> <!-- #site-navigation -->
 	</header> <!-- #masthead -->
