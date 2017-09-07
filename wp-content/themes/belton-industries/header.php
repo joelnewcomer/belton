@@ -21,6 +21,9 @@
 		<link rel="apple-touch-icon" sizes="152x152" href="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/icons/touch-icon-ipad-retina.png">
 
 
+		<script src="https://use.typekit.net/kst4dbu.js"></script>
+		<script>try{Typekit.load({ async: true });}catch(e){}</script>
+
 		<?php wp_head(); ?>
 
 		<!-- Polyfills to make various versions of IE play nicer -->
@@ -53,12 +56,32 @@
 
 	<div class="header-wrapper match-header">
 	<header id="masthead" class="site-header match-header" role="banner">
+		<div class="pre-header">
+			<div class="row">
+				<div class="large-12 columns">
+					<div class="ph-left hide-for-small">
+						<?php echo get_field('toll_free_number','option'); ?> &nbsp; | &nbsp; <a href="<?php echo get_field('contact_us_page', 'option'); ?>">Email Us</a>
+					</div>
+					<div class="ph-right text-right hide-for-small">
+						<a href="<?php echo get_site_url(); ?>/technical-documents">Technical Documents</a>
+					</div>
+				</div>
+			</div> 
+		</div> <!-- pre-header -->
 		<nav id="site-navigation" class="main-navigation top-bar row" role="navigation">
 			<div class="top-bar-left">
 				<?php get_template_part('template-parts/header-icon'); ?>
 			</div> <!-- top-bar-left -->
-			<div class="top-bar-right">
+			<div class="top-bar-right text-right">
+				<div id="products-icon" class="transition"><?php get_template_part('assets/images/products', 'icon.svg'); ?>Products</div>
+				<div id="menu-icon" class="transition"><?php get_template_part('assets/images/menu', 'icon.svg'); ?><div class="close-menu">&times;</div>Menu</div>
 				<?php foundationpress_main_menu(); ?>
+				<script>
+					jQuery("#menu-icon").on( "click", function() {
+						jQuery('#menu-main-menu').toggleClass('active');
+						jQuery(this).toggleClass('active');
+					});	
+				</script>
 			</div> <!-- top-bar-right -->
 		</nav> <!-- #site-navigation -->
 	</header> <!-- #masthead -->
