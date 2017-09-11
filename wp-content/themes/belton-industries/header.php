@@ -54,8 +54,6 @@
 		<div class="animsition">
 	<?php endif; ?>	
 
-	<div class="header-wrapper match-header">
-	<header id="masthead" class="site-header match-header" role="banner">
 		<div class="pre-header">
 			<div class="row">
 				<div class="large-12 columns">
@@ -68,13 +66,16 @@
 				</div>
 			</div> 
 		</div> <!-- pre-header -->
+
+	<div class="header-wrapper match-header">		
+	<header id="masthead" class="site-header match-header" role="banner">
 		<nav id="site-navigation" class="main-navigation top-bar row" role="navigation">
 			<div class="top-bar-left">
 				<?php get_template_part('template-parts/header-icon'); ?>
 			</div> <!-- top-bar-left -->
 			<div class="top-bar-right text-right">
 				<div id="products-icon" class="transition"><?php get_template_part('assets/images/products', 'icon.svg'); ?>Products</div>
-				<div id="menu-icon" class="transition"><?php get_template_part('assets/images/menu', 'icon.svg'); ?><div class="close-menu">&times;</div>Menu</div>
+				<div id="menu-icon" class="transition"><?php get_template_part('assets/images/menu', 'icon.svg'); ?><div class="close-menu transition">&times;</div>Menu</div>
 				<?php foundationpress_main_menu(); ?>
 				<script>
 					jQuery("#menu-icon").on( "click", function() {

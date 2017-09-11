@@ -2095,18 +2095,27 @@ iframe {
     font-size: 14px;
     color: #788087;
     font-weight: 700;
-    padding: 8px; }
+    padding: 12px;
+    cursor: pointer; }
     .top-bar-right > div svg {
-      vertical-align: middle; }
-    .top-bar-right > div svg {
+      vertical-align: middle;
       width: 16px;
       height: 16px;
       margin-right: 8px; }
     .top-bar-right > div .close-menu {
-      display: inline-block; }
-    .top-bar-right > div:hover {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      font-size: 22px;
+      margin-right: 8px;
+      font-weight: 300; }
+    .top-bar-right > div:hover, .top-bar-right > div.active {
       color: #fff;
       background: #1365C3; }
+      .top-bar-right > div:hover svg path, .top-bar-right > div.active svg path {
+        fill: #fff; }
   .top-bar-right #products-icon {
     margin-right: 16px; }
   .top-bar-right #menu-icon {
@@ -2115,7 +2124,17 @@ iframe {
       display: none; }
     .top-bar-right #menu-icon:not(.active) div {
       display: none; }
+  .top-bar-right ul#menu-main-menu:not(.active) {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden; }
   .top-bar-right ul#menu-main-menu {
+    max-height: 400px;
+    transition: all .5s;
+    -webkit-transition: all .5s;
+    /* Safari and Chrome */
+    -ms-transition: all .5s;
+    /* Opera */
     background-image: -webkit-gradient(linear, left top, left bottom, from(0), color-stop(5%, rgba(43, 158, 227, 0.97)), color-stop(97%, #1365C3));
     background-image: -webkit-linear-gradient(0, rgba(43, 158, 227, 0.97) 5%, #1365C3 97%);
     background-image: linear-gradient(0, rgba(43, 158, 227, 0.97) 5%, #1365C3 97%);
@@ -2249,11 +2268,39 @@ body > section.container > header,
     width: 50%; }
 
 #footer-container {
+  background: #1365c3;
+  /* Old browsers */
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #1365c3 0%, #2590da 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: -webkit-gradient(linear, left top, right top, from(#1365c3), to(#2590da));
+  background: linear-gradient(to right, #1365c3 0%, #2590da 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1365c3', endColorstr='#2590da',GradientType=1 );
+  /* IE6-9 */
+  -webkit-box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
+          box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
   display: block;
   float: left;
-  width: 100%;
-  background: #ccc;
-  padding-top: 25px; }
+  width: 100%; }
+  #footer-container .assoc-logos {
+    background: #fff;
+    display: block;
+    float: left;
+    width: 100%;
+    padding: 15px 0 18px 0;
+    margin-bottom: 16px; }
+  #footer-container .assoc-logo {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 2px; }
+  #footer-container p {
+    color: #fff; }
+  #footer-container .address-phone svg, #footer-container .address-phone img {
+    float: left;
+    margin-right: 33px;
+    width: 154px;
+    height: 154px; }
 
 .social svg {
   margin: 0 5px;
