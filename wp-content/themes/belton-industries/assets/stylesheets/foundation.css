@@ -1265,7 +1265,7 @@ h6 {
   font-family: "museo-sans", sans-serif;
   font-weight: normal;
   font-style: normal;
-  color: inherit;
+  color: #69C13C;
   text-rendering: optimizeLegibility;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -1361,10 +1361,10 @@ dl {
 blockquote {
   margin: 0 0 1rem;
   padding: 0.3125rem 1.25rem 0.125rem 1.1875rem;
-  border-left: 7px solid #1365C3; }
+  border-left: 7px solid #69C13C; }
   blockquote, blockquote p {
     line-height: 1.4;
-    color: #1365C3; }
+    color: #69C13C; }
 
 cite {
   display: block;
@@ -2003,12 +2003,13 @@ body.safari a.logo {
   -ms-transition: none; }
 
 blockquote {
-  margin: 2.1875rem 0 2.1875rem 0;
-  font-style: italic; }
+  margin: 2.1875rem 0 2.1875rem 0; }
 
-blockquote p {
+.entry-content blockquote p {
   border-bottom: 0;
-  font-size: 31px; }
+  font-size: 24px;
+  font-weight: 300;
+  color: #69C13C; }
 
 .parallax-window h1, .parallax-window h2, .parallax-window h3, .parallax-window h4, .parallax-window p {
   color: #fff;
@@ -2089,7 +2090,7 @@ iframe {
   position: relative; }
   @media only screen and (min-width: 40.063em) {
     .top-bar-right {
-      margin-top: 20px; } }
+      margin-top: 12px; } }
   .top-bar-right > div {
     display: inline-block;
     font-size: 14px;
@@ -2288,26 +2289,77 @@ body > section.container > header,
     display: block;
     float: left;
     width: 100%;
-    padding: 15px 0 18px 0;
-    margin-bottom: 16px; }
+    padding: 15px 0 18px 0; }
   #footer-container .assoc-logo {
     display: inline-block;
     vertical-align: middle;
     margin: 0 2px; }
   #footer-container p {
+    font-size: 14px;
     color: #fff; }
-  #footer-container .address-phone svg, #footer-container .address-phone img {
+  #footer-container .address-phone > svg, #footer-container .address-phone img {
     float: left;
     margin-right: 33px;
     width: 154px;
-    height: 154px; }
-
-.social svg {
-  margin: 0 5px;
-  max-height: 20px;
-  max-width: 25px;
-  fill: #1365C3;
-  vertical-align: middle; }
+    height: 154px;
+    margin-top: 16px;
+    margin-bottom: 16px; }
+  #footer-container .toll-free {
+    font-size: 24px; }
+  #footer-container .phone {
+    font-size: 18px;
+    display: inline-block;
+    margin-bottom: 12px; }
+  #footer-container span.social {
+    display: inline-block;
+    margin: 0 0 0 16px;
+    min-width: 76px;
+    vertical-align: text-bottom; }
+  #footer-container p svg {
+    display: inline-block;
+    margin: 0 5px;
+    max-height: 23px;
+    max-width: 23px;
+    fill: #fff;
+    vertical-align: middle; }
+  #footer-container .address {
+    display: block;
+    float: left;
+    margin-top: 36px; }
+  #footer-container #footer {
+    max-width: 860px; }
+  #footer-container .footer-menu {
+    display: block;
+    float: left;
+    margin: 40px 0 0 60px;
+    border-left: solid 1px rgba(255, 255, 255, 0.2); }
+    #footer-container .footer-menu #menu-main-menu-1 {
+      margin: 5px 0 5px 55px; }
+    #footer-container .footer-menu ul {
+      -webkit-column-count: 2;
+         -moz-column-count: 2;
+              column-count: 2; }
+    #footer-container .footer-menu li.home {
+      display: none; }
+    #footer-container .footer-menu li {
+      list-style: none; }
+      #footer-container .footer-menu li a {
+        color: #fff;
+        margin: 5px 0;
+        display: inline-block; }
+  #footer-container .sub-footer {
+    padding: 10px 0 9px 0;
+    background: rgba(0, 0, 0, 0.2);
+    display: block;
+    float: left;
+    width: 100%; }
+    #footer-container .sub-footer .row {
+      max-width: 960px; }
+    #footer-container .sub-footer p {
+      margin: 0;
+      font-size: 12px; }
+    #footer-container .sub-footer a {
+      color: #fff; }
 
 .sidebar {
   width: 100%;
@@ -2494,13 +2546,14 @@ body#tinymce {
   margin-bottom: 7px; }
   .entry-content > ul > li:before, section.section ul > li:before {
     content: "";
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 14px;
     position: absolute;
     left: 0;
-    top: 7px;
-    background-color: #1365C3;
-    border-radius: 4px; }
+    top: 4px;
+    background: url(../images/right-arrow.svg) center center no-repeat;
+    -webkit-background-size: 8px 14px !important;
+            background-size: 8px 14px !important; }
 
 .gallery {
   margin: auto;
@@ -2885,8 +2938,73 @@ section.intro {
   padding-bottom: 40px; }
 
 section.breadcrumbs {
-  background: #cacaca;
-  padding: 14px 0 1px 0; }
+  background: #fff;
+  padding: 20px 0 0 48px !important;
+  margin: 0; }
+
+#breadcrumbs {
+  font-size: 14px;
+  margin-bottom: 14px; }
+  #breadcrumbs span.bc-divider {
+    display: inline-block;
+    background: url(../images/breadcrumb-divider.svg) center center no-repeat;
+    width: 9px;
+    height: 16px;
+    -webkit-background-size: 9px 16px;
+            background-size: 9px 16px;
+    vertical-align: top;
+    margin: 0 8px; }
+  #breadcrumbs .breadcrumb_last {
+    opacity: .6; }
+
+.entry-content > section {
+  padding-left: 32px;
+  padding-right: 32px; }
+
+.featured-image {
+  position: relative;
+  background: #1365C3; }
+  .featured-image .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.7;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(2%, rgba(43, 158, 227, 0)), color-stop(37%, rgba(43, 158, 227, 0.15)), color-stop(76%, #1365C3), to(#1365C3));
+    background-image: -webkit-linear-gradient(top, rgba(43, 158, 227, 0) 2%, rgba(43, 158, 227, 0.15) 37%, #1365C3 76%, #1365C3 100%);
+    background-image: linear-gradient(-180deg, rgba(43, 158, 227, 0) 2%, rgba(43, 158, 227, 0.15) 37%, #1365C3 76%, #1365C3 100%); }
+  .featured-image .featured-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5%; }
+  .featured-image h1.entry-title {
+    font-size: 54px;
+    color: #fff; }
+
+.blurred-bg {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .3; }
+
+#page {
+  background: #e6ebf0; }
+
+.entry-content p, .entry-content li {
+  color: #788087;
+  font-size: 18px; }
+
+section.breadcrumbs + section {
+  padding-left: 15px;
+  padding-right: 15px; }
+  section.breadcrumbs + section h1, section.breadcrumbs + section h2, section.breadcrumbs + section h3, section.breadcrumbs + section h4, section.breadcrumbs + section h5, section.breadcrumbs + section h6 {
+    color: #2B9EE3; }
 
 /*!
  * animsition v4.0.2

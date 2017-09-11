@@ -6,13 +6,13 @@
 		margin-bottom: 7px;
 		&:before {
 		    content: "";
-		    width: 7px;
-		    height: 7px;
+		    width: 8px;
+		    height: 14px;
 		    position: absolute;
 		    left: 0;
-		    top: 7px;
-		    background-color: $primary-color;
-		    border-radius: 4px;
+		    top: 4px;
+		    background: url(../images/right-arrow.svg) center center no-repeat;
+		    background-size: 8px 14px !important;
 		}
 	}
 }

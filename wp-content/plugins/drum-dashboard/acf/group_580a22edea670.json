@@ -340,6 +340,27 @@
                     "mime_types": ""
                 }
             ]
+        },
+        {
+            "key": "field_59b6ae21276fa",
+            "label": "Terms Page",
+            "name": "terms_page",
+            "type": "page_link",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "page"
+            ],
+            "taxonomy": [],
+            "allow_null": 0,
+            "allow_archives": 1,
+            "multiple": 0
         }
     ],
     "location": [
@@ -359,5 +380,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1504899172
+    "modified": 1505144369
 }

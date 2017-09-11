@@ -176,7 +176,7 @@ $header-sizes: (
     'h6': 16,
   ),
 );
-$header-color: inherit;
+$header-color: #69C13C;
 $header-lineheight: 1.2;
 $header-margin-bottom: 0.5rem;
 $header-text-rendering: optimizeLegibility;
@@ -207,15 +207,15 @@ $list-nested-side-margin: 1.25rem;
 $defnlist-margin-bottom: 1rem;
 $defnlist-term-weight: $global-weight-bold;
 $defnlist-term-margin-bottom: 0.3rem;
-$blockquote-color: $primary-color;
+$blockquote-color: $secondary-color;
 $blockquote-font-size: 1.2rem;
 $blockquote-font-weight: 200;
 $blockquote-width: 45%;
 $blockquote-mobile-width: 100%;
-$blockquote-font-style: italic;
+$blockquote-font-style: normal;
 $blockquote-padding: rem-calc(5 20 2 19);
 $blockquote-margin: rem-calc(35 0 35 0);
-$blockquote-border: 7px solid $primary-color;
+$blockquote-border: 7px solid $secondary-color;
 $cite-font-size: rem-calc(13);
 $cite-color: $dark-gray;
 $keystroke-font: $font-family-monospace;

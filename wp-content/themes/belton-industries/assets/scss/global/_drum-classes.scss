@@ -75,11 +75,13 @@ body.safari a.logo {
 
 blockquote {
 	margin: $blockquote-margin;
-	font-style: italic;
 }
-blockquote p {
+
+.entry-content blockquote p {
 	border-bottom: 0;
-	font-size: 31px;
+	font-size: 24px;
+	font-weight: 300;
+	color: $secondary-color;
 }
 
 .parallax-window {

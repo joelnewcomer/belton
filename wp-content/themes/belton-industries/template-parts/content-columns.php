@@ -71,21 +71,17 @@ function drum_animate($column, $row, $script = false) {
 				<!-- One Column Parallax -->
 	        	<?php if (get_sub_field('parallax') ) : ?>
 	        		<?php echo $before_parallax_prepend; ?><div <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="parallax-window" data-paroller-factor="0.5" style="background: url('<?php echo wp_get_attachment_image_url(get_sub_field("parallax_image"), $size = "full"); ?>');"><?php echo $before_parallax_append; ?>
-						<div class="row">
 							<div class="large-12 columns entry-content">
 								<?php echo get_sub_field('one_column'); ?>
 							</div>
-						</div> <!-- row -->
 					<?php echo $after_parallax_prepend; ?></div><?php echo $after_parallax_append; ?>
 
 				<!-- One Column Not Parallax -->
 	        	<?php else : ?>
 	        		<section <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="<?php echo $background; ?>">
-		        		<div class="row">
 		        			<div class="large-12 columns entry-content <?php echo drum_animate('1', $row_counter); ?>">
 		        				<?php echo get_sub_field('one_column'); ?>
 							</div>
-		        		</div> <!-- row -->
 		        		<?php echo drum_animate('1', $row_counter, true); ?>
 					</section>
 	        	<?php endif; ?>
@@ -104,9 +100,8 @@ function drum_animate($column, $row, $script = false) {
 
 	        	<!-- Two Columns Parallax -->
 	        	<?php if (get_sub_field('parallax') ) : ?>
-	        		</div></div><div <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="parallax-window" data-parallax="scroll" data-image-src="<?php echo wp_get_attachment_image_url(get_sub_field('parallax_image'), $size = 'full'); ?>"><div class="row"><div class="large-12 columns">
+	        		</div></div><div <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="parallax-window" data-parallax="scroll" data-image-src="<?php echo wp_get_attachment_image_url(get_sub_field('parallax_image'), $size = 'full'); ?>"><div class="large-12 columns">
 						<section>
-							<div class="row">
 								<?php if ($section_header != null) : ?>
 									<div class="large-12 columns text-center">
 										<h2><?php echo $section_header; ?></h2>
@@ -118,14 +113,12 @@ function drum_animate($column, $row, $script = false) {
 								<div class="large-6 medium-6 columns entry-content">
 									<?php echo get_sub_field('column_2'); ?>
 								</div>
-							</div> <!-- row -->
 						</section>
-					</div></div></div><div class="row"><div class="entry-content">
+					</div></div><div class="entry-content">
 
 				<!-- Two Columns Not Parallax -->
 	        	<?php else : ?>
 	        		<section <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="<?php echo $background; ?>">
-		        		<div class="row">
 							<?php if ($section_header != null) : ?>
 								<div class="large-12 columns text-center">
 									<h2><?php echo $section_header; ?></h2>
@@ -139,7 +132,6 @@ function drum_animate($column, $row, $script = false) {
 		        				<?php echo get_sub_field('column_2'); ?>
 		        				<?php echo drum_animate('2', $row_counter, true); ?>
 		        			</div>
-		        		</div> <!-- row -->
 	        		</section>
 	        	<?php endif; ?>
 
@@ -157,7 +149,6 @@ function drum_animate($column, $row, $script = false) {
 	        	}
 	        	?>
 				<section <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="<?php echo $background; ?>">
-					<div class="row">
 						<?php if ($section_header != null) : ?>
 							<div class="large-12 columns text-center">
 								<h2><?php echo $section_header; ?></h2>
@@ -175,7 +166,6 @@ function drum_animate($column, $row, $script = false) {
 		        			<?php echo get_sub_field('column_3'); ?>
 		        			<?php echo drum_animate('3', $row_counter, true); ?>
 		        		</div>
-					</div> <!-- row -->
 				</section>
 	        <?php elseif( get_row_layout() == 'four_columns' ): ?>
 	        	<?php
@@ -190,7 +180,6 @@ function drum_animate($column, $row, $script = false) {
 	        	}
 	        	?>
 	        	<section <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="<?php echo $background; ?>">
-		        	<div class="row">
 						<?php if ($section_header != null) : ?>
 							<div class="large-12 columns text-center">
 								<h2><?php echo $section_header; ?></h2>
@@ -212,7 +201,6 @@ function drum_animate($column, $row, $script = false) {
 		        			<?php echo get_sub_field('column_4'); ?>
 		        			<?php echo drum_animate('4', $row_counter, true); ?>
 		        		</div>
-		        	</div> <!-- row -->
 	        	</section>
 	        <?php elseif( get_row_layout() == 'right_sidebar' ): ?>
 	        	<?php
@@ -227,7 +215,6 @@ function drum_animate($column, $row, $script = false) {
 	        	}
 	        	?>
 	        	<section <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="<?php echo $background; ?>">
-		        	<div class="row">
 						<?php if ($section_header != null) : ?>
 							<div class="large-12 columns text-center">
 								<h2><?php echo $section_header; ?></h2>
@@ -241,7 +228,6 @@ function drum_animate($column, $row, $script = false) {
 		        			<?php echo get_sub_field('narrow_column'); ?>
 		        			<?php echo drum_animate('2', $row_counter, true); ?>
 		        		</div>
-		        	</div> <!-- row -->
 	        	</section>
 	        <?php elseif( get_row_layout() == 'left_sidebar' ): ?>
 	        	<?php
@@ -256,7 +242,6 @@ function drum_animate($column, $row, $script = false) {
 	        	}
 	        	?>
 				<section <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="<?php echo $background; ?>">
-					<div class="row">
 						<?php if ($section_header != null) : ?>
 							<div class="large-12 columns text-center">
 								<h2><?php echo $section_header; ?></h2>
@@ -270,7 +255,6 @@ function drum_animate($column, $row, $script = false) {
 		        			<?php echo get_sub_field('wide_column'); ?>
 		        			<?php echo drum_animate('2', $row_counter, true); ?>
 		        		</div>
-					</div> <!-- row -->
 				</section>
 			<!-- SEPARATE ACCORDION SECTION DEPRECATED 7/20/17 - KEPT FOR BACKWARDS COMPATIBILITY -->
 	        <?php elseif( get_row_layout() == 'accordion' ): ?>
@@ -286,7 +270,6 @@ function drum_animate($column, $row, $script = false) {
 	        	}
 	        	?>
 				<section <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="<?php echo $background; ?>">
-					<div class="row">
 						<?php if ($section_header != null) : ?>
 							<div class="large-12 columns text-center">
 								<h2><?php echo $section_header; ?></h2>
@@ -319,7 +302,6 @@ function drum_animate($column, $row, $script = false) {
 				    	    </script>
 			        		<?php echo drum_animate('1', $row_counter, true); ?>
 		        		</div> <!-- columns -->
-					</div> <!-- row -->
 				</section> <!-- sr -->
 				<?php $tabs_counter++; ?>
 	        <?php elseif( get_row_layout() == 'tabs' ): ?>
@@ -336,7 +318,6 @@ function drum_animate($column, $row, $script = false) {
 	        	$type = get_sub_field('type');
 	        	?>
 				<section <?php if ($section_id != null) { echo 'id="' . $section_id . '" ' ; } ?>class="<?php echo $background; ?>">
-					<div class="row">
 						<?php if ($section_header != null) : ?>
 							<div class="large-12 columns text-center">
 								<h2><?php echo $section_header; ?></h2>
@@ -369,7 +350,6 @@ function drum_animate($column, $row, $script = false) {
 				    	    </script>
 				    	    <?php echo drum_animate('1', $row_counter, true); ?>
 		        		</div> <!-- columns -->
-					</div> <!-- row -->
 				</section> <!-- sr -->
 				<?php $tabs_counter++; ?>
 	        <?php endif;

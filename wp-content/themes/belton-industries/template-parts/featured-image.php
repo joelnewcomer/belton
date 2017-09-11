@@ -9,14 +9,39 @@ if (is_home() && get_option('page_for_posts') ) {
 } else {
 	$image_id = get_post_thumbnail_id();
 }
+$blurred_image = wp_get_attachment_image_src( $image_id, 'width=1048&height=472&crop=1' );
+// Default featured image
+if ($image_id == null) {
+	$blurred_image[0] = get_template_directory_uri() . '/assets/images/default-featured.jpg';
+}
 ?>
-<?php if ($image_id != null) : ?>
-	<div class="featured-image">
+
+<div class="featured-image">
+	<div class="blurred-bg blurred-bg-<?php echo $image_id; ?>"></div>
+	<div class="row">
+		<?php if ($image_id != null) : ?>
 		<?php
-		$small = array("width" => 640,"height" => 175);
-		$medium = array("width" => 1025,"height" => 280);
-		$large = array("width" => 1100,"height" => 300);
-		echo drum_image($image_id,$small,$medium,$large,false);
+		$small = array("width" => 640,"height" => 288);
+		$medium = array("width" => 1025,"height" => 462);
+		$large = array("width" => 1048,"height" => 472);
+		echo drum_image($image_id,$small,$medium,$large);
 		?>
+		<?php else : ?>
+			<img src="<?php echo get_template_directory_uri() . '/assets/images/default-featured.jpg'; ?>">
+		<?php endif; ?>
+		<div class="gradient-overlay"></div>
+		<div class="featured-overlay text-center">
+			<h1 class="entry-title"><?php the_title(); ?></h1>
+		</div>
 	</div>
-<?php endif; ?>
+</div>
+
+<script>
+	jQuery( document ).ready(function() {
+	    jQuery('.blurred-bg-<?php echo $image_id; ?>').backgroundBlur({
+	        imageURL : '<?php echo $blurred_image[0]; ?>',
+	        blurAmount : 7,
+	        imageClass : 'bg-blur'
+	    });
+	});
+</script>

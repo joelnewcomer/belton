@@ -14,7 +14,6 @@
 		float: left;
 		width: 100%;
 		padding: 15px 0 18px 0;
-		margin-bottom: 16px;
 	}
 	.assoc-logo {
 		display: inline-block;
@@ -22,24 +21,87 @@
 		margin: 0 2px;
 	}
 	p {
+		font-size: 14px;
 		color: #fff;
 	}
 	.address-phone {
-		svg, img {
+		& > svg, img {
 			float: left;
 			margin-right: 33px;
 			width: 154px;
 			height: 154px;
+			margin-top: 16px;
+			margin-bottom: 16px;
 		}
 	}
-}
-
-.social {
-	svg {
+	.toll-free {
+		font-size: 24px;
+	}
+	.phone {
+		font-size: 18px;
+		display: inline-block;
+		margin-bottom: 12px;
+	}
+	span.social {
+		display: inline-block;
+		margin: 0 0 0 16px;
+		min-width: 76px;
+		vertical-align: text-bottom;
+	}
+	p svg {
+		display: inline-block;
 		margin: 0 5px;
-		max-height: 20px;
-		max-width: 25px;
-		fill: $primary-color;
+		max-height: 23px;
+		max-width: 23px;
+		fill: #fff;
 		vertical-align: middle;
+	}
+	.address {
+		display: block;
+		float: left;
+		margin-top: 36px;
+	}
+	#footer {
+		max-width: 860px;
+	}
+	.footer-menu {
+		display: block;
+		float: left;
+		margin: 40px 0 0 60px;
+		border-left: solid 1px rgba(255,255,255,.2);
+		#menu-main-menu-1 {
+			margin: 5px 0 5px 55px;
+		}
+		ul {
+			column-count: 2;
+		}
+		li.home {
+			display: none;
+		}
+		li {
+			list-style: none;
+			a {
+				color: #fff;
+				margin: 5px 0;
+				display: inline-block;
+			}
+		}
+	}
+	.sub-footer {
+		padding: 10px 0 9px 0;
+		background: rgba(0,0,0,.2);
+		display: block;
+		float: left;
+		width: 100%;
+		.row {
+			max-width: 960px;
+		}
+		p {
+			margin: 0;
+			font-size: 12px;
+		}
+		a {
+			color: #fff;
+		}
 	}
 }

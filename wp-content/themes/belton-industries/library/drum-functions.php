@@ -177,8 +177,8 @@ add_filter('upload_mimes', 'unset_tiff', 1, 1);
 
 // Generate image that is resized using WP Thumb and that is output using responsive image markup
 // This gives you full control of proportions
-function drum_image($id,$small,$medium,$large,$lazy = true) {
-	$image_alt = get_post_meta($id, '_wp_attachment_image_alt', true);
+function drum_image($id,$small,$medium,$large) {
+	$image_alt = get_post_meta($id, '_wp_attachment_image_alt');
 	$image_url = wp_get_attachment_url( $id );
 	$image_small = wpthumb( $image_url, 'width=' . $small['width'] . '&height=' . $small['height'] . '&crop=1');
 	if ($image_small == null) { $image_small = $image_url; }
@@ -186,19 +186,9 @@ function drum_image($id,$small,$medium,$large,$lazy = true) {
 	if ($image_medium == null) { $image_medium = $image_url; }
 	$image_large = wpthumb( $image_url, 'width=' . $large['width'] . '&height=' . $large['height'] . '&crop=1');
 	if ($image_large == null) { $image_large = $image_url; }
-	if ($lazy) {
-		$image = '<img data-src="' . $image_large . '" alt="' . $image_alt .'" data-srcset="' . $image_large . ' 1100w, ' . $image_small . ' 640w, ' . $image_medium . ' 1024w" sizes="(max-width: 1100px) 100vw, 1100px" class="lazyload" />';
-	} else {
-		$image = '<img src="' . $image_large . '" alt="' . $image_alt .'" data-srcset="' . $image_large . ' 1100w, ' . $image_small . ' 640w, ' . $image_medium . ' 1024w" sizes="(max-width: 1100px) 100vw, 1100px" />';
-	}
+	$image = '<picture><source srcset="' . $image_large . '" media="(min-width: 1100px)" /><source srcset="' . $image_medium . '" media="(min-width: 640px)" /><img src="' . $image_small . '" alt="' . $image_alt .'" /></picture>';
 	return $image;
 }
-
-// Add lazy load class to all images
-function img_responsive($content){
-    return str_replace('<img class="','<img class="lazyload ',$content);
-}
-add_filter('the_content','img_responsive');
 
 // Generate image that is resized using WP Thumb and that is output using responsive image markup
 // Automatically calculates proportions for you
@@ -217,14 +207,9 @@ function drum_image_auto($id,$large,$lazy = true) {
 	if ($image_medium == null) { $image_medium = $image_url; }
 	$image_large = wpthumb( $image_url, 'width=' . $large['width'] . '&height=' . $large['height'] . '&crop=1');
 	if ($image_large == null) { $image_large = $image_url; }
-	if ($lazy) {
-		$image = '<img data-src="' . $image_large . '" alt="' . $image_alt .'" data-srcset="' . $image_large . ' 1100w, ' . $image_small . ' 640w, ' . $image_medium . ' 1024w" sizes="(max-width: 1100px) 100vw, 1100px" class="lazyload" />';
-	} else {
-		$image = '<img src="' . $image_large . '" alt="' . $image_alt .'" data-srcset="' . $image_large . ' 1100w, ' . $image_small . ' 640w, ' . $image_medium . ' 1024w" sizes="(max-width: 1100px) 100vw, 1100px" />';
-	}
+	$image = '<picture><source srcset="' . $image_large . '" media="(min-width: 1100px)" /><source srcset="' . $image_medium . '" media="(min-width: 640px)" /><img src="' . $image_small . '" alt="' . $image_alt .'" /></picture>';
 	return $image;
 }
-
 // Add no-border class to gallery items
 function add_class_to_gallery($link, $id) {
 	$border = true;
@@ -554,7 +539,7 @@ add_filter( 'comment_form_defaults', 'placeholder_comment_form_field' );
 // Add notice stating featured image size
 add_filter( 'admin_post_thumbnail_html', 'add_featured_image_instruction');
 function add_featured_image_instruction( $content ) {
-    return $content .= '<p>Featured Image must be sized to at least 1100 x 300 pixels.</p>';
+    return $content .= '<p>Featured Image must be sized to at least 1048 x 472 pixels.</p>';
 }
 
 // Set WYSIWYG Colors on Options Page - http://stackoverflow.com/questions/23171247/add-custom-text-color-wordpress-3-9-tinymce-4-visual-editor
