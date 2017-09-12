@@ -8,6 +8,30 @@
  * @since FoundationPress 1.0.0
  */
 ?>
+
+<section class="cta">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<h3>Call Us: <?php echo drum_smart_phone(get_field('toll_free_number','option')); ?> Because Belton Makes Business Easy</h3>
+			
+			<?php
+			$query = new WP_Query(
+			    array( 'orderby' => 'date', 'posts_per_page' => '1')
+			);
+			while($query->have_posts()) : $query->the_post(); ?>
+			    <a class="footer-blog-block" href="<?php echo get_permalink(); ?>">
+			        <?php the_post_thumbnail( array( 'width' => 216, 'height' => 138, 'crop' => true ) ) ?>
+				    <h3><?php the_title(); ?></h3>
+			        <?php the_excerpt(); ?>
+			    </a>
+			<?php endwhile;
+			wp_reset_query();
+			?>
+			<div class="button white shadow arrow"><a href="<?php echo get_permalink( get_option( 'page_for_posts' ) ); ?>">More Recent News <?php get_template_part('assets/images/right', 'arrow.svg'); ?><br /> </a></div>
+		</div>
+	</div>
+</section>
+	
 		</section>
 				
 		<div id="footer-container">

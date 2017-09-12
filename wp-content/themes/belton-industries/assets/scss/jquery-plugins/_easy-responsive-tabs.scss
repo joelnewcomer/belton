@@ -8,7 +8,7 @@ ul.resp-tabs-list {
 }
 
 .entry-content .tabs-container > div:not(.resp-vtabs) ul.resp-tabs-list {
-    border-bottom: solid 2px $primary-color;	
+    border-bottom: solid 2px #2B9EE3;	
 }
 
 .entry-content ul.resp-tabs-list li {
@@ -44,15 +44,15 @@ h2.resp-accordion {
 }
 
 .resp-tab-active {
-	border: 1px solid $primary-color !important;
+	border: 1px solid #2B9EE3 !important;
 	border-bottom: none;
 	margin-bottom: -1px !important;
-	border-top: 1px solid $primary-color !important;
+	border-top: 1px solid #2B9EE3 !important;
 	border-bottom: 0px #fff solid !important;
 }
 
 li.resp-tab-item {
-    background: rgba($primary-color, .15) !important;
+    background: rgba(#2B9EE3, .15) !important;
     svg {
 	    display: none;
     }
@@ -60,7 +60,7 @@ li.resp-tab-item {
 
 .entry-content ul.resp-tabs-list li.resp-tab-active {
     border-bottom: none;
-    background-color: $primary-color !important;
+    background-color: #2B9EE3 !important;
     color: #fff !important;
     margin-top: -2px !important;
     padding-top: 15px !important;
@@ -76,7 +76,7 @@ h2.resp-accordion {
     padding: 14px 15px;
     position: relative;
     transition: all .5s;
-    background: rgba($primary-color, .15) !important;
+    background: rgba(#2B9EE3, .15) !important;
     -webkit-transition: all .5s; /* Safari and Chrome */
     -ms-transition: all .5s; /* Opera */
     color: #595959;
@@ -89,7 +89,7 @@ div.resp-easy-accordion {
 }
 
 h2.resp-tab-active {
-    border-bottom: 0px solid $primary-color !important;
+    border-bottom: 0px solid #2B9EE3 !important;
     margin-bottom: 0px !important;
 }
 
@@ -101,7 +101,7 @@ h2.resp-tab-title:last-child {
 .resp-vtabs ul.resp-tabs-list {
     float: left;
     width: 30%;
-    border-left: solid 2px $primary-color;
+    border-left: solid 2px #2B9EE3;
     padding-top: 2px;    
 }
 
@@ -137,7 +137,7 @@ h2.resp-tab-title:last-child {
 
 /*-----------Accordion styles-----------*/
 h2.resp-tab-active {
-    background: $primary-color !important;
+    background: #2B9EE3 !important;
     color: #fff;
     svg .acc-arrow-1 {
 	    fill: #fff;
@@ -164,7 +164,7 @@ h2.resp-accordion {
 		-webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
 		transform: rotate(180deg);
 		.acc-arrow-1 {
-			fill: $primary-color;
+			fill: #2B9EE3;
 		}
     }
     &.resp-tab-active svg {
@@ -205,7 +205,7 @@ h2.resp-accordion {
 // Accordion Styling
 .resp-easy-accordion {
 	.resp-tab-content {
-		background: rgba($primary-color, .05);
+		background: rgba(#2B9EE3, .05);
 	}
 }
 

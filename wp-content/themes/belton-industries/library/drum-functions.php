@@ -20,7 +20,7 @@ add_filter( 'use_default_gallery_style', '__return_false' );
 //Add the read more link to excerpts
 function new_excerpt_more( $more ) {
 	global $post;
-	return '... <div class="button small text-center"><a href="'. get_permalink($post->ID) . '">Continue Reading</a></div>';
+	return '...<br /><span class="faux-link">Read More</span>';
 }
 add_filter('excerpt_more', 'new_excerpt_more');
 
@@ -160,7 +160,7 @@ function wp_strip_header_tags( $excerpt='' ) {
 	}
 	$regex = '#(<h([1-6])[^>]*>)\s?(.*)?\s?(<\/h\2>)#';
 	$excerpt = preg_replace($regex,'', $excerpt);
-	$excerpt_length = apply_filters('excerpt_length', 55);
+	$excerpt_length = apply_filters('excerpt_length', 15);
 	$excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
 	$excerpt = wp_trim_words( $excerpt, $excerpt_length, $excerpt_more );
 	return apply_filters('wp_trim_excerpt', preg_replace($regex,'', $excerpt), $raw_excerpt);
