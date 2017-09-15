@@ -65,3 +65,32 @@ function my_acf_json_load_point( $paths ) {
     $paths[] = get_stylesheet_directory() . '/acf-json';
     return $paths;
 }
+
+register_post_type('products', array(	'menu_icon' => 'dashicons-screenoptions','label' => 'Products','description' => '','public' => true,'show_ui' => true,'show_in_menu' => true,'capability_type' => 'post','hierarchical' => true,'rewrite' => array('slug' => ''),'query_var' => true,'exclude_from_search' => false,'supports' => array('title','excerpt','revisions','thumbnail',),'labels' => array (
+  'name' => 'Products',
+  'singular_name' => 'Product',
+  'menu_name' => 'Products',
+  'add_new' => 'Add Product',
+  'add_new_item' => 'Add New Product',
+  'edit' => 'Edit',
+  'edit_item' => 'Edit Product',
+  'new_item' => 'New Product',
+  'view' => 'View Product',
+  'view_item' => 'View Product',
+  'search_items' => 'Search Products',
+  'not_found' => 'No Products Found',
+  'not_found_in_trash' => 'No Products Found in Trash',
+  'parent' => 'Parent Product',
+),) );
+
+register_taxonomy('guide_cats',array (
+  0 => 'products',
+),array( 'hierarchical' => true, 'label' => 'Product Guide Categories','show_ui' => true,'query_var' => true,'rewrite' => array('slug' => ''),'singular_label' => 'Category') );
+
+register_taxonomy('search_cats',array (
+  0 => 'products',
+),array( 'hierarchical' => true, 'label' => 'Product Search Categories','show_ui' => true,'query_var' => true,'rewrite' => array('slug' => ''),'singular_label' => 'Category') );
+
+register_taxonomy('attributes',array (
+  0 => 'products',
+),array( 'hierarchical' => true, 'label' => 'Performance Attributes','show_ui' => true,'query_var' => true,'rewrite' => array('slug' => ''),'singular_label' => 'Attribute') );

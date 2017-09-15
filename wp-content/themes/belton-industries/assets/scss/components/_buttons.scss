@@ -1,4 +1,4 @@
-.button a, input.button {
+.button a, input.button, .faux-button {
 	display: inline-block;
 	margin-bottom: 10px;
 	background: $primary-color;
@@ -23,7 +23,11 @@
 	}
 }
 
-.button.white a {
+.button.arrow a:hover svg polygon, .faux-button.arrow.white:hover svg polygon {
+	fill: #fff;
+}
+
+.button.white a, .faux-button.white {
 	background: #fff;
 	color: #788087;
 	border: none;
@@ -33,12 +37,37 @@
 	}
 }
 
-.button.arrow a {
+.button.green a {
+	background: $secondary-color;
+	border-color: $secondary-color;
+	&:hover {
+		background: transparent;
+		color: $secondary-color;
+		svg polygon {
+			fill: $secondary-color;
+		}
+	}
+}
+
+.button.white.arrow, .faux-button.white.arrow {
+	svg polygon {
+		fill: $primary-color;
+	}	
+}
+
+.button.arrow a, .faux-button.arrow {
 	position: relative;
 	padding-right: 46px;
 }
 
-.button.arrow a svg {
+.button.small a, .faux-button.small {
+	font-size: 14px;
+	font-weight: 700;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+.button.arrow a svg, .faux-button svg {
 	display: block;
 	position: absolute;
 	width: 11px;
@@ -50,13 +79,18 @@
 	transition: all .5s;
 	-webkit-transition: all .5s; /* Safari and Chrome */
 	-ms-transition: all .5s; /* Opera */
+	polygon {
+		fill: #fff;
+	}
 }
 
-.button.arrow a:hover svg polygon {
-	fill: #fff;
+.button.arrow.small a svg, .faux-button.arrow.small svg {
+	width: 8px;
+	height: 14px;
+	top: 9px;
 }
 
-.button.shadow a {
+.button.shadow a, .faux-button.shadow {
 	box-shadow: 0 6px 12px 0 rgba(0,0,0,0.10);
 }
 

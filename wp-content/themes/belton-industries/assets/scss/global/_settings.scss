@@ -94,7 +94,7 @@ $white: #fff;
 
 
 $global-font-size: 100%;
-$global-width: rem-calc(1200);
+$global-width: rem-calc(1078);
 $global-lineheight: 1.5;
 $foundation-palette: (
   primary: #1365C3,
@@ -155,7 +155,7 @@ $block-grid-max: 8;
 // ------------------
 
 $header-font-family: $body-font-family;
-$header-font-weight: $global-weight-normal;
+$header-font-weight: 300;
 $header-font-style: normal;
 $font-family-monospace: Consolas, 'Liberation Mono', Courier, monospace;
 $header-sizes: (
@@ -406,7 +406,7 @@ $input-font-size: rem-calc(16);
 $input-background: $white;
 $input-background-focus: $light-gray;
 $input-background-disabled: $light-gray;
-$input-border: 2px solid $medium-gray;
+$input-border: 1px solid $medium-gray;
 $input-border-focus: 2px solid $dark-gray;
 $input-shadow: inset 0 1px 2px rgba($black, 0.1);
 $input-shadow-focus: 0 0 5px $medium-gray;

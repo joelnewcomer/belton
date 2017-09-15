@@ -49,27 +49,34 @@ $field-border: solid 2px #848484;
   }
   &:not(:checked) + label, &:checked + label {
     position: relative;
-    padding-left: 35px !important;
+    padding-left: 40px !important;
     cursor: pointer;
+    transition: all .5s;
+    -webkit-transition: all .5s; /* Safari and Chrome */
+    -ms-transition: all .5s; /* Opera */
   }
+  &:checked + label {
+	  color: $secondary-color;
+	}
   &:not(:checked) + label:before, &:checked + label:before {
     content: '';
     position: absolute;
     left: 0;
-    top: 2px;
-    width: 17px;
-    height: 17px;
+    top: 0;
+    width: 24px;
+    height: 24px;
     border: $input-border;
     background: #fff;
   }
   &:not(:checked) + label:after, &:checked + label:after {
     content: '';
     position: absolute;
-    top: 2px;
+    top: 0;
     left: 0;
-    width: 17px;
-    height: 17px;
-    background: #848484;
+    width: 24px;
+    height: 24px;
+    background: url(../images/checkmark.svg) center center no-repeat;
+    background-size: 14px 10px !important;
     transition: all .2s;
   }
   &:not(:checked) + label:after {
@@ -341,4 +348,8 @@ div.ginput_complex.ginput_container.gf_name_has_3 span.name_last {
 
 .gform_wrapper ul.gform_fields li.gfield {
 	padding-right: 0 !important;
+}
+
+.gfield_checkbox > li {
+	min-height: 25px;
 }

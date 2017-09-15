@@ -4,6 +4,14 @@ section.breadcrumbs {
 	margin: 0;
 }
 
+section.container {
+	background: #e6ebf0;
+	& > .row {
+		background: #fff;
+		box-shadow: 0 4px 14px 0 rgba(0,0,0,0.06);
+	}
+}
+
 #breadcrumbs {
 	font-size: 14px;
 	margin-bottom: 14px;
