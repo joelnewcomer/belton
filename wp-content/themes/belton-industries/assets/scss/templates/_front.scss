@@ -315,10 +315,6 @@ section.solutions {
 				margin-right: 8px;
 				border-radius: 14px;
 				text-align: center;				
-			}
-			span.number {
-				color: #fff;
-				background: #C1C4C7;
 				&:before {
 					content: "";
 					display: block;
@@ -331,6 +327,10 @@ section.solutions {
 					background-image: linear-gradient(0deg, #C6C6C6 100%, #FFFFFF 0%);
 				}
 			}
+			span.number {
+				color: #fff;
+				background: #C1C4C7;
+			}
 			&.step-1 span.number:before {
 				display: none;
 			}
@@ -342,8 +342,10 @@ section.solutions {
 					height: 16px;
 				}
 			}
-			p {
+			p, h4, .button {
 				display: none;
+			}
+			p {
 				font-size: 14px;
 				color: #788087;
 				font-weight: 300;
@@ -354,6 +356,9 @@ section.solutions {
 				width: 105%;
 				padding: 12px 45px;
 				margin-bottom: 12px;
+				p, h4, .button {
+					display: block;
+				}
 				p {
 					display: block;
 					width: 100%;
@@ -396,6 +401,42 @@ section.solutions {
 				cursor: pointer;
 			}
 		}
+		.step-3 {
+			h4 {
+				font-size: 26px;
+				margin: 24px 0 18px 0;
+			}
+			p {
+				font-size: 18px;
+				margin-bottom: 24px;
+			}
+		}
+		.step-1 .checkmark:before {
+			display: none !important;
+		}
+	}
+	#subcats-selected {
+		font-size: 14px;
+		color: #788087;
+		font-weight: 300;
+		position: relative;
+		padding: 20px 36px;
+		margin-bottom: -12px;
+		display: none;
+		&:before {
+			content: "";
+			display: block;
+			position: absolute;
+			opacity: 0.2;
+			width: 2px;
+			height: 100%;
+			left: 13px;
+			top: 0;
+			background-image: linear-gradient(0deg, #C6C6C6 100%, #FFFFFF 0%);
+		}		
+	}
+	.step.completed #subcats-selected {
+		display: block;
 	}
 	.cat-icons {
 		float: right;
@@ -434,6 +475,17 @@ section.solutions {
 				}
 			}
 		}
+		.subcat-cont.disabled {
+			background: #ccc;
+			color: #999;
+			border-color: #ccc;
+			cursor: default;
+			pointer-events: none;
+			svg polygon {
+				fill: #999 !important;
+				stroke: #999 !important;
+			}
+		}		
 	}
 	.subcat-checkboxes {
 		margin-bottom: 25px;
@@ -461,12 +513,18 @@ section.solutions {
 }
 
 .cat-product {
-	display: block;
+	max-height: 0;
+	overflow: hidden;
+	opacity: 0;
+	&.active.tag-active {
+		max-height: 500px;
+		opacity: 1;
+		padding: 20px;
+		margin-bottom: 16px;
+	}
 	float: left;
 	width: 100%;
 	background: #FFFFFF;
-	margin-bottom: 16px;
-	padding: 20px;
 	img {
 		float: left;
 		margin: 0 20px 8px 0;
@@ -483,6 +541,7 @@ section.solutions {
 		display: block;
 		float: left;
 		clear: left;
+		color: #737373;
 		.tag {
 			font-size: 14px;
 			color: #737373;
@@ -495,6 +554,15 @@ section.solutions {
 		display: block;
 		float: right;
 		margin: 0;
+	}
+}
+
+.cat-products.active:not(.filtered) {
+	.cat-product.active {
+		max-height: 500px;
+		opacity: 1;
+		padding: 20px;
+		margin-bottom: 16px;		
 	}
 }
 
@@ -530,5 +598,11 @@ section.solutions {
 		float: left;
 		width: 100%;
 		margin: 30px 0 21px 0;
+	}
+	.remove-all-tags {
+		opacity: 0;
+		&.active {
+			opacity: 1;
+		}
 	}
 }

@@ -116,16 +116,13 @@ jQuery(document).ready(function($){var offset=300,offset_opacity=1200,scroll_top
 * Initialize jQuery Plugins
 **/
 jQuery( document ).ready(function() {
-	if(jQuery("#estimated-time").length != 0) {
-    	jQuery('#estimated-time').readingTime();
-    }
 	jQuery('.gfield input').each(function() {
 		if (jQuery(this).attr( "placeholder" ) != undefined) {
 			jQuery(this).floatlabel();
 		}
 	});
 	if (!device.mobile()) {
-		jQuery("header#masthead").headroom();
+		jQuery("header#masthead").headroom({ byRow: false });
 	}
 	jQuery('.match-header').matchHeight();
 	if (!jQuery( "body" ).hasClass( "no-sr" ) && !jQuery("body").hasClass("ie9")) {
