@@ -3531,6 +3531,40 @@ section.solutions .subcat-checkboxes {
     .tag-filters .remove-all-tags.active {
       opacity: 1; }
 
+#no-matches {
+  display: block;
+  float: left;
+  width: 100%;
+  background: #f6f6f7;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0; }
+  #no-matches.active {
+    max-height: 1200px;
+    opacity: 1;
+    padding: 30px 50px;
+    border: 4px solid #f2f2f2; }
+  #no-matches h2 {
+    color: #1365C3;
+    margin-bottom: 20px; }
+  #no-matches h3 {
+    color: #2B9EE3;
+    font-size: 18px;
+    margin-bottom: 24px; }
+  @media only screen and (min-width: 40.063em) {
+    #no-matches ul {
+      -webkit-column-count: 2;
+         -moz-column-count: 2;
+              column-count: 2; } }
+  #no-matches li {
+    font-size: 16px;
+    font-weight: 300;
+    margin-bottom: 14px; }
+  #no-matches .button a {
+    font-size: 17px; }
+    #no-matches .button a svg {
+      top: 11px; }
+
 #single-post > article {
   padding-bottom: 40px; }
 

@@ -606,3 +606,44 @@ section.solutions {
 		}
 	}
 }
+
+#no-matches {
+	display: block;
+	float: left;
+	width: 100%;
+	background: #f6f6f7;
+	max-height: 0;
+	overflow: hidden;
+	opacity: 0;
+	&.active {
+		max-height: 1200px;
+		opacity: 1;
+		padding: 30px 50px;
+		border: 4px solid #f2f2f2;
+	}	
+	h2 {
+		color: $primary-color;
+		margin-bottom: 20px;
+	}
+	h3 {
+		color: #2B9EE3;
+		font-size: 18px;
+		margin-bottom: 24px;
+	}
+	@media only screen and (min-width: 40.063em) {
+		ul {
+			column-count: 2;
+		}
+	}
+	li {
+		font-size: 16px;
+		font-weight: 300;
+		margin-bottom: 14px;
+	}
+	.button a {
+		font-size: 17px;
+		svg {
+			top: 11px;
+		}
+	}
+}

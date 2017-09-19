@@ -139,11 +139,28 @@
 							wp_reset_postdata();
 						}
 						?>
-					</div>
+					</div> <!-- cat-products -->
 			        <?php
 			    }
 			}
 			?>
+			<div id="no-matches" class="entry-content">
+				<h2>Let us come up with a solution to meet your specific needs.</h2>
+				<h3>We couldn’t find any pre-designed solutions to match your search, but we can still help!</h3>
+				<ul>
+					<li>Custom Colors</li>
+					<li>Custom Specifications</li>
+					<li>Custom Packaging</li>
+					<li>Knowledgable Customer Service</li>
+					<li>Short Leadtimes</li>
+					<li>Smaller Runs</li>
+					<li>Stocking Programs</li>
+					<li>Prototype Trial Runs</li>
+				</ul>
+				<div class="button white shadow arrow text-center">
+					<a href="<?php echo get_field('contact_page'); ?>">Talk With Us<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a>
+				</div>
+			</div> <!-- no-matches -->
 		</div> <!-- cat-icons -->
 		<script>
 		jQuery( window ).load(function() {
@@ -249,11 +266,13 @@
 					var tagActive = false;
 					thisProduct = jQuery(this);
 					// Loop through selected tags
-					jQuery('.cat-products.active .filter.active').each(function(index, element) {	
+					jQuery('.cat-products.active .filter.active:not(.remove-all-tags)').each(function(index, element) {	
 						filterID = jQuery(this).data('filter');
 						if (jQuery(thisProduct).hasClass('tag-' + filterID)) {
 							tagActive = true;
-							return false; 
+						} else {
+							tagActive = false;
+							return false;
 						}
 					});
 					if (tagActive) {
@@ -269,6 +288,12 @@
 				} else {
 					jQuery('.cat-products.active').removeClass('filtered');
 					jQuery('.remove-all-tags').removeClass('active');
+				}
+				// If no products are visible then show message
+				if ((jQuery('.cat-products.active .cat-product.active.tag-active').length < 1)) {
+					jQuery('#no-matches').addClass('active');
+				} else {
+					jQuery('#no-matches').removeClass('active');
 				}
 				setTimeout(function(){
 					jQuery.fn.matchHeight._update();
