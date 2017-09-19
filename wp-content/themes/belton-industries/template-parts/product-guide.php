@@ -302,6 +302,7 @@
 			// Remove all tags click function
 			jQuery(".remove-all-tags").on( "click", function(e) {
 				e.preventDefault();
+				jQuery('#no-matches').removeClass('active');
 				jQuery(this).removeClass('active');
 				jQuery('.tag').removeClass('active');
 				jQuery('.cat-products.active .filter').removeClass('active');
