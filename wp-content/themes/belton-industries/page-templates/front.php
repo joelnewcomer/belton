@@ -129,7 +129,11 @@ $hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&h
 		</script>
 	</section> <!-- features -->
 	
-	<?php get_template_part('template-parts/content','solutions'); ?>
+	<section class="custom">
+		
+	</section>
+	
+	<?php get_template_part('template-parts/product','guide'); ?>
 
 </div> <!-- row -->
 

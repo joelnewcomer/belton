@@ -18,7 +18,7 @@
 					<h3><span class="number">3</span>View Our Solutions</h3>
 					<h4>Not finding the perfect solution?</h4>
 					<p>We also provide flexible custom solutions for both small and large applications.</p>
-					<div class="button green arrow small"><a href="">Let us design it for you <?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+					<div class="button green arrow small"><a href="<?php echo get_field('contact_page'); ?>">Let us design it for you <?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 				</div>				
 			</div> <!-- steps --> 	
 		</div>
