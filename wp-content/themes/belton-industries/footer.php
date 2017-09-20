@@ -12,7 +12,9 @@
 <section class="cta">
 	<div class="row">
 		<div class="large-12 columns text-center">
-			<h3>Call Us: <?php echo drum_smart_phone(get_field('toll_free_number','option')); ?> Because Belton Makes Business Easy</h3>
+			<?php if (!is_front_page()) : ?>
+				<h3>Call Us: <?php echo drum_smart_phone(get_field('toll_free_number','option')); ?> Because Belton Makes Business Easy</h3>
+			<?php endif; ?>
 			
 			<?php
 			$query = new WP_Query(

@@ -11,22 +11,35 @@ get_header(); ?>
 $hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&height=800');
 ?>
 <section class="hero full-width" style="background-image: url(<?php echo $hero_bg[0]; ?>)">
-	<div class="blue-overlay">
+	<div class="blue-overlay hide-for-medium-down">
 		<?php get_template_part('assets/images/hero', 'overlay.svg'); ?>
 	</div>
-	<div class="row">
-		<div class="large-6 medium-6 columns">
-			<h1><?php echo get_field('header'); ?></h1>
-			<div class="hero-rule"></div>
-			<h2><?php echo get_field('subheader'); ?></h2>	
-		</div>
-	</div>
-	<div class="scroll-down bounce animated"><?php get_template_part('assets/images/right', 'arrow.svg'); ?></div>
+	<div class="blue-css-overlay show-for-medium-down"></div>
+	<div class="hero-content medium-down-text-center">
+		<div class="row">
+			<div class="large-6 medium-10 medium-offset-1 medium-down-text-center columns">
+				<h1><?php echo get_field('header'); ?></h1>
+				<div class="hide-for-medium-down">
+					<div class="hero-rule"></div>
+				</div>
+			</div>
+		</div> <!-- row -->
+		<div class="show-for-medium-down hero-curve"><?php get_template_part('assets/images/hero', 'curve.svg'); ?></div>
+		<div class="hero-subheader medium-down-text-center">	
+			<div class="scroll-down bounce animated"><?php get_template_part('assets/images/right', 'arrow.svg'); ?></div>
+			<div class="row">
+				<div class="large-6 medium-10 medium-offset-1 medium-down-text-center columns">
+					<h2><?php echo get_field('subheader'); ?></h2>
+				</div>
+			</div>
+		</div> <!-- subheader -->
+	</div> <!-- hero-content -->
 	<script>
 		jQuery('.scroll-down').click(function() {
 			jQuery('html, body').animate({ scrollTop: jQuery('section.history').offset().top}, 1000);
 		});
 	</script>
+	
 </section>
 
 <div class="row">
@@ -68,7 +81,7 @@ $hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&h
 		</div>
 		<?php if(get_field('feature_bullet_groups')): ?>
 			<?php while(has_sub_field('feature_bullet_groups')): ?>
-				<div class="large-4 medium-4 columns bullet-block">
+				<div class="large-4 medium-6 columns bullet-block">
 					<div class="bullet-block-inner">
 						<div class="block-header text-center">
 							<?php echo file_get_contents(get_sub_field('icon')); ?>
@@ -128,12 +141,19 @@ $hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&h
 		});	
 		</script>
 	</section> <!-- features -->
-	
-	<section class="custom">
 		
-	</section>
-	
 	<?php get_template_part('template-parts/product','guide'); ?>
+
+	<section class="custom" style="background-image: url(<?php echo get_field('custom_bg'); ?>);">
+		<div class="large-8 medium-10 large-offset-2 medium-offset-1 columns text-center">
+			<h2><?php echo get_field('custom_header'); ?></h2>
+			<div class="button arrow white"><a href="<?php echo get_field('contact_page'); ?>">Let's Talk<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+			<p><?php echo get_field('custom_blurb'); ?></p>
+		</div>
+		<div class="custom-call text-center">
+			<h3>Call Us:&nbsp; <?php echo drum_smart_phone(get_field('toll_free_number','option')); ?> &nbsp;Because Belton Makes Business Easy</h3>
+		</div>
+	</section> <!-- custom -->
 
 </div> <!-- row -->
 

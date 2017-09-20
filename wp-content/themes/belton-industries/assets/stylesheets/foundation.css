@@ -2086,6 +2086,14 @@ p {
 iframe {
   max-width: 100%; }
 
+@media only screen and (max-width: 64.063em) {
+  .medium-down-text-center {
+    text-align: center; } }
+
+@media only screen and (max-width: 40.063em) {
+  .top-bar-right, .top-bar-right {
+    width: 50%l; } }
+
 .top-bar-right {
   position: relative; }
   @media only screen and (min-width: 40.063em) {
@@ -2340,6 +2348,9 @@ section.cta {
     height: 154px;
     margin-top: 16px;
     margin-bottom: 16px; }
+  @media only screen and (max-width: 850px) {
+    #footer-container .address-phone img {
+      display: none; } }
   #footer-container .toll-free {
     font-size: 24px; }
   #footer-container .phone {
@@ -3038,12 +3049,39 @@ section.hero {
       display: block;
       float: left;
       height: 100%; }
+  section.hero .blue-css-overlay {
+    display: block;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    background-image: -webkit-gradient(linear, right top, left top, color-stop(8%, rgba(43, 158, 227, 0.76)), color-stop(97%, #1365C3));
+    background-image: -webkit-linear-gradient(right, rgba(43, 158, 227, 0.76) 8%, #1365C3 97%);
+    background-image: linear-gradient(-90deg, rgba(43, 158, 227, 0.76) 8%, #1365C3 97%); }
+  section.hero .hero-curve {
+    display: block;
+    float: left;
+    width: 100%;
+    height: 72px; }
+    section.hero .hero-curve svg {
+      display: block;
+      width: 100%;
+      height: 100%; }
   section.hero h1, section.hero h2 {
     color: #fff; }
   section.hero h1 {
     font-weight: 100;
     font-size: 39px;
     margin-bottom: 100px; }
+    @media only screen and (max-width: 64.063em) {
+      section.hero h1 {
+        font-size: 24px;
+        display: inline-block;
+        margin-bottom: 0;
+        font-weight: 300;
+        max-width: 470px; } }
   section.hero .hero-rule {
     display: block;
     position: absolute;
@@ -3058,19 +3096,26 @@ section.hero {
     font-size: 20px;
     line-height: 1.5; }
   section.hero .scroll-down {
-    display: block;
+    display: inline-block;
     cursor: pointer;
     width: 64px;
     height: 64px;
-    position: absolute;
-    bottom: 53px;
-    left: 50%;
-    margin-left: 32px;
     border-radius: 32px;
     background: #FFFFFF;
     -webkit-box-shadow: 0 12px 14px 0 rgba(0, 0, 0, 0.2);
             box-shadow: 0 12px 14px 0 rgba(0, 0, 0, 0.2);
     text-align: center; }
+    @media only screen and (min-width: 64.063em) {
+      section.hero .scroll-down {
+        display: block;
+        position: absolute;
+        bottom: 53px;
+        left: 50%;
+        margin-left: -32px; } }
+    @media only screen and (max-width: 64.063em) {
+      section.hero .scroll-down {
+        margin-top: -32px;
+        margin-bottom: 25px; } }
     section.hero .scroll-down svg {
       display: inline-block;
       margin-top: 24px;
@@ -3081,6 +3126,17 @@ section.hero {
               transform: rotate(90deg); }
       section.hero .scroll-down svg polygon {
         fill: #69C13C; }
+  @media only screen and (max-width: 64.063em) {
+    section.hero .hero-subheader {
+      display: block;
+      float: left;
+      width: 100%;
+      background: #fff;
+      padding: 0 0 30px 0; }
+      section.hero .hero-subheader h2 {
+        display: inline-block;
+        max-width: 600px;
+        color: #788087; } }
 
 .bounce {
   -webkit-animation-name: bounce;
@@ -3217,6 +3273,10 @@ section.features {
       font-size: 20px;
       margin: 0;
       vertical-align: middle; }
+      @media only screen and (max-width: 64.063em) {
+        section.features .block-header h3 {
+          font-weight: 500;
+          font-size: 16px; } }
     section.features .block-header svg {
       margin-right: 10px;
       vertical-align: middle;
@@ -3255,6 +3315,9 @@ section.solutions .solutions-header {
   float: left;
   width: 100%;
   padding: 30px 45px; }
+  @media only screen and (max-width: 64.063em) {
+    section.solutions .solutions-header {
+      padding: 30px; } }
   section.solutions .solutions-header h2 {
     font-size: 30px;
     color: #1365C3; }
@@ -3272,12 +3335,18 @@ section.solutions .solutions-header {
     background-image: -webkit-gradient(linear, right top, left top, from(rgba(43, 158, 227, 0)), color-stop(50%, #2B9EE3), to(#1365C3));
     background-image: -webkit-linear-gradient(right, rgba(43, 158, 227, 0) 0%, #2B9EE3 50%, #1365C3 100%);
     background-image: linear-gradient(270deg, rgba(43, 158, 227, 0) 0%, #2B9EE3 50%, #1365C3 100%); }
+    @media only screen and (max-width: 64.063em) {
+      section.solutions .solutions-header .header-rule {
+        display: none; } }
 
 section.solutions .steps .step {
   display: block;
   float: left;
   width: 100%;
   padding: 12px 45px; }
+  @media only screen and (max-width: 64.063em) {
+    section.solutions .steps .step {
+      padding: 12px 30px; } }
   section.solutions .steps .step h3 {
     display: inline-block;
     font-size: 16px;
@@ -3327,7 +3396,6 @@ section.solutions .steps .step {
     -webkit-box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
             box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
     width: 105%;
-    padding: 12px 45px;
     margin-bottom: 12px; }
     section.solutions .steps .step.active p, section.solutions .steps .step.active h4, section.solutions .steps .step.active .button {
       display: block; }
@@ -3401,6 +3469,9 @@ section.solutions .cat-icons {
   -webkit-background-size: cover !important;
           background-size: cover !important;
   padding: 145px 50px 50px 50px; }
+  @media only screen and (max-width: 64.063em) {
+    section.solutions .cat-icons {
+      padding: 40px 50px; } }
   section.solutions .cat-icons .cat-icon svg {
     width: 48px;
     height: 48px;
@@ -3564,6 +3635,49 @@ section.solutions .subcat-checkboxes {
     font-size: 17px; }
     #no-matches .button a svg {
       top: 11px; }
+
+section.custom {
+  padding: 40px 0 0 0;
+  -webkit-background-size: cover !important;
+          background-size: cover !important;
+  background-position: center center; }
+  section.custom h2, section.custom p {
+    color: #fff; }
+  section.custom h2 {
+    font-size: 30px;
+    margin-bottom: 24px; }
+  section.custom p {
+    font-size: 22px; }
+  section.custom .button {
+    float: right;
+    margin-bottom: 50px; }
+    section.custom .button a {
+      color: #69C13C; }
+      section.custom .button a svg polygon {
+        fill: #69C13C !important; }
+      section.custom .button a:hover svg polygon {
+        fill: #fff !important; }
+  section.custom .custom-call {
+    display: block;
+    float: left;
+    width: 100%;
+    padding: 16px 8px 3px 8px;
+    background-image: -webkit-linear-gradient(359deg, rgba(105, 193, 60, 0.8) 0%, rgba(189, 236, 81, 0.8) 98%);
+    background-image: linear-gradient(-269deg, rgba(105, 193, 60, 0.8) 0%, rgba(189, 236, 81, 0.8) 98%); }
+    section.custom .custom-call h3 {
+      color: #fff;
+      font-weight: 700; }
+      section.custom .custom-call h3 span {
+        font-size: 30px;
+        font-weight: 300; }
+
+@media only screen and (max-width: 64.063em) {
+  .hide-for-medium-down {
+    display: none !important; } }
+
+@media only screen and (min-width: 64.063em) {
+  .show-for-medium-down {
+    display: none !important; } }
 
 #single-post > article {
   padding-bottom: 40px; }

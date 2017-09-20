@@ -85,6 +85,11 @@ section.cta {
 			margin-top: 16px;
 			margin-bottom: 16px;
 		}
+		@media only screen and (max-width: 850px) {
+			img {
+				display: none;
+			}
+		}
 	}
 	.toll-free {
 		font-size: 24px;

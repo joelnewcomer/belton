@@ -1,5 +1,5 @@
 	<section class="solutions">
-		<div class="large-4 medium-4 columns solutions-guide no-padding cat-match">
+		<div class="large-4 medium-5 columns solutions-guide no-padding cat-match">
 			<div class="solutions-header">
 				<div class="header-rule"></div>
 				<h2><span>Let Us Help You Find A</span><br />Pre-Designed Solution</h2>
@@ -22,7 +22,7 @@
 				</div>				
 			</div> <!-- steps --> 	
 		</div>
-		<div class="large-8 medium-8 columns cat-icons cat-match">
+		<div class="large-8 medium-7 columns cat-icons cat-match">
 			<?php
 			$results = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false  ));
 			if ($results) {
