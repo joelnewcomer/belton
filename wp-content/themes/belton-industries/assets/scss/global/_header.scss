@@ -1,5 +1,5 @@
 @media only screen and (max-width: 40.063em) {
-	.top-bar-right, .top-bar-right {
+	.top-bar-left, .top-bar-right {
 		width: 50%;
 	}	
 }
@@ -15,6 +15,9 @@
 		color: #788087;
 		font-weight: 700;
 		padding: 12px;
+		@media only screen and (max-width: 40.063em) {
+			padding: 15px;	
+		}
 		cursor: pointer;
 		svg {
 			vertical-align: middle;
@@ -97,6 +100,12 @@ a.logo {
 	svg {
 		width: 164px;
 		height: 46px;
+		display: block;
+		@media only screen and (max-width: 40.063em) {
+			width: 108px;
+			height: 30px;
+			float: left;
+		}
 	}
 }
 
@@ -162,12 +171,11 @@ header#masthead {
 // Mobile Stuff
 @media only screen and (max-width: 40em) {
 	.top-bar-left {
-		text-align: center;
 		a.logo {
 			z-index: 9999;
 			position: relative;
-			margin: 7px;
-			height: 50px;
+			float: left;
+			margin: 10px 7px 10px 20px;
 			img {
 				max-height: 100%;
 			}
@@ -203,6 +211,9 @@ body > section.container > header,
 
 .pre-header {
 	padding: 5px 0;
+	@media only screen and (max-width: 40.063em) {
+		padding: 2px 0 1px 0;	
+	}
 	background-image: linear-gradient(-270deg, #1365C3 0%, #2B9EE3 100%);
 	color: #fff;
 	font-size: 14px;

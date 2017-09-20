@@ -7,6 +7,10 @@ section.cta {
 		padding-top: 40px;
 		padding-bottom: 40px;
 		background: #fbfbfb !important;
+		@media only screen and (max-width: 40.063em) {
+			padding-top: 30px;
+			padding-bottom: 30px;	
+		}
 	}
 	.columns > h3 {
 		font-weight: 700;
@@ -56,6 +60,12 @@ section.cta {
 	background: -webkit-linear-gradient(left, rgba(19,101,195,1) 0%,rgba(37,144,218,1) 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to right, rgba(19,101,195,1) 0%,rgba(37,144,218,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1365c3', endColorstr='#2590da',GradientType=1 ); /* IE6-9 */
+	@media only screen and (max-width: 40.063em) {
+		background: -moz-linear-gradient(left, rgba(37,144,218,1) 0%, rgba(19,101,195,1) 100%); /* FF3.6-15 */
+		background: -webkit-linear-gradient(left,rgba(37,144,218,1) 0%, rgba(19,101,195,1) 100%); /* Chrome10-25,Safari5.1-6 */
+		background: linear-gradient(to right,rgba(37,144,218,1) 0%, rgba(19,101,195,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2590da', endColorstr='#1365c3',GradientType=1 ); /* IE6-9 */		
+	}
 	box-shadow: 0 4px 14px 0 rgba(0,0,0,0.06);
 	display: block;
 	float: left;
@@ -77,6 +87,7 @@ section.cta {
 		color: #fff;
 	}
 	.address-phone {
+		position: relative;
 		& > svg, img {
 			float: left;
 			margin-right: 33px;
@@ -85,9 +96,19 @@ section.cta {
 			margin-top: 16px;
 			margin-bottom: 16px;
 		}
-		@media only screen and (max-width: 850px) {
+		@media only screen and (max-width: 850px) and (min-width: 40.063em) {
 			img {
 				display: none;
+			}
+		}
+		@media only screen and (max-width: 40.063em) {
+			img {
+				position: absolute;
+				top: 17px;
+				right: 26px;
+				width: 84px;
+				height: 84px;
+				margin: 0;
 			}
 		}
 	}
@@ -117,6 +138,10 @@ section.cta {
 		display: block;
 		float: left;
 		margin-top: 36px;
+		@media only screen and (max-width: 40.063em) {
+			margin-left: 34px;
+			margin-top: 23px;	
+		}
 	}
 	#footer {
 		max-width: 860px;

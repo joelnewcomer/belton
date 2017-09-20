@@ -74,7 +74,7 @@
 				<?php get_template_part('template-parts/header-icon'); ?>
 			</div> <!-- top-bar-left -->
 			<div class="top-bar-right text-right">
-				<div id="products-icon" class="transition"><?php get_template_part('assets/images/products', 'icon.svg'); ?>Products</div>
+				<div id="products-icon" class="transition hide-for-small"><?php get_template_part('assets/images/products', 'icon.svg'); ?>Products</div>
 				<div id="menu-icon" class="transition"><?php get_template_part('assets/images/menu', 'icon.svg'); ?><div class="close-menu transition">&times;</div>Menu</div>
 				<?php foundationpress_main_menu(); ?>
 				<script>

@@ -3,6 +3,9 @@ section.hero {
 	background-position: center center;
 	background-repeat: no-repeat;
 	padding: 100px 0 180px 0;
+	@media only screen and (max-width: 40.063em) {
+		padding: 65px 0 180px 0;	
+	}
 	.blue-overlay {
 		display: block;
 		position: absolute;
@@ -51,6 +54,11 @@ section.hero {
 			margin-bottom: 0;
 			font-weight: 300;
 			max-width: 470px;
+			padding-right: 10px;
+			padding-left: 10px;
+		}
+		@media only screen and (max-width: 40.063em) {
+			font-size: 19px;	
 		}
 	}
 	.hero-rule {
@@ -65,6 +73,9 @@ section.hero {
 	h2 {
 		font-size: 20px;
 		line-height: 1.5;
+		@media only screen and (max-width: 40.063em) {
+			font-size: 16px;	
+		}
 	}
 	.scroll-down {
 		display: inline-block;
@@ -166,32 +177,64 @@ section.history {
 		color: #788087;
 		font-size: 20px;
 		display: block;
-		max-width: 290px;
+		max-width: 340px;
 		line-height: 1.4;
 	}
 	.history-left {
 		position: relative;
 		z-index: 2;
 		padding: 50px 40px 40px 85px;
+		@media only screen and (max-width: 40.063em) {
+			padding: 20px 16px;	
+		}
 		.button {
 			display: block;
 			float: right;
-			margin-top: -56px;
-			margin-right: -175px;
+			margin-right: -85px;
+			@media only screen and (max-width: 40.063em) {
+				margin-right: 25px;
+				margin-top: 10px;
+			}
+		}
+		h3 {
+			display: block;
+			float: left;
+			width: 100%;
+			padding-right: 40px;
 		}
 	}
 	.history-right {
-		position: absolute;
-		height: 100%;
-		right: 0;
-		top: 0;
+		@media only screen and (min-width: 40.063em) {
+			position: absolute;
+			height: 100%;
+			right: 0;
+			top: 0;
+		}
+		h3 {
+			font-weight: 700;
+			font-size: 16px;
+			color: #fff;
+		}
 		background-size: cover !important;
 		background-position: center center;
 		padding-top: 24px;
 		padding-bottom: 24px;
 		img {
 			width: 225px;
-			max-width: 70%;
+		}
+		@media only screen and (max-width: 40.063em) {
+			.show-for-small {
+				float: left;
+				width: 50%
+			}	
+		}
+		.history-logo-center {
+			@media only screen and (max-width: 40.063em) {
+				max-width: 40%;
+				float: left;
+				margin-right: 13px;
+				margin-left: 10px;					
+			}
 		}
 	}
 }
@@ -211,15 +254,23 @@ section.history {
 
 section.management {
 	.manage-left {
-		position: absolute;
-		height: 100%;
-		left: 0;
-		top: 0;
+		@media only screen and (min-width: 40.063em) {
+			position: absolute;
+			height: 100%;
+			left: 0;
+			top: 0;
+		}
 		background-size: cover !important;
 		background-position: center center;
+		@media only screen and (max-width: 40.063em) {
+			height: 255px;	
+		}
 	}
 	.manage-right {
-		padding: 50px 85px 40px 40px;		
+		padding: 50px 85px 40px 40px;
+		@media only screen and (max-width: 40.063em) {
+			padding: 24px 16px 36px 16px;
+		}	
 	}
 }
 
@@ -250,6 +301,9 @@ section.features {
 	background: url(../images/features-bg.jpg) center center no-repeat;
 	background-size: cover !important;
 	padding: 46px 40px 22px 40px;
+	@media only screen and (max-width: 40.063em) {
+		padding: 28px 10px 20px 10px;	
+	}
 	.button {
 		display: inline-block;
 	}
@@ -261,6 +315,11 @@ section.features {
 		font-size: 30px;
 		display: inline-block;
 		margin-right: 27px;
+		@media only screen and (max-width: 40.063em) {
+			font-size: 20px;
+			margin-right: 0;
+			margin-bottom: 16px;	
+		}
 	}
 	.bullet-block {
 		margin-bottom: 24px;
@@ -722,13 +781,31 @@ section.custom {
 	h2 {
 		font-size: 30px;
 		margin-bottom: 24px;
+		@media only screen and (max-width: 40.063em) {
+			font-size: 22px;
+			margin-bottom: 16px;
+			display: inline-block;
+			max-width: 240px;
+		}
 	}
 	p {
 		font-size: 22px;
+		padding-right: 170px;
+		@media only screen and (max-width: 40.063em) {
+			font-size: 18px;
+			padding-right: 0;
+			margin-bottom: 16px;
+			display: inline-block;
+			max-width: 250px;
+		}
 	}
 	.button {
-		float: right;
-		margin-bottom: 50px;
+		margin-bottom: 34px;
+		@media only screen and (min-width: 40.063em) {
+			margin-top: -70px;
+			float: right;
+			margin-bottom: 50px;
+		}
 		a {
 			color: $secondary-color;
 			svg polygon {
@@ -768,4 +845,10 @@ section.custom {
 	@media only screen and (min-width: 64.063em) {
 		display: none !important;	
 	}
+}
+
+@media only screen and (max-width: 40.063em) {
+	.small-text-left {
+		text-align: left;
+	}	
 }

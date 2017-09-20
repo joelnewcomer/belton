@@ -47,11 +47,20 @@ $hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&h
 	<section class="history">
 		<div class="large-7 medium-7 columns history-left">
 			<h2><?php echo get_field('history_header'); ?></h2>
-			<h3><?php echo get_field('history_subheader'); ?></h3>
-			<div class="button white arrow shadow"><a href="<?php echo get_field('history_link'); ?>">Our History<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+			<div class="hide-for-small"><h3><?php echo get_field('history_subheader'); ?></h3></div>
+			<div class="button white arrow shadow hide-for-small"><a href="<?php echo get_field('history_link'); ?>">Our History<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 		</div>
-		<div class="large-5 medium-5 columns history-right text-center transition" style="background-image: url(<?php echo get_field('history_bg_image'); ?>);">
-			<?php echo wp_get_attachment_image(get_field('history_logo'), 'full'); ?>
+		<div class="large-5 medium-5 columns history-right text-center transition small-text-left" style="background-image: url(<?php echo get_field('history_bg_image'); ?>);">
+			<div class="history-logo-center" style="display:table;width:100%;height:100%;">
+			  <div style="display:table-cell;vertical-align:middle;">
+			    <div style="text-align:center;"><?php echo wp_get_attachment_image(get_field('history_logo'), 'full'); ?></div>
+			  </div>
+			</div>
+			
+			<div class="show-for-small">
+				<h3><?php echo str_replace( '90+ Years', '', get_field('history_subheader')); ?></h3>
+				<div class="button white arrow shadow"><a href="<?php echo get_field('history_link'); ?>">Our History<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+			</div>
 		</div>
 		<script>
 			jQuery('.history').one('inview', function (event, visible) {
@@ -145,13 +154,13 @@ $hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&h
 	<?php get_template_part('template-parts/product','guide'); ?>
 
 	<section class="custom" style="background-image: url(<?php echo get_field('custom_bg'); ?>);">
-		<div class="large-8 medium-10 large-offset-2 medium-offset-1 columns text-center">
+		<div class="large-8 medium-10 large-offset-2 medium-offset-1 columns text-center custom-top">
 			<h2><?php echo get_field('custom_header'); ?></h2>
-			<div class="button arrow white"><a href="<?php echo get_field('contact_page'); ?>">Let's Talk<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 			<p><?php echo get_field('custom_blurb'); ?></p>
+			<div class="button arrow white"><a href="<?php echo get_field('contact_page'); ?>">Let's Talk<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 		</div>
 		<div class="custom-call text-center">
-			<h3>Call Us:&nbsp; <?php echo drum_smart_phone(get_field('toll_free_number','option')); ?> &nbsp;Because Belton Makes Business Easy</h3>
+			<h3>Call Us:&nbsp; <?php echo get_field('toll_free_number','option'); ?> &nbsp;Because Belton Makes Business Easy</h3>
 		</div>
 	</section> <!-- custom -->
 

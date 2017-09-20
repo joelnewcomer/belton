@@ -2091,8 +2091,8 @@ iframe {
     text-align: center; } }
 
 @media only screen and (max-width: 40.063em) {
-  .top-bar-right, .top-bar-right {
-    width: 50%l; } }
+  .top-bar-left, .top-bar-right {
+    width: 50%; } }
 
 .top-bar-right {
   position: relative; }
@@ -2106,6 +2106,9 @@ iframe {
     font-weight: 700;
     padding: 12px;
     cursor: pointer; }
+    @media only screen and (max-width: 40.063em) {
+      .top-bar-right > div {
+        padding: 15px; } }
     .top-bar-right > div svg {
       vertical-align: middle;
       width: 16px;
@@ -2172,7 +2175,13 @@ a.logo {
   margin: 8px; }
   a.logo svg {
     width: 164px;
-    height: 46px; }
+    height: 46px;
+    display: block; }
+    @media only screen and (max-width: 40.063em) {
+      a.logo svg {
+        width: 108px;
+        height: 30px;
+        float: left; } }
 
 @media only screen and (min-width: 40.063em) {
   .header-container {
@@ -2220,15 +2229,13 @@ header#masthead {
   display: inline-block; }
 
 @media only screen and (max-width: 40em) {
-  .top-bar-left {
-    text-align: center; }
-    .top-bar-left a.logo {
-      z-index: 9999;
-      position: relative;
-      margin: 7px;
-      height: 50px; }
-      .top-bar-left a.logo img {
-        max-height: 100%; }
+  .top-bar-left a.logo {
+    z-index: 9999;
+    position: relative;
+    float: left;
+    margin: 10px 7px 10px 20px; }
+    .top-bar-left a.logo img {
+      max-height: 100%; }
   .top-bar-right {
     position: absolute;
     top: 0;
@@ -2260,6 +2267,9 @@ body > section.container > header,
   color: #fff;
   font-size: 14px;
   font-weight: 300; }
+  @media only screen and (max-width: 40.063em) {
+    .pre-header {
+      padding: 2px 0 1px 0; } }
   .pre-header a {
     color: #fff; }
     .pre-header a:hover {
@@ -2278,6 +2288,10 @@ section.cta {
     padding-top: 40px;
     padding-bottom: 40px;
     background: #fbfbfb !important; }
+    @media only screen and (max-width: 40.063em) {
+      section.cta .row {
+        padding-top: 30px;
+        padding-bottom: 30px; } }
   section.cta .columns > h3 {
     font-weight: 700;
     color: #1365C3;
@@ -2328,6 +2342,16 @@ section.cta {
   display: block;
   float: left;
   width: 100%; }
+  @media only screen and (max-width: 40.063em) {
+    #footer-container {
+      /* FF3.6-15 */
+      background: -webkit-linear-gradient(left, #2590da 0%, #1365c3 100%);
+      /* Chrome10-25,Safari5.1-6 */
+      background: -webkit-gradient(linear, left top, right top, from(#2590da), to(#1365c3));
+      background: linear-gradient(to right, #2590da 0%, #1365c3 100%);
+      /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2590da', endColorstr='#1365c3',GradientType=1 );
+      /* IE6-9 */ } }
   #footer-container .assoc-logos {
     background: #fff;
     display: block;
@@ -2341,16 +2365,26 @@ section.cta {
   #footer-container p {
     font-size: 14px;
     color: #fff; }
-  #footer-container .address-phone > svg, #footer-container .address-phone img {
-    float: left;
-    margin-right: 33px;
-    width: 154px;
-    height: 154px;
-    margin-top: 16px;
-    margin-bottom: 16px; }
-  @media only screen and (max-width: 850px) {
-    #footer-container .address-phone img {
-      display: none; } }
+  #footer-container .address-phone {
+    position: relative; }
+    #footer-container .address-phone > svg, #footer-container .address-phone img {
+      float: left;
+      margin-right: 33px;
+      width: 154px;
+      height: 154px;
+      margin-top: 16px;
+      margin-bottom: 16px; }
+    @media only screen and (max-width: 850px) and (min-width: 40.063em) {
+      #footer-container .address-phone img {
+        display: none; } }
+    @media only screen and (max-width: 40.063em) {
+      #footer-container .address-phone img {
+        position: absolute;
+        top: 17px;
+        right: 26px;
+        width: 84px;
+        height: 84px;
+        margin: 0; } }
   #footer-container .toll-free {
     font-size: 24px; }
   #footer-container .phone {
@@ -2373,6 +2407,10 @@ section.cta {
     display: block;
     float: left;
     margin-top: 36px; }
+    @media only screen and (max-width: 40.063em) {
+      #footer-container .address {
+        margin-left: 34px;
+        margin-top: 23px; } }
   #footer-container #footer {
     max-width: 860px; }
   #footer-container .footer-menu {
@@ -2490,6 +2528,9 @@ body#tinymce {
   /* Safari and Chrome */
   -ms-transition: all .5s;
   /* Opera */ }
+  @media only screen and (max-width: 40.063em) {
+    .button a, input.button, .faux-button {
+      font-size: 14px; } }
   @media screen and (min-width: 40em) {
     .button a, input.button, .faux-button {
       margin-right: 15px; } }
@@ -2546,6 +2587,13 @@ body#tinymce {
   /* Safari and Chrome */
   -ms-transition: all .5s;
   /* Opera */ }
+  @media only screen and (max-width: 40.063em) {
+    .button.arrow a svg, .faux-button svg {
+      width: 8px;
+      height: 14px;
+      top: 12px;
+      -webkit-background-size: 8px 14px;
+              background-size: 8px 14px; } }
   .button.arrow a svg polygon, .faux-button svg polygon {
     fill: #fff; }
 
@@ -3037,6 +3085,9 @@ section.hero {
   background-position: center center;
   background-repeat: no-repeat;
   padding: 100px 0 180px 0; }
+  @media only screen and (max-width: 40.063em) {
+    section.hero {
+      padding: 65px 0 180px 0; } }
   section.hero .blue-overlay {
     display: block;
     position: absolute;
@@ -3081,7 +3132,12 @@ section.hero {
         display: inline-block;
         margin-bottom: 0;
         font-weight: 300;
-        max-width: 470px; } }
+        max-width: 470px;
+        padding-right: 10px;
+        padding-left: 10px; } }
+    @media only screen and (max-width: 40.063em) {
+      section.hero h1 {
+        font-size: 19px; } }
   section.hero .hero-rule {
     display: block;
     position: absolute;
@@ -3095,6 +3151,9 @@ section.hero {
   section.hero h2 {
     font-size: 20px;
     line-height: 1.5; }
+    @media only screen and (max-width: 40.063em) {
+      section.hero h2 {
+        font-size: 16px; } }
   section.hero .scroll-down {
     display: inline-block;
     cursor: pointer;
@@ -3182,30 +3241,56 @@ section.history {
     color: #788087;
     font-size: 20px;
     display: block;
-    max-width: 290px;
+    max-width: 340px;
     line-height: 1.4; }
   section.history .history-left {
     position: relative;
     z-index: 2;
     padding: 50px 40px 40px 85px; }
+    @media only screen and (max-width: 40.063em) {
+      section.history .history-left {
+        padding: 20px 16px; } }
     section.history .history-left .button {
       display: block;
       float: right;
-      margin-top: -56px;
-      margin-right: -175px; }
+      margin-right: -85px; }
+      @media only screen and (max-width: 40.063em) {
+        section.history .history-left .button {
+          margin-right: 25px;
+          margin-top: 10px; } }
+    section.history .history-left h3 {
+      display: block;
+      float: left;
+      width: 100%;
+      padding-right: 40px; }
   section.history .history-right {
-    position: absolute;
-    height: 100%;
-    right: 0;
-    top: 0;
     -webkit-background-size: cover !important;
             background-size: cover !important;
     background-position: center center;
     padding-top: 24px;
     padding-bottom: 24px; }
+    @media only screen and (min-width: 40.063em) {
+      section.history .history-right {
+        position: absolute;
+        height: 100%;
+        right: 0;
+        top: 0; } }
+    section.history .history-right h3 {
+      font-weight: 700;
+      font-size: 16px;
+      color: #fff; }
     section.history .history-right img {
-      width: 225px;
-      max-width: 70%; }
+      width: 225px; }
+    @media only screen and (max-width: 40.063em) {
+      section.history .history-right .show-for-small {
+        float: left;
+        width: 50%; } }
+    @media only screen and (max-width: 40.063em) {
+      section.history .history-right .history-logo-center {
+        max-width: 40%;
+        float: left;
+        margin-right: 13px;
+        margin-left: 10px; } }
 
 .columns.right {
   float: right; }
@@ -3217,16 +3302,24 @@ section.history {
     left: -45px !important; } }
 
 section.management .manage-left {
-  position: absolute;
-  height: 100%;
-  left: 0;
-  top: 0;
   -webkit-background-size: cover !important;
           background-size: cover !important;
   background-position: center center; }
+  @media only screen and (min-width: 40.063em) {
+    section.management .manage-left {
+      position: absolute;
+      height: 100%;
+      left: 0;
+      top: 0; } }
+  @media only screen and (max-width: 40.063em) {
+    section.management .manage-left {
+      height: 255px; } }
 
 section.management .manage-right {
   padding: 50px 85px 40px 40px; }
+  @media only screen and (max-width: 40.063em) {
+    section.management .manage-right {
+      padding: 24px 16px 36px 16px; } }
 
 .inline-arrow {
   white-space: nowrap;
@@ -3252,6 +3345,9 @@ section.features {
   -webkit-background-size: cover !important;
           background-size: cover !important;
   padding: 46px 40px 22px 40px; }
+  @media only screen and (max-width: 40.063em) {
+    section.features {
+      padding: 28px 10px 20px 10px; } }
   section.features .button {
     display: inline-block; }
   section.features .features-header {
@@ -3261,6 +3357,11 @@ section.features {
     font-size: 30px;
     display: inline-block;
     margin-right: 27px; }
+    @media only screen and (max-width: 40.063em) {
+      section.features h2 {
+        font-size: 20px;
+        margin-right: 0;
+        margin-bottom: 16px; } }
   section.features .bullet-block {
     margin-bottom: 24px; }
   section.features .block-header {
@@ -3646,11 +3747,29 @@ section.custom {
   section.custom h2 {
     font-size: 30px;
     margin-bottom: 24px; }
+    @media only screen and (max-width: 40.063em) {
+      section.custom h2 {
+        font-size: 22px;
+        margin-bottom: 16px;
+        display: inline-block;
+        max-width: 240px; } }
   section.custom p {
-    font-size: 22px; }
+    font-size: 22px;
+    padding-right: 170px; }
+    @media only screen and (max-width: 40.063em) {
+      section.custom p {
+        font-size: 18px;
+        padding-right: 0;
+        margin-bottom: 16px;
+        display: inline-block;
+        max-width: 250px; } }
   section.custom .button {
-    float: right;
-    margin-bottom: 50px; }
+    margin-bottom: 34px; }
+    @media only screen and (min-width: 40.063em) {
+      section.custom .button {
+        margin-top: -70px;
+        float: right;
+        margin-bottom: 50px; } }
     section.custom .button a {
       color: #69C13C; }
       section.custom .button a svg polygon {
@@ -3679,6 +3798,10 @@ section.custom {
   .show-for-medium-down {
     display: none !important; } }
 
+@media only screen and (max-width: 40.063em) {
+  .small-text-left {
+    text-align: left; } }
+
 #single-post > article {
   padding-bottom: 40px; }
 
@@ -3688,7 +3811,8 @@ section.breadcrumbs {
   margin: 0; }
 
 section.container {
-  background: #e6ebf0; }
+  background: #e6ebf0;
+  overflow: hidden; }
   section.container > .row {
     background: #fff;
     -webkit-box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);

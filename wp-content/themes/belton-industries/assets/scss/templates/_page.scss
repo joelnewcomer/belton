@@ -6,6 +6,7 @@ section.breadcrumbs {
 
 section.container {
 	background: #e6ebf0;
+	overflow: hidden;
 	& > .row {
 		background: #fff;
 		box-shadow: 0 4px 14px 0 rgba(0,0,0,0.06);
