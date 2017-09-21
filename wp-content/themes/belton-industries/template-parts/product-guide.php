@@ -1,3 +1,7 @@
+<?php
+$results = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false  ));
+?>
+
 	<section class="solutions">
 		<div class="large-4 medium-5 columns solutions-guide no-padding cat-match">
 			<div class="solutions-header">
@@ -9,35 +13,83 @@
 					<h3><span class="number">1</span><span class="checkmark"><?php get_template_part('assets/images/checkmark.svg'); ?></span>Select Your Market</h3><div class="edit-step" data-edit="step-1">Edit</div>
 					<p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
 				</div>
+				
+				<!-- MOBILE STEP 1 -->
+				<div class="show-for-small cat-icons mobile-step">
+					<?php
+					if ($results) {
+					    foreach ($results as $term) {
+					
+						    // STEP 1 - Category Icons
+					        $custom_id =  'guide_cats_' . $term->term_id;
+					        $icon_url = get_field('icon', $custom_id);
+					        echo '<a href="#" data-cat-id="' . $term->term_id . '" class="cat-icon transition">';
+					        echo file_get_contents( $icon_url );
+					        echo '<div class="cat-name">' . $term->name . '</div>';
+					        echo '</a>';
+					        
+					    }
+					} ?>			
+				</div> <!-- MOBILE STEP 1 -->
+
+
+				<!-- STEP 2 -->
 				<div class="step step-2">
 					<h3><span class="number">2</span><span class="checkmark"><?php get_template_part('assets/images/checkmark.svg'); ?></span>Select Your Applications</h3><div class="edit-step" data-edit="step-2">Edit</div>
 					<p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
-					<div id="subcats-selected"></div>
+					<div class="subcats-selected"></div>
 				</div>
+				<!-- STEP 2 -->
+
+				
+				<!-- MOBILE STEP 2 -->
+				<div class="show-for-small cat-icons mobile-step">
+					<?php
+					if ($results) {
+						foreach ($results as $term) { ?>
+			    	    	<div class="<?php echo $term->term_id; ?> sub-cat transition">
+					    	    <form class="subcat-checkboxes">
+							        <?php $subcats = get_terms('guide_cats', array ( 'parent' => $term->term_id, 'hide_empty' => false  )); ?>
+							        <?php foreach ($subcats as $subcat) : ?>
+							        	<div class="checkbox">
+							        		<input type="checkbox" name="subcat" id="mobile-<?php echo $subcat->term_id; ?>" value="<?php echo $subcat->term_id; ?>"> <label for="mobile-<?php echo $subcat->term_id; ?>"><?php echo $subcat->name; ?></label>
+							        	</div>
+							        <?php endforeach; ?>
+					    	    </form>
+								<div class="button green arrow small"><a class="subcat-cont disabled" href="#" data-cat-id="products-<?php echo $term->term_id; ?>">Continue<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+							</div> <!-- sub-cat -->
+						<?php }
+					} ?>
+				</div>						
+				<!-- MOBILE STEP 2 -->				
+
+				
+				
 				<div class="step step-3">
 					<h3><span class="number">3</span>View Our Solutions</h3>
-					<h4>Not finding the perfect solution?</h4>
-					<p>We also provide flexible custom solutions for both small and large applications.</p>
-					<div class="button green arrow small"><a href="<?php echo get_field('contact_page'); ?>">Let us design it for you <?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
-				</div>				
+					<div class="hide-for-small">
+						<h4>Not finding the perfect solution?</h4>
+						<p>We also provide flexible custom solutions for both small and large applications.</p>
+						<div class="button green arrow small"><a href="<?php echo get_field('contact_page'); ?>">Let us design it for you <?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+					</div>
+				</div>
 			</div> <!-- steps --> 	
 		</div>
 		<div class="large-8 medium-7 columns cat-icons cat-match">
 			<?php
-			$results = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false  ));
 			if ($results) {
 			    foreach ($results as $term) {
 
 				    // STEP 1 - Category Icons
 			        $custom_id =  'guide_cats_' . $term->term_id;
 			        $icon_url = get_field('icon', $custom_id);
-			        echo '<a href="#" data-cat-id="' . $term->term_id . '" class="cat-icon transition">';
+			        echo '<a href="#" data-cat-id="' . $term->term_id . '" class="cat-icon transition hide-for-small">';
 			        echo file_get_contents( $icon_url );
 			        echo '<div class="cat-name">' . $term->name . '</div>';
 			        echo '</a>'; ?>
 
 			        <!-- STEP 2 - Subcategory Checkboxes -->
-			        <div id="<?php echo $term->term_id; ?>" class="sub-cat transition">
+			        <div class="<?php echo $term->term_id; ?> sub-cat transition hide-for-small">
 				        <form class="subcat-checkboxes">
 					        <?php $subcats = get_terms('guide_cats', array ( 'parent' => $term->term_id, 'hide_empty' => false  )); ?>
 					        <?php foreach ($subcats as $subcat) : ?>
@@ -52,8 +104,10 @@
 					<!-- STEP 3 - Products/Filters -->
 					<div class="cat-products" id="products-<?php echo $term->term_id; ?>">
 						<!-- FILTERS -->
-						<div class="tag-filters">
-							<?php get_template_part('assets/images/filter', 'icon.svg'); ?> Filter by Performance Attributes or Characteristics <a class="remove-all-tags filter transition" href="#">&times; Remove All</a>
+						<div class="tag-filters small-text-center">
+							<div class="filter-header">
+								<?php get_template_part('assets/images/filter', 'icon.svg'); ?> Filter by Performance Attributes or Characteristics <div class="show-for-small"></div><a class="remove-all-tags filter transition" href="#">&times; Remove All</a>
+							</div> <!-- filter-header -->
 							<div class="filters-inner">
 								<?php
 								$args = array(
@@ -83,7 +137,7 @@
 							</div> <!-- filters-inner -->
 						</div> <!-- tag-filters -->
 						<!-- PRODUCTS -->
-						<?php		
+						<?php
 						$args = array(
 							'post_type' => 'products',
 							'tax_query' => array(
@@ -162,6 +216,16 @@
 				</div>
 			</div> <!-- no-matches -->
 		</div> <!-- cat-icons -->
+		
+		<div class="show-for-small steps">
+			<div class="step step-3">
+				<h4>Not finding the perfect solution?</h4>
+				<p>We also provide flexible custom solutions for both small and large applications.</p>
+				<div class="button green arrow small"><a href="<?php echo get_field('contact_page'); ?>">Let us design it for you <?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+			</div>
+		</div>			
+			
+		
 		<script>
 		jQuery( window ).load(function() {
 			jQuery('.cat-match').matchHeight({ byRow: false });
@@ -185,7 +249,7 @@
 				e.preventDefault();
 				var catID = jQuery(this).data( "cat-id" );
 				jQuery('a.cat-icon').fadeOut("slow", function() {
-					jQuery('#' + catID).addClass('active').fadeIn("fast", function() {
+					jQuery('.' + catID).addClass('active').fadeIn("fast", function() {
 						jQuery.fn.matchHeight._update();
 						resetContBtn();
 					});
@@ -226,7 +290,7 @@
 				jQuery('.cat-product').removeClass('active');
 				// Loop through all checked checkboxes and set products active
 				jQuery('.sub-cat.active input[name="subcat"]:checked').each(function(index, element) {	
-					catID = jQuery(this).attr('id');
+					catID = jQuery(this).val();
 					// Loop through products that have this category
 					jQuery('.cat-' + catID).each(function(index, element) {
 						if (!jQuery(this).hasClass('active')) {
@@ -247,10 +311,10 @@
   				jQuery('.step-2').removeClass('active').addClass('completed');
 				jQuery('.step-3').addClass('active');
 				// Reset selected subcategories
-				jQuery('#subcats-selected').html('');
+				jQuery('.subcats-selected').html('');
 				jQuery('.sub-cat.active input[name="subcat"]:checked').each(function(index, element) {	
 					subcatSel = jQuery(this).next('label').text();
-					jQuery('#subcats-selected').append(subcatSel + '<br />');
+					jQuery('.subcats-selected').append(subcatSel + '<br />');
 				});
 				setTimeout(function(){
 					jQuery.fn.matchHeight._update();

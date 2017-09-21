@@ -2099,7 +2099,7 @@ iframe {
   @media only screen and (min-width: 40.063em) {
     .top-bar-right {
       margin-top: 12px; } }
-  .top-bar-right > div {
+  .top-bar-right > div, .top-bar-right > a {
     display: inline-block;
     font-size: 14px;
     color: #788087;
@@ -2107,14 +2107,14 @@ iframe {
     padding: 12px;
     cursor: pointer; }
     @media only screen and (max-width: 40.063em) {
-      .top-bar-right > div {
+      .top-bar-right > div, .top-bar-right > a {
         padding: 15px; } }
-    .top-bar-right > div svg {
+    .top-bar-right > div svg, .top-bar-right > a svg {
       vertical-align: middle;
       width: 16px;
       height: 16px;
       margin-right: 8px; }
-    .top-bar-right > div .close-menu {
+    .top-bar-right > div .close-menu, .top-bar-right > a .close-menu {
       display: inline-block;
       width: 16px;
       height: 16px;
@@ -2123,10 +2123,10 @@ iframe {
       font-size: 22px;
       margin-right: 8px;
       font-weight: 300; }
-    .top-bar-right > div:hover, .top-bar-right > div.active {
+    .top-bar-right > div:hover, .top-bar-right > div.active, .top-bar-right > a:hover, .top-bar-right > a.active {
       color: #fff;
       background: #1365C3; }
-      .top-bar-right > div:hover svg path, .top-bar-right > div.active svg path {
+      .top-bar-right > div:hover svg path, .top-bar-right > div.active svg path, .top-bar-right > a:hover svg path, .top-bar-right > a.active svg path {
         fill: #fff; }
   .top-bar-right #products-icon {
     margin-right: 16px; }
@@ -2445,6 +2445,10 @@ section.cta {
       font-size: 12px; }
     #footer-container .sub-footer a {
       color: #fff; }
+
+@media only screen and (max-width: 40.063em) {
+  .cat-match {
+    height: auto !important; } }
 
 .sidebar {
   width: 100%;
@@ -3408,8 +3412,10 @@ section.features {
 section.solutions .solutions-guide {
   -webkit-box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
           box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
-  padding-bottom: 35px;
   position: relative; }
+  @media only screen and (min-width: 40.063em) {
+    section.solutions .solutions-guide {
+      padding-bottom: 35px; } }
 
 section.solutions .solutions-header {
   display: block;
@@ -3419,13 +3425,22 @@ section.solutions .solutions-header {
   @media only screen and (max-width: 64.063em) {
     section.solutions .solutions-header {
       padding: 30px; } }
+  @media only screen and (max-width: 40.063em) {
+    section.solutions .solutions-header {
+      padding: 12px 23px; } }
   section.solutions .solutions-header h2 {
     font-size: 30px;
     color: #1365C3; }
+    @media only screen and (max-width: 40.063em) {
+      section.solutions .solutions-header h2 {
+        font-size: 22px; } }
     section.solutions .solutions-header h2 span {
       font-size: 18px;
       color: #788087;
       white-space: nowrap; }
+      @media only screen and (max-width: 40.063em) {
+        section.solutions .solutions-header h2 span {
+          font-size: 16px; } }
   section.solutions .solutions-header .header-rule {
     display: block;
     position: absolute;
@@ -3448,6 +3463,10 @@ section.solutions .steps .step {
   @media only screen and (max-width: 64.063em) {
     section.solutions .steps .step {
       padding: 12px 30px; } }
+  @media only screen and (max-width: 40.063em) {
+    section.solutions .steps .step {
+      -webkit-box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
+              box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06); } }
   section.solutions .steps .step h3 {
     display: inline-block;
     font-size: 16px;
@@ -3463,18 +3482,19 @@ section.solutions .steps .step {
     margin-right: 8px;
     border-radius: 14px;
     text-align: center; }
-    section.solutions .steps .step span.number:before, section.solutions .steps .step span.checkmark:before {
-      content: "";
-      display: block;
-      position: absolute;
-      opacity: 0.2;
-      width: 2px;
-      height: 26px;
-      left: 13px;
-      top: -24px;
-      background-image: -webkit-gradient(linear, left bottom, left top, color-stop(100%, #C6C6C6), color-stop(0%, #FFFFFF));
-      background-image: -webkit-linear-gradient(bottom, #C6C6C6 100%, #FFFFFF 0%);
-      background-image: linear-gradient(0deg, #C6C6C6 100%, #FFFFFF 0%); }
+    @media only screen and (min-width: 40.063em) {
+      section.solutions .steps .step span.number:before, section.solutions .steps .step span.checkmark:before {
+        content: "";
+        display: block;
+        position: absolute;
+        opacity: 0.2;
+        width: 2px;
+        height: 26px;
+        left: 13px;
+        top: -24px;
+        background-image: -webkit-gradient(linear, left bottom, left top, color-stop(100%, #C6C6C6), color-stop(0%, #FFFFFF));
+        background-image: -webkit-linear-gradient(bottom, #C6C6C6 100%, #FFFFFF 0%);
+        background-image: linear-gradient(0deg, #C6C6C6 100%, #FFFFFF 0%); } }
   section.solutions .steps .step span.number {
     color: #fff;
     background: #C1C4C7; }
@@ -3497,7 +3517,11 @@ section.solutions .steps .step {
     -webkit-box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
             box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
     width: 105%;
-    margin-bottom: 12px; }
+    position: relative;
+    z-index: 1; }
+    @media only screen and (min-width: 64.063em) {
+      section.solutions .steps .step.active {
+        margin-bottom: 12px; } }
     section.solutions .steps .step.active p, section.solutions .steps .step.active h4, section.solutions .steps .step.active .button {
       display: block; }
     section.solutions .steps .step.active p {
@@ -3540,7 +3564,7 @@ section.solutions .steps .step-3 p {
 section.solutions .steps .step-1 .checkmark:before {
   display: none !important; }
 
-section.solutions #subcats-selected {
+section.solutions .subcats-selected {
   font-size: 14px;
   color: #788087;
   font-weight: 300;
@@ -3548,20 +3572,21 @@ section.solutions #subcats-selected {
   padding: 20px 36px;
   margin-bottom: -12px;
   display: none; }
-  section.solutions #subcats-selected:before {
-    content: "";
-    display: block;
-    position: absolute;
-    opacity: 0.2;
-    width: 2px;
-    height: 100%;
-    left: 13px;
-    top: 0;
-    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(100%, #C6C6C6), color-stop(0%, #FFFFFF));
-    background-image: -webkit-linear-gradient(bottom, #C6C6C6 100%, #FFFFFF 0%);
-    background-image: linear-gradient(0deg, #C6C6C6 100%, #FFFFFF 0%); }
+  @media only screen and (min-width: 40.063em) {
+    section.solutions .subcats-selected:before {
+      content: "";
+      display: block;
+      position: absolute;
+      opacity: 0.2;
+      width: 2px;
+      height: 100%;
+      left: 13px;
+      top: 0;
+      background-image: -webkit-gradient(linear, left bottom, left top, color-stop(100%, #C6C6C6), color-stop(0%, #FFFFFF));
+      background-image: -webkit-linear-gradient(bottom, #C6C6C6 100%, #FFFFFF 0%);
+      background-image: linear-gradient(0deg, #C6C6C6 100%, #FFFFFF 0%); } }
 
-section.solutions .step.completed #subcats-selected {
+section.solutions .step.completed .subcats-selected {
   display: block; }
 
 section.solutions .cat-icons {
@@ -3573,6 +3598,12 @@ section.solutions .cat-icons {
   @media only screen and (max-width: 64.063em) {
     section.solutions .cat-icons {
       padding: 40px 50px; } }
+  @media only screen and (max-width: 40.063em) {
+    section.solutions .cat-icons {
+      padding: 20px;
+      width: 100%; }
+      section.solutions .cat-icons.cat-match {
+        padding: 0; } }
   section.solutions .cat-icons .cat-icon svg {
     width: 48px;
     height: 48px;
@@ -3594,6 +3625,9 @@ section.solutions .cat-icons {
     text-align: center;
     padding: 18px 4px 4px 4px;
     color: #788087; }
+    @media only screen and (max-width: 40.063em) {
+      section.solutions .cat-icons a.cat-icon {
+        width: 33%; } }
     section.solutions .cat-icons a.cat-icon:hover {
       color: #69C13C;
       border-color: #69C13C;
@@ -3626,8 +3660,13 @@ section.solutions .subcat-checkboxes {
   opacity: 0; }
   .cat-products.active {
     max-height: none;
-    opacity: 1;
-    margin-top: -110px; }
+    opacity: 1; }
+    @media only screen and (min-width: 40.063em) {
+      .cat-products.active {
+        margin-top: -110px; } }
+    @media only screen and (max-width: 40.063em) {
+      .cat-products.active {
+        padding: 20px; } }
 
 .cat-product {
   max-height: 0;
@@ -3675,9 +3714,22 @@ section.solutions .subcat-checkboxes {
   font-size: 14px;
   font-weight: 700;
   color: #1365C3; }
+  .tag-filters .filter-header {
+    display: block;
+    float: left;
+    width: 100%; }
+    @media only screen and (min-width: 40.063em) {
+      .tag-filters .filter-header {
+        line-height: 39px; } }
+  @media only screen and (max-width: 40.063em) {
+    .tag-filters {
+      font-size: 17px; } }
   .tag-filters svg {
     width: 16px;
     height: 16px; }
+    @media only screen and (max-width: 40.063em) {
+      .tag-filters svg {
+        display: none; } }
   .tag-filters .filter {
     cursor: pointer;
     display: inline-block;
@@ -3686,6 +3738,7 @@ section.solutions .subcat-checkboxes {
     padding: 4px 12px;
     margin: 4px;
     font-weight: 300;
+    line-height: initial;
     color: #788087; }
     .tag-filters .filter:hover {
       color: #1365C3;
@@ -3698,10 +3751,13 @@ section.solutions .subcat-checkboxes {
     float: left;
     width: 100%;
     margin: 30px 0 21px 0; }
+    @media only screen and (max-width: 40.063em) {
+      .tag-filters .filters-inner {
+        margin: 16px 0 21px 0; } }
   .tag-filters .remove-all-tags {
-    opacity: 0; }
+    display: none; }
     .tag-filters .remove-all-tags.active {
-      opacity: 1; }
+      display: inline-block; }
 
 #no-matches {
   display: block;
@@ -3801,6 +3857,14 @@ section.custom {
 @media only screen and (max-width: 40.063em) {
   .small-text-left {
     text-align: left; } }
+
+.step.completed + .cat-icons, .step:not(.active) + .cat-icons {
+  padding: 0; }
+
+.show-for-small.steps .step {
+  padding: 0 !important; }
+  .show-for-small.steps .step.active {
+    padding: 12px 30px !important; }
 
 #single-post > article {
   padding-bottom: 40px; }
