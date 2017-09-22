@@ -594,59 +594,63 @@ section.solutions {
 			&.cat-match {
 				padding: 0;
 			}
-		}
-		.cat-icon svg {
-			width: 48px;
-			height: 48px;
-			margin-bottom: 6px;
-		}
-		.sub-cat:not(.active) {
-			max-height: 0;
-			opacity: 0;
-			overflow: hidden;
-		}
-		a.cat-icon {
-			border: solid 2px transparent;
-			display: block;
-			float: left;
-			vertical-align: top;
-			font-size: 14px;
-			font-weight: 700;
-			line-height: 1.2;
-			width: 116px;
-			height: 116px;
-			@media only screen and (max-width: 40.063em) {
-				width: 33%;	
-			}
-			text-align: center;
-			padding: 18px 4px 4px 4px;
-			color: #788087;
-			&:hover {
-				color: $secondary-color;
-				border-color: #69C13C;
-				background: rgba(#69C13C, .05);
-				svg path {
-					fill: #69C13C;
-				}
-			}
-		}
-		.subcat-cont.disabled {
-			background: #ccc;
-			color: #999;
-			border-color: #ccc;
-			cursor: default;
-			pointer-events: none;
-			svg polygon {
-				fill: #999 !important;
-				stroke: #999 !important;
-			}
 		}		
 	}
-	.subcat-checkboxes {
-		margin-bottom: 25px;
-		.checkbox {
-			margin-bottom: 12px;
+}
+
+.cat-icons {
+	.cat-icon svg {
+		width: 48px;
+		height: 48px;
+		margin-bottom: 6px;
+	}
+	.sub-cat:not(.active) {
+		max-height: 0;
+		opacity: 0;
+		overflow: hidden;
+	}
+	a.cat-icon {
+		border: solid 2px transparent;
+		display: block;
+		float: left;
+		vertical-align: top;
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 1.2;
+		width: 116px;
+		height: 116px;
+		@media only screen and (max-width: 40.063em) {
+			width: 33%;	
 		}
+		text-align: center;
+		padding: 18px 4px 4px 4px;
+		color: #788087;
+		&:hover {
+			color: $secondary-color;
+			border-color: #69C13C;
+			background: rgba(#69C13C, .05);
+			svg path {
+				fill: #69C13C;
+			}
+		}
+	}
+	.subcat-cont.disabled {
+		background: #ccc;
+		color: #999;
+		border-color: #ccc;
+		cursor: default;
+		pointer-events: none;
+		svg polygon {
+			fill: #999 !important;
+			stroke: #999 !important;
+		}
+	}		
+}
+
+.subcat-checkboxes {
+	margin-bottom: 25px;
+	.checkbox {
+		margin-bottom: 12px;
 	}
 }
 
@@ -656,7 +660,7 @@ section.solutions {
 	width: 100%;
 }
 
-.cat-products {
+section.solutions .cat-products {
 	max-height: 0;
 	overflow: hidden;
 	opacity: 0;

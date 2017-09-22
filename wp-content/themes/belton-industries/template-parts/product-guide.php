@@ -1,5 +1,6 @@
 <?php
 $results = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false  ));
+$default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 ?>
 
 	<section class="solutions">
@@ -15,7 +16,7 @@ $results = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false 
 				</div>
 				
 				<!-- MOBILE STEP 1 -->
-				<div class="show-for-small cat-icons mobile-step">
+				<div class="show-for-small cat-icons mobile-step transition">
 					<?php
 					if ($results) {
 					    foreach ($results as $term) {
@@ -75,7 +76,7 @@ $results = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false 
 				</div>
 			</div> <!-- steps --> 	
 		</div>
-		<div class="large-8 medium-7 columns cat-icons cat-match">
+		<div class="large-8 medium-7 columns cat-icons cat-match transition">
 			<?php
 			if ($results) {
 			    foreach ($results as $term) {
@@ -83,7 +84,8 @@ $results = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false 
 				    // STEP 1 - Category Icons
 			        $custom_id =  'guide_cats_' . $term->term_id;
 			        $icon_url = get_field('icon', $custom_id);
-			        echo '<a href="#" data-cat-id="' . $term->term_id . '" class="cat-icon transition hide-for-small">';
+			        $bg_url = get_field('bg_image', $custom_id);
+			        echo '<a href="#" data-cat-id="' . $term->term_id . '" data-bg-url="' . $bg_url . '" class="cat-icon transition hide-for-small">';
 			        echo file_get_contents( $icon_url );
 			        echo '<div class="cat-name">' . $term->name . '</div>';
 			        echo '</a>'; ?>
@@ -247,6 +249,8 @@ $results = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false 
 			// Primary category Click Function
 			jQuery("a.cat-icon").on( "click", function(e) {
 				e.preventDefault();
+				var bgURL = jQuery(this).data('bg-url');
+				jQuery('.cat-icons').css('background-image', 'url(' + bgURL + ')');
 				var catID = jQuery(this).data( "cat-id" );
 				jQuery('a.cat-icon').fadeOut("slow", function() {
 					jQuery('.' + catID).addClass('active').fadeIn("fast", function() {
@@ -273,6 +277,7 @@ $results = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false 
 					jQuery('.cat-products').removeClass('active');
 					jQuery('.sub-cat').removeClass('active').fadeOut("fast", function() {
 						jQuery('a.cat-icon').fadeIn();
+						jQuery('.cat-icons').css('background-image', 'url(<?php echo $default_bg_url; ?>)');
   					});					
 				}
 				if (toEdit == 'step-2') {
