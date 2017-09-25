@@ -1,0 +1,13 @@
+#single-post > article {
+	padding-bottom: 40px;
+}
+
+span.bc-divider {
+	display: inline-block;
+	background: url(../images/breadcrumb-divider.svg) center center no-repeat;
+	width: 9px;
+	height: 16px;
+	background-size: 9px 16px;
+	vertical-align: top;
+	margin: 0 8px;
+}

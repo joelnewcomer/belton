@@ -164,7 +164,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 									$classes .= ' tag-' . $tag->term_id;
 								}
 								?>
-								<a href="<?php the_permalink(); ?>" class="cat-product <?php echo $classes; ?>">
+								<a href="<?php the_permalink(); ?>?ref=guide" class="cat-product <?php echo $classes; ?>">
 									<?php
 									global $post;
 									$featured_id = get_post_thumbnail_id();
