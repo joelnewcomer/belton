@@ -1,10 +1,31 @@
 p.breadcrumb {
+	display: block;
+	position: absolute;
+	top: -40px;
+	left: 30px;
+	padding-left: 24px;
 	font-size: 14px;
+	@media only screen and (max-width: 40.063em) {
+		font-size: 12px;
+		top: -28px;
+		left: 12px;
+	}
 	color: #fff;
+	a {
+		color: #fff;
+	}
 	svg {
+		transform: rotate(180deg);
+		position: absolute;
+		left: 0;
+		top: 1px;
 		width: 16px;
 		height: 16px;
-		path {
+		@media only screen and (max-width: 40.063em) {
+			width: 12px;
+			height: 12px;	
+		}
+		polygon {
 			fill: #fff;	
 		}
 	}

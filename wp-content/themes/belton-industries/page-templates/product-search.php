@@ -5,7 +5,11 @@ Template Name: Product Search
 get_header(); ?>
 
 <section class="short-header text-center">
-	<h1 class="entry-header">Product Search</h1>
+	<div class="row">
+		<div class="large-12 columns">
+			<h1 class="entry-header">Product Search</h1>
+		</div>
+	</div>
 </section>
 
 <?php $results = get_terms('search_cats', array ( 'parent' => 0, 'hide_empty' => false  )); ?>
@@ -88,7 +92,7 @@ get_header(); ?>
 							$classes .= ' cat-' . $cat->term_id;
 						}
 						?>
-						<a href="<?php the_permalink(); ?>" class="cat-product <?php echo $classes; ?>">
+						<a href="<?php the_permalink(); ?>?ref=search" class="cat-product <?php echo $classes; ?>">
 							<?php
 							global $post;
 							$featured_id = get_post_thumbnail_id();
