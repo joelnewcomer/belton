@@ -4148,6 +4148,15 @@ section.product-search {
     .not-finding p.side-rule a:hover {
       background: rgba(255, 255, 255, 0.2); }
 
+p.breadcrumb {
+  font-size: 14px;
+  color: #fff; }
+  p.breadcrumb svg {
+    width: 16px;
+    height: 16px; }
+    p.breadcrumb svg path {
+      fill: #fff; }
+
 /*!
  * animsition v4.0.2
  * A simple and easy jQuery plugin for CSS animated page transitions.
