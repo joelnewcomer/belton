@@ -57,6 +57,10 @@ get_header(); ?>
 				<?php } ?>
 			</div> <!-- sub-cats-inner -->
 		</div> <!-- sub-cats -->
+		
+		<div class="guide-link text-center">
+			Not Sure What You Need? <div class="button white shadow small arrow"><a href="<?php echo get_site_url(); ?>/product-guide">Guide Me<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+		</div>
 
 		<?php foreach ($results as $term) { ?>
 			<!-- STEP 3 - Products -->
