@@ -44,7 +44,7 @@ get_header(); ?>
 		<div class="sub-cats transition">
 			<div class="sub-cats-inner">
 				<?php foreach ($results as $term) { ?>
-					<div class="<?php echo $term->term_id; ?> sub-cat transition">
+					<div class="<?php echo $term->term_id; ?> sub-cat transition text-center">
 						<?php $subcats = get_terms('search_cats', array ( 'parent' => $term->term_id, 'hide_empty' => false  )); ?>
 						<?php foreach ($subcats as $subcat) : ?>
 							<div class="subcat" id="<?php echo $subcat->term_id; ?>">
@@ -59,7 +59,7 @@ get_header(); ?>
 		</div> <!-- sub-cats -->
 		
 		<div class="guide-link text-center">
-			Not Sure What You Need? <div class="button white shadow small arrow"><a href="<?php echo get_site_url(); ?>/product-guide">Guide Me<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+			<h3>Not Sure What You Need?</h3><div class="button white shadow small arrow"><a href="<?php echo get_site_url(); ?>/product-guide">Guide Me<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 		</div>
 
 		<?php foreach ($results as $term) { ?>
@@ -82,6 +82,7 @@ get_header(); ?>
 					while ( $the_query->have_posts() ) { $the_query->the_post(); ?>
 						<?php
 						$classes = '';
+						$tags = wp_get_post_terms( $post->ID, 'attributes');
 						$cats = wp_get_post_terms( $post->ID, 'search_cats');
 						foreach ($cats as $cat) {
 							$classes .= ' cat-' . $cat->term_id;
@@ -92,7 +93,7 @@ get_header(); ?>
 							global $post;
 							$featured_id = get_post_thumbnail_id();
 							if ($featured_id != null) {
-								$img = wp_get_attachment_image( $featured_id, 'width=157&height=85&crop=1' );
+								$img = wp_get_attachment_image( $featured_id, 'width=640&height=346&crop=1' );
 							} else {
 								$img = '<img src="' . get_template_directory_uri() . '/assets/images/no-image.png" alt="No Photo">';
 							}
@@ -111,15 +112,20 @@ get_header(); ?>
 									$counter++;
 								}
 								?>
+							</div> <!-- tags -->
+							<div class="faux-btn-container small-text-center">
+								<div class="faux-button arrow white shadow small">View Product <?php get_template_part('assets/images/right', 'arrow.svg'); ?></div>
 							</div>
-							<div class="faux-button arrow white shadow small">View Product <?php get_template_part('assets/images/right', 'arrow.svg'); ?></div>
 						</a> <!-- cat-product -->
 					<?php }
 					wp_reset_postdata();
 				}
 				?>
 			</div> <!-- cat-products -->
-	<?php } ?>
+		<?php } ?>
+		
+		<?php get_template_part('template-parts/not','finding'); ?>
+		
 	</div> <!-- row -->
 </section> <!-- product-search -->
 
@@ -196,7 +202,8 @@ jQuery('.ss-form #product-s').easyAutocomplete(options);
 	jQuery(".subcat").on( "click", function() {
 		var subcatID = jQuery(this).attr( "id" );
 		jQuery('.cat-product').removeClass('active');
-		jQuery('.cat-' + subcatID).addClass('active');		
+		jQuery('.cat-' + subcatID).addClass('active');
+		jQuery('html, body').animate({ scrollTop: jQuery('.sub-cats').offset().top - 70}, 500);
 	});
 	
 </script>

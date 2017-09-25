@@ -16,12 +16,26 @@ section.cta {
 		font-weight: 700;
 		color: #1365C3;
 		margin-bottom: 32px;
+		display: inline-block;
 		span.hide-for-small {
 			display: inline-block;
 			font-size: 30px;
 			color: #2B9EE3;
 			font-weight: 300;
 			margin: 5px 6px 0 8px;
+		}
+	}
+	.columns.compressed {
+		> h3 {
+			font-size: 20px;
+			margin-right: 60px;
+			margin-bottom: 0;
+		}
+		.button {
+			display: inline-block;
+			a {
+				margin: 0;
+			}
 		}
 	}
 	.footer-blog-block {

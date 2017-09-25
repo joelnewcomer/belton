@@ -2295,13 +2295,22 @@ section.cta {
   section.cta .columns > h3 {
     font-weight: 700;
     color: #1365C3;
-    margin-bottom: 32px; }
+    margin-bottom: 32px;
+    display: inline-block; }
     section.cta .columns > h3 span.hide-for-small {
       display: inline-block;
       font-size: 30px;
       color: #2B9EE3;
       font-weight: 300;
       margin: 5px 6px 0 8px; }
+  section.cta .columns.compressed > h3 {
+    font-size: 20px;
+    margin-right: 60px;
+    margin-bottom: 0; }
+  section.cta .columns.compressed .button {
+    display: inline-block; }
+    section.cta .columns.compressed .button a {
+      margin: 0; }
   section.cta .footer-blog-block {
     padding-right: 20px;
     display: inline-block;
@@ -3685,8 +3694,15 @@ section.solutions .cat-products {
     padding: 20px;
     margin-bottom: 16px; }
   .cat-product img {
-    float: left;
-    margin: 0 20px 8px 0; }
+    margin-bottom: 8px;
+    float: left; }
+    @media only screen and (min-width: 40.063em) {
+      .cat-product img {
+        width: 157px;
+        margin-right: 20px; } }
+    @media only screen and (max-width: 40.063em) {
+      .cat-product img {
+        width: 100%; } }
   .cat-product h3 {
     color: #1365C3;
     font-size: 20px; }
@@ -3703,10 +3719,21 @@ section.solutions .cat-products {
       color: #737373; }
       .cat-product .tags .tag.active {
         color: #1365C3; }
+  .cat-product .faux-button-container {
+    display: block;
+    float: left;
+    width: 100%; }
+    @media only screen and (max-width: 40.063em) {
+      .cat-product .faux-button-container {
+        margin-top: 16px; } }
   .cat-product .faux-button {
     display: block;
     float: right;
     margin: 0; }
+    @media only screen and (max-width: 40.063em) {
+      .cat-product .faux-button {
+        display: inline-block;
+        float: none; } }
 
 .cat-products.active:not(.filtered) .cat-product.active {
   max-height: 500px;
@@ -3958,10 +3985,16 @@ section.breadcrumbs + section {
   background-image: -webkit-gradient(linear, right top, left top, from(#2B9EE3), to(#1365C3));
   background-image: -webkit-linear-gradient(right, #2B9EE3 0%, #1365C3 100%);
   background-image: linear-gradient(-90deg, #2B9EE3 0%, #1365C3 100%); }
+  @media only screen and (max-width: 40.063em) {
+    .short-header {
+      padding: 38px 0; } }
   .short-header h1 {
     color: #fff;
     font-size: 54px;
     margin: 0; }
+    @media only screen and (max-width: 40.063em) {
+      .short-header h1 {
+        font-size: 32px; } }
 
 section.product-search {
   display: block;
@@ -3969,7 +4002,7 @@ section.product-search {
   width: 100%;
   position: relative;
   z-index: 999 !important; }
-  section.product-search .row {
+  section.product-search > .row {
     background: #fff;
     position: relative; }
   section.product-search .shadow-container {
@@ -3980,12 +4013,19 @@ section.product-search {
   section.product-search .shadow-container-inner {
     display: block;
     float: left;
+    position: relative;
+    z-index: 1;
     width: 100%;
     background: #fff;
-    margin-top: -28px;
     padding: 52px 10% 24px 10%;
     -webkit-box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
             box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06); }
+    @media only screen and (min-width: 40.063em) {
+      section.product-search .shadow-container-inner {
+        margin-top: -28px; } }
+    @media only screen and (max-width: 40.063em) {
+      section.product-search .shadow-container-inner {
+        padding: 8px 12px; } }
   section.product-search .ss-form {
     display: block;
     background: #fff; }
@@ -4022,6 +4062,11 @@ section.product-search {
       width: 50%;
       margin-left: -4px;
       text-align: center; }
+      @media only screen and (max-width: 40.063em) {
+        section.product-search .sub-cats.active .subcat {
+          width: 100%;
+          max-width: 238px;
+          margin-left: 0; } }
       section.product-search .sub-cats.active .subcat .subcat-inner {
         width: 100%;
         border: 1px solid rgba(193, 196, 199, 0.3);
@@ -4034,6 +4079,74 @@ section.product-search {
           background: rgba(19, 101, 195, 0.05);
           border: 2px solid #1365C3;
           padding: 11px 14px; }
+  section.product-search .guide-link {
+    padding: 16px 0 38px 0; }
+    @media only screen and (max-width: 40.063em) {
+      section.product-search .guide-link {
+        padding: 16px 0 32px 0; } }
+    section.product-search .guide-link h3 {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1365C3;
+      margin-right: 16px; }
+    section.product-search .guide-link .button {
+      display: inline-block; }
+  section.product-search .cat-products {
+    display: block;
+    max-width: 596px;
+    margin: 0 auto;
+    padding: 0 8px; }
+  section.product-search .cat-product {
+    border: 1px solid rgba(193, 196, 199, 0.3); }
+
+.not-finding {
+  display: block;
+  float: left;
+  width: 100%;
+  background-color: #fff;
+  background-position: right 50%;
+  background-repeat: no-repeat;
+  -webkit-background-size: 50% auto;
+          background-size: 50% auto; }
+  @media only screen and (max-width: 40.063em) {
+    .not-finding {
+      background: none !important; } }
+  .not-finding h2 {
+    margin-bottom: 16px; }
+  .not-finding p {
+    font-size: 18px;
+    font-weight: 300; }
+  .not-finding .not-finding-left, .not-finding .not-finding-right {
+    padding: 56px 26px; }
+    @media only screen and (max-width: 40.063em) {
+      .not-finding .not-finding-left, .not-finding .not-finding-right {
+        padding: 32px 20px; } }
+  @media only screen and (min-width: 40.063em) {
+    .not-finding .not-finding-right {
+      background: none !important; } }
+  .not-finding .not-finding-right h2, .not-finding .not-finding-right p, .not-finding .not-finding-right a {
+    color: #fff; }
+  .not-finding .nf-inner {
+    display: inline-block;
+    text-align: left; }
+    @media only screen and (min-width: 40.063em) {
+      .not-finding .nf-inner {
+        max-width: 265px; } }
+  .not-finding p.side-rule {
+    display: block;
+    padding-bottom: 2px;
+    border-left: solid 2px rgba(255, 255, 255, 0.4);
+    padding-left: 16px;
+    font-size: 20px; }
+    .not-finding p.side-rule span {
+      font-size: 24px; }
+    .not-finding p.side-rule a {
+      display: inline-block;
+      padding: 0 8px;
+      margin-left: -8px; }
+    .not-finding p.side-rule a:hover {
+      background: rgba(255, 255, 255, 0.2); }
 
 /*!
  * animsition v4.0.2
@@ -5952,7 +6065,8 @@ h2.resp-accordion {
  * Copyright  License: 
  */
 .easy-autocomplete {
-  position: relative; }
+  position: relative;
+  max-width: 100%; }
 
 .easy-autocomplete input {
   border-color: #C1C4C7;

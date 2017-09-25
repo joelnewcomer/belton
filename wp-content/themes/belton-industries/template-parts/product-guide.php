@@ -169,7 +169,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 									global $post;
 									$featured_id = get_post_thumbnail_id();
 									if ($featured_id != null) {
-										$img = wp_get_attachment_image( $featured_id, 'width=157&height=85&crop=1' );
+										$img = wp_get_attachment_image( $featured_id, 'width=640&height=346&crop=1' );
 									} else {
 										$img = '<img src="' . get_template_directory_uri() . '/assets/images/no-image.png" alt="No Photo">';
 									}
@@ -189,7 +189,9 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 										}
 										?>
 									</div>
-									<div class="faux-button arrow white shadow small">View Product <?php get_template_part('assets/images/right', 'arrow.svg'); ?></div>
+									<div class="faux-btn-container small-text-center">
+										<div class="faux-button arrow white shadow small">View Product <?php get_template_part('assets/images/right', 'arrow.svg'); ?></div>
+									</div>
 								</a> <!-- cat-product -->
 							<?php }
 							wp_reset_postdata();

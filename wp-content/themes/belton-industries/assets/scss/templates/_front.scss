@@ -690,8 +690,15 @@ section.solutions .cat-products {
 	width: 100%;
 	background: #FFFFFF;
 	img {
+		margin-bottom: 8px;
 		float: left;
-		margin: 0 20px 8px 0;
+		@media only screen and (min-width: 40.063em) {
+			width: 157px;
+			margin-right: 20px;
+		}
+		@media only screen and (max-width: 40.063em) {
+			width: 100%;	
+		}
 	}
 	h3 {
 		color: $primary-color;
@@ -714,10 +721,22 @@ section.solutions .cat-products {
 			}
 		}
 	}
+	.faux-button-container {
+		display: block;
+		float: left;
+		width: 100%;
+		@media only screen and (max-width: 40.063em) {
+			margin-top: 16px;	
+		}
+	}
 	.faux-button {
 		display: block;
 		float: right;
 		margin: 0;
+		@media only screen and (max-width: 40.063em) {
+			display: inline-block;
+			float: none;	
+		}
 	}
 }
 
