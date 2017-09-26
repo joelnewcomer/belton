@@ -33,40 +33,36 @@ get_header(); ?>
 </section> <!-- short-header -->
 
 <div id="single-product" role="main">
-	<div class="row">	
-
-<div class="slider-container">
-    <ul class="bxslider">
-		<?php if( have_rows('slides') ):
-			while ( have_rows('slides') ) : the_row(); ?>
-                <li>
-                    <a href="<?php echo get_sub_field('link_to'); ?>">
-						<?php
-						// This code uses WP Thumb and Picturefill to dynamically size and load a photo uploaded and cropped by Advanced Custom Fields for multiple devices.
-						$image_id = get_sub_field('slide');
-						$small = array("width" => 640,"height" => 175);
-						$medium = array("width" => 1025,"height" => 280);
-						$large = array("width" => 1100,"height" => 300);
-						echo drum_image($image_id,$small,$medium,$large,false);
-						?>
-                    </a>
-                </li>
-			<?php endwhile;
-		endif; ?>
-    </ul>
-</div> <!-- slider-container -->
+	<?php 
+	$images = get_field('gallery');
+	if( $images ): ?>
+		<section class="slider">
+		    <ul class="bxslider">
+			    <li><?php the_post_thumbnail( array( 'width' => 378, 'height' => 237, 'crop' => true ) ) ?></li>
+		        <?php foreach( $images as $image ): ?>
+		            <li>
+		            	<?php echo wp_get_attachment_image( $image['ID'], 'width=378&height=237&crop=1' ); ?>
+		            </li>
+		        <?php endforeach; ?>
+		    </ul>
+		</section> <!-- slider-container -->
+	<?php endif; ?>
+		
 	
-	</div> <!-- row -->
 </div> <!-- #single-post -->
 <?php get_footer(); ?>
 
 <script>
 jQuery(window).ready(function(){
     jQuery('.bxslider').bxSlider({
+		minSlides: 1,
+		maxSlides: 2,
+		slideWidth: 378,
+		slideMargin: 10,	    
         auto: true,
         pager: false,
         controls: true,
-        mode: 'fade',
+        mode: 'horizontal',
         speed: 1000,
         pause: 7000
     });
