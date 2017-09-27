@@ -70,7 +70,7 @@
 	padding-bottom: 6px;
 }
 
-.button.arrow a svg, .faux-button svg {
+.button.arrow a svg.right-arrow, .faux-button svg.right-arrow {
 	display: block;
 	position: absolute;
 	width: 11px;
@@ -92,7 +92,7 @@
 	}
 }
 
-.button.arrow.small a svg, .faux-button.arrow.small svg {
+.button.arrow.small a svg.right-arrow, .faux-button.arrow.small svg.right-arrow {
 	width: 8px;
 	height: 14px;
 	top: 9px;

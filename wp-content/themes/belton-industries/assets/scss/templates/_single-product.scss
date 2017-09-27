@@ -36,6 +36,9 @@ section.slider {
 	}
 	.bx-wrapper {
 		margin-bottom: 28px;
+		@media only screen and (max-width: 40.063em) {
+			margin-bottom: 24px;	
+		}
 	}
 }
 
@@ -43,7 +46,121 @@ section.description {
 	display: block;
 	float: left;
 	width: 100%;
+	padding: 0 20px;
+	margin-bottom: 15px;
 	p {
+		display: inline-block;
+		max-width: 760px;
 		font-size: 20px;
+		font-weight: 300;
+		color: #788087;
+		@media only screen and (max-width: 40.063em) {
+			font-size: 16px;	
+		}
+	}
+}
+
+section.product-features, section.product-apps {
+	display: block;
+	float: left;
+	width: 48%;
+	@media only screen and (max-width: 40.063em) {
+		width: 100%;	
+	}
+	background: #FFFFFF;
+	box-shadow: 0 4px 14px 0 rgba(0,0,0,0.06);
+	padding: 20px 48px;
+	@media only screen and (max-width: 40.063em) {
+		padding: 20px 16px;	
+	}
+	h2 {
+		color: $primary-color;
+		margin-bottom: 16px;
+	}
+	ul {
+		margin-left: 16px;
+	}
+	li {
+		margin-bottom: 14px;
+	}
+	li, p {
+		color: #788087;
+		font-weight: 300;
+		@media only screen and (max-width: 40.063em) {
+			font-size: 16px;	
+		}
+	}
+	.filter {
+		pointer-events: none;
+	}
+}
+
+@media only screen and (min-width: 40.063em) {
+	section.product-features {
+		margin-right: 2%;
+	}
+	
+	section.product-apps {
+		margin-left: 2%;
+	}
+}
+
+section.downloads {
+	display: block;
+	float: left;
+	width: 100%;
+	background: #fafafa;
+	padding: 42px 0 34px 0;
+	@media only screen and (max-width: 40.063em) {
+		padding: 29px 0 14px 0;	
+	}
+	.button {
+		display: inline-block;
+		margin: 0 20px;
+		@media only screen and (max-width: 40.063em) {
+			width: 100%;
+			margin: 0;
+			padding: 0 20px;
+		}
+		a {
+			margin-bottom: 16px;
+			text-transform: none;
+			font-size: 17px;
+			font-weight: 700;
+			padding: 16px 58px 14px 72px;
+			@media only screen and (max-width: 40.063em) {
+				padding: 12px 36px 10px 50px;
+				width: 100%;
+				font-size: 14px;
+			}
+			box-shadow: 0 6px 12px 0 rgba(97,159,215,0.40);
+			svg.right-arrow {
+				top: 16px;
+				right: 16px;
+			}
+			svg.doc-icon {
+				display: block;
+				position: absolute;
+				left: 20px;
+				top: 14px;
+				width: 24px;
+				height: 30px;
+				@media only screen and (max-width: 40.063em) {
+					width: 16px;
+					height: 20px;	
+				}
+				path {
+					fill: #fff;
+				}
+			}
+			&:hover {
+				svg.doc-icon path {
+					fill: $primary-color;
+				}
+				svg.right-arrow polygon {
+					fill: $primary-color;
+				}
+			}
+		}
 	}
 }

@@ -52,8 +52,35 @@ get_header(); ?>
 		<section class="description text-center">
 			<?php echo get_field('description'); ?>
 		</section> <!-- description -->
+		<section class="product-features box-match entry-content">
+			<h2>Features & Benefits</h2>
+			<?php echo get_field('features'); ?>
+		</section>
+		<section class="product-apps box-match entry-content">
+			<h2>Applications</h2>
+			<?php echo get_field('applications'); ?>
+			<div class="tag-filters">
+			<?php
+			$attrs = wp_get_object_terms($post->ID, 'attributes');
+			foreach ($attrs as $attr) {
+				echo '<span class="filter transition" data-filter="' . $attr->term_id . '">' . $attr->name . '</span>';
+			}
+			?>
+			</div> <!-- tag-filters -->
+		</section>		
+		<section class="downloads text-center">
+			<div class="button icon arrow blue"><a href="<?php echo get_field('product_data_sheet'); ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Product Data Sheet<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+			<div class="button icon arrow blue"><a href="<?php echo get_field('installation_guideline'); ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Installation Guideline<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+		</section>
+		<?php get_template_part('template-parts/not','finding'); ?>
 	</div> <!-- row -->	
 </div> <!-- #single-post -->
+
+<script>
+jQuery(document).ready(function(){
+	jQuery('.box-match').matchHeight({byRow:false});
+});
+</script>
 
 <?php get_footer(); ?>
 

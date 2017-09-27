@@ -2588,7 +2588,7 @@ body#tinymce {
   padding-top: 6px;
   padding-bottom: 6px; }
 
-.button.arrow a svg, .faux-button svg {
+.button.arrow a svg.right-arrow, .faux-button svg.right-arrow {
   display: block;
   position: absolute;
   width: 11px;
@@ -2603,16 +2603,16 @@ body#tinymce {
   -ms-transition: all .5s;
   /* Opera */ }
   @media only screen and (max-width: 40.063em) {
-    .button.arrow a svg, .faux-button svg {
+    .button.arrow a svg.right-arrow, .faux-button svg.right-arrow {
       width: 8px;
       height: 14px;
       top: 12px;
       -webkit-background-size: 8px 14px;
               background-size: 8px 14px; } }
-  .button.arrow a svg polygon, .faux-button svg polygon {
+  .button.arrow a svg.right-arrow polygon, .faux-button svg.right-arrow polygon {
     fill: #fff; }
 
-.button.arrow.small a svg, .faux-button.arrow.small svg {
+.button.arrow.small a svg.right-arrow, .faux-button.arrow.small svg.right-arrow {
   width: 8px;
   height: 14px;
   top: 9px; }
@@ -3936,13 +3936,112 @@ section.slider {
               box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.05); }
   section.slider .bx-wrapper {
     margin-bottom: 28px; }
+    @media only screen and (max-width: 40.063em) {
+      section.slider .bx-wrapper {
+        margin-bottom: 24px; } }
 
 section.description {
   display: block;
   float: left;
-  width: 100%; }
+  width: 100%;
+  padding: 0 20px;
+  margin-bottom: 15px; }
   section.description p {
-    font-size: 20px; }
+    display: inline-block;
+    max-width: 760px;
+    font-size: 20px;
+    font-weight: 300;
+    color: #788087; }
+    @media only screen and (max-width: 40.063em) {
+      section.description p {
+        font-size: 16px; } }
+
+section.product-features, section.product-apps {
+  display: block;
+  float: left;
+  width: 48%;
+  background: #FFFFFF;
+  -webkit-box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
+          box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.06);
+  padding: 20px 48px; }
+  @media only screen and (max-width: 40.063em) {
+    section.product-features, section.product-apps {
+      width: 100%; } }
+  @media only screen and (max-width: 40.063em) {
+    section.product-features, section.product-apps {
+      padding: 20px 16px; } }
+  section.product-features h2, section.product-apps h2 {
+    color: #1365C3;
+    margin-bottom: 16px; }
+  section.product-features ul, section.product-apps ul {
+    margin-left: 16px; }
+  section.product-features li, section.product-apps li {
+    margin-bottom: 14px; }
+  section.product-features li, section.product-features p, section.product-apps li, section.product-apps p {
+    color: #788087;
+    font-weight: 300; }
+    @media only screen and (max-width: 40.063em) {
+      section.product-features li, section.product-features p, section.product-apps li, section.product-apps p {
+        font-size: 16px; } }
+  section.product-features .filter, section.product-apps .filter {
+    pointer-events: none; }
+
+@media only screen and (min-width: 40.063em) {
+  section.product-features {
+    margin-right: 2%; }
+  section.product-apps {
+    margin-left: 2%; } }
+
+section.downloads {
+  display: block;
+  float: left;
+  width: 100%;
+  background: #fafafa;
+  padding: 42px 0 34px 0; }
+  @media only screen and (max-width: 40.063em) {
+    section.downloads {
+      padding: 29px 0 14px 0; } }
+  section.downloads .button {
+    display: inline-block;
+    margin: 0 20px; }
+    @media only screen and (max-width: 40.063em) {
+      section.downloads .button {
+        width: 100%;
+        margin: 0;
+        padding: 0 20px; } }
+    section.downloads .button a {
+      margin-bottom: 16px;
+      text-transform: none;
+      font-size: 17px;
+      font-weight: 700;
+      padding: 16px 58px 14px 72px;
+      -webkit-box-shadow: 0 6px 12px 0 rgba(97, 159, 215, 0.4);
+              box-shadow: 0 6px 12px 0 rgba(97, 159, 215, 0.4); }
+      @media only screen and (max-width: 40.063em) {
+        section.downloads .button a {
+          padding: 12px 36px 10px 50px;
+          width: 100%;
+          font-size: 14px; } }
+      section.downloads .button a svg.right-arrow {
+        top: 16px;
+        right: 16px; }
+      section.downloads .button a svg.doc-icon {
+        display: block;
+        position: absolute;
+        left: 20px;
+        top: 14px;
+        width: 24px;
+        height: 30px; }
+        @media only screen and (max-width: 40.063em) {
+          section.downloads .button a svg.doc-icon {
+            width: 16px;
+            height: 20px; } }
+        section.downloads .button a svg.doc-icon path {
+          fill: #fff; }
+      section.downloads .button a:hover svg.doc-icon path {
+        fill: #1365C3; }
+      section.downloads .button a:hover svg.right-arrow polygon {
+        fill: #1365C3; }
 
 section.breadcrumbs {
   background: #fff;
@@ -5866,9 +5965,15 @@ ul.bxslider {
     -webkit-transform: rotate(180deg);
         -ms-transform: rotate(180deg);
             transform: rotate(180deg); }
+  @media only screen and (max-width: 940px) {
+    .bx-wrapper .bx-prev {
+      left: -14px; } }
 
 .bx-wrapper .bx-next {
   right: -90px; }
+  @media only screen and (max-width: 940px) {
+    .bx-wrapper .bx-next {
+      right: -14px; } }
 
 .bx-wrapper .bx-controls-direction a {
   position: absolute;

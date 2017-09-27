@@ -1,1 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.25 20"><defs><style>.right-arrow-1{fill:#1365c3;}</style></defs><title>right-arrow</title><polygon id="Combined-Shape" class="right-arrow-1" points="0 1.4 1.25 0 11.25 10 1.25 20 0 18.8 8.75 10 0 1.4"/></svg>
+<svg class="right-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.25 20"><defs><style>.right-arrow-1{fill:#1365c3;}</style></defs><title>right-arrow</title><polygon id="Combined-Shape" class="right-arrow-1" points="0 1.4 1.25 0 11.25 10 1.25 20 0 18.8 8.75 10 0 1.4"/></svg>
