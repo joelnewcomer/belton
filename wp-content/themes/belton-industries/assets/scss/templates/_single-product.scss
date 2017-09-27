@@ -2,6 +2,15 @@
 	padding-bottom: 40px;
 }
 
+#single-product {
+	display: block;
+	float: left;
+	width: 100%;
+	> .row {
+		background: #fff;
+	}
+}
+
 span.bc-divider {
 	display: inline-block;
 	background: url(../images/breadcrumb-divider.svg) center center no-repeat;
@@ -16,4 +25,25 @@ section.slider {
 	display: block;
 	float: left;
 	width: 100%;
+	position: relative;
+	z-index: 1;
+	margin-top: -33px;
+	ul.bxslider > li {
+		padding: 10px;
+		img {
+			box-shadow: 0 2px 15px 0 rgba(0,0,0,0.05);
+		}
+	}
+	.bx-wrapper {
+		margin-bottom: 28px;
+	}
+}
+
+section.description {
+	display: block;
+	float: left;
+	width: 100%;
+	p {
+		font-size: 20px;
+	}
 }

@@ -7,7 +7,7 @@ Author:          Drum Creative
 Author URI:      https://drumcreative.com
 Text Domain:     drumcreative-drum-dashboard
 Domain Path:     /languages
-Version:         1.3.1
+Version:         1.3.2
 @package         Drum_Dashboard
  */
 
@@ -273,10 +273,10 @@ add_filter('acf/settings/save_json', function() {
 
 
 //Include the /acf folder in the places to look for ACF Local JSON files
-add_filter('acf/settings/load_json', function($paths) {
-    $paths[] = dirname(__FILE__) . '/acf';
-    return $paths;
-});
+//add_filter('acf/settings/load_json', function($paths) {
+//    $paths[] = dirname(__FILE__) . '/acf';
+//    return $paths;
+//});
 
 function add_cors_http_header(){
     header("Access-Control-Allow-Origin: *");

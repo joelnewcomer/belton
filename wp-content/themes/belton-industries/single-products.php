@@ -32,24 +32,29 @@ get_header(); ?>
 	</div> <!-- row -->
 </section> <!-- short-header -->
 
+
 <div id="single-product" role="main">
-	<?php 
-	$images = get_field('gallery');
-	if( $images ): ?>
-		<section class="slider">
-		    <ul class="bxslider">
-			    <li><?php the_post_thumbnail( array( 'width' => 378, 'height' => 237, 'crop' => true ) ) ?></li>
-		        <?php foreach( $images as $image ): ?>
-		            <li>
-		            	<?php echo wp_get_attachment_image( $image['ID'], 'width=378&height=237&crop=1' ); ?>
-		            </li>
-		        <?php endforeach; ?>
-		    </ul>
-		</section> <!-- slider-container -->
-	<?php endif; ?>
-		
-	
+	<div class="row">
+		<?php 
+		$images = get_field('gallery');
+		if( $images ): ?>
+			<section class="slider">
+			    <ul class="bxslider">
+				    <li><?php the_post_thumbnail( array( 'width' => 378, 'height' => 237, 'crop' => true ) ) ?></li>
+			        <?php foreach( $images as $image ): ?>
+			            <li>
+			            	<?php echo wp_get_attachment_image( $image['ID'], 'width=378&height=237&crop=1' ); ?>
+			            </li>
+			        <?php endforeach; ?>
+			    </ul>
+			</section> <!-- slider-container -->
+		<?php endif; ?>
+		<section class="description text-center">
+			<?php echo get_field('description'); ?>
+		</section> <!-- description -->
+	</div> <!-- row -->	
 </div> <!-- #single-post -->
+
 <?php get_footer(); ?>
 
 <script>
@@ -58,7 +63,7 @@ jQuery(window).ready(function(){
 		minSlides: 1,
 		maxSlides: 2,
 		slideWidth: 378,
-		slideMargin: 10,	    
+		slideMargin: 0,	    
         auto: true,
         pager: false,
         controls: true,
