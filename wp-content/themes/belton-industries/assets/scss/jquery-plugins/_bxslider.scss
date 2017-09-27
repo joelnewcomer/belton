@@ -123,10 +123,16 @@ ul.bxslider {
 	&:after {
 		transform: rotate(180deg);
 	}
+	@media only screen and (max-width: 940px) {
+		left: -14px;
+	}
 }
 
 .bx-wrapper .bx-next {
 	right: -90px;
+	@media only screen and (max-width: 940px) {
+		right: -14px;
+	}
 }
 
 .bx-wrapper .bx-controls-direction a {
