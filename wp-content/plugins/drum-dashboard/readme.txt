@@ -30,6 +30,9 @@ At Drum Creative we manage a lot of clients website. This plugin is an easy was 
 
 == Changelog ==
 
+= 1.3.3 =
+* v1.3.3 - took out more acf-json sync
+
 = 1.3.2 =
 * v1.3.2 - took out acf-json sync
 

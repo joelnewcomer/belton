@@ -94,3 +94,20 @@ register_taxonomy('search_cats',array (
 register_taxonomy('attributes',array (
   0 => 'products',
 ),array( 'hierarchical' => true, 'label' => 'Performance Attributes','show_ui' => true,'query_var' => true,'rewrite' => array('slug' => ''),'singular_label' => 'Attribute') );
+
+register_post_type('docs', array(	'menu_icon' => 'dashicons-admin-page','label' => 'Technical Documents','description' => '','public' => true,'show_ui' => true,'show_in_menu' => true,'capability_type' => 'post','hierarchical' => true,'rewrite' => array('slug' => ''),'query_var' => true,'exclude_from_search' => false,'supports' => array('title','revisions',),'taxonomies' => array('guide_cats','attributes',),'labels' => array (
+  'name' => 'Technical Documents',
+  'singular_name' => 'Document',
+  'menu_name' => 'Technical Documents',
+  'add_new' => 'Add Document',
+  'add_new_item' => 'Add New Document',
+  'edit' => 'Edit',
+  'edit_item' => 'Edit Document',
+  'new_item' => 'New Document',
+  'view' => 'View Document',
+  'view_item' => 'View Document',
+  'search_items' => 'Search Technical Documents',
+  'not_found' => 'No Technical Documents Found',
+  'not_found_in_trash' => 'No Technical Documents Found in Trash',
+  'parent' => 'Parent Document',
+),) );
