@@ -13,12 +13,30 @@
  * @subpackage FoundationPress
  * @since FoundationPress 1.0.0
  */
-
 get_header(); ?>
 
-<div id="page" role="main">
-    <div class="row">
-        <article class="large-8 medium-8 columns">
+<section class="short-header text-center with-breadcrumb">
+	<div class="row">
+		<div class="large-12 columns">
+			<h1 class="entry-header">News and Events</h1>
+		</div> <!-- columns -->
+	</div> <!-- row -->
+</section> <!-- short-header -->
+
+
+<section class="header-margin product-search">
+	<div class="row">
+		<div class="shadow-container">
+			<div class="shadow-container-inner">
+				<div class="large-12 columns smart-search">
+					<form class="ss-form easy-autocomplete" role="search" id="searchform" onsubmit="return false;">
+						<input type="hidden" id="selectedValue">
+						<label class="sr-only" for="doc-s">Search</label>
+						<input type="text" value="" name="s" id="doc-s" placeholder="<?php esc_attr_e( 'Search...', 'foundationpress' ); ?>">
+					</form>
+
+
+        <article>
         <?php if ( have_posts() ) : ?>
 
             <?php /* Start the Loop */ ?>
@@ -40,7 +58,6 @@ get_header(); ?>
             <?php } ?>
 
         </article>
-        <?php get_sidebar(); ?>
     </div>
 </div>
 
