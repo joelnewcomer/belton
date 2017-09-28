@@ -21,13 +21,14 @@ select.select-app {
 	}
 }
 
+.doc-results {
+	padding: 40px 0 24px 0;
+	font-size: 14px;
+	font-weight: 300;
+	color: #788087;
+}
+
 .tech-docs {
-	.doc-results {
-		padding: 40px 0 24px 0;
-		font-size: 14px;
-		font-weight: 300;
-		color: #788087;
-	}
 	a.tech-doc {
 		background: #FFFFFF;
 		border: 1px solid rgba(193,196,199,0.30);
@@ -57,6 +58,10 @@ select.select-app {
 			display: inline-block;
 			color: #788087;
 			font-size: 14px;
+		}
+		span.hl {
+			color: $secondary-color;
+			font-weight: 700;
 		}
 	}
 }

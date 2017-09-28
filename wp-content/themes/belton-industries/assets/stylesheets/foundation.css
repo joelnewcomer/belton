@@ -4342,7 +4342,7 @@ select.select-app {
     margin-left: 16px;
     margin-right: 7px; }
 
-.tech-docs .doc-results {
+.doc-results {
   padding: 40px 0 24px 0;
   font-size: 14px;
   font-weight: 300;
@@ -4374,6 +4374,9 @@ select.select-app {
     display: inline-block;
     color: #788087;
     font-size: 14px; }
+  .tech-docs a.tech-doc span.hl {
+    color: #69C13C;
+    font-weight: 700; }
 
 /*!
  * animsition v4.0.2

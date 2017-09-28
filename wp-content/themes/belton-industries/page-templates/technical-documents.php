@@ -19,8 +19,8 @@ get_header(); ?>
 				<div class="large-12 columns smart-search">
 					<form class="ss-form easy-autocomplete" role="search" id="searchform" onsubmit="return false;">
 						<input type="hidden" id="selectedValue">
-						<label class="sr-only" for="product-s">Search</label>
-						<input type="text" value="" name="s" id="product-s" placeholder="<?php esc_attr_e( 'Search...', 'foundationpress' ); ?>">
+						<label class="sr-only" for="doc-s">Search</label>
+						<input type="text" value="" name="s" id="doc-s" placeholder="<?php esc_attr_e( 'Search...', 'foundationpress' ); ?>">
 					</form>
 					<div class="doc-filters text-center">
 						<?php get_template_part('assets/images/filter', 'icon.svg'); ?> Filters 
@@ -45,7 +45,7 @@ get_header(); ?>
 					</div> <!-- doc-filters
 				</div> <!-- smart-search -->
 
-		<div class="tech-docs">
+		
 			<?php
 			$args = array(
 				'posts_per_page' => -1,
@@ -56,7 +56,8 @@ get_header(); ?>
 			<div class="doc-results text-center">
 				<span class="count"><?php echo $the_query->post_count; ?></span> Result<span class="plural"><?php if ($the_query->post_count != 1) { echo 's'; } ?></span>
 			</div>
-			
+
+			<div class="tech-docs">
 			
 			<?php if ( $the_query->have_posts() ) {
 				while ( $the_query->have_posts() ) { $the_query->the_post(); ?>
@@ -99,6 +100,7 @@ get_header(); ?>
 </section> <!-- product-search -->
 
 <script>
+// Update Results Count
 function resetResults() {
 	var resultsCount = jQuery(".tech-doc:visible").length;
 	jQuery(".doc-results span.count").html(jQuery(".tech-doc:visible").length);
@@ -107,25 +109,36 @@ function resetResults() {
 	} else {
 		jQuery(".doc-results span.plural").html('s');
 	}
-}	
+}
+
+// Reset Filters
+function resetFilters() {
+	jQuery('.select-app').prop('selectedIndex',0);
+	jQuery('#cat-select').prop('selectedIndex',0);
+	jQuery('.tech-doc').show();	
+	jQuery('.select-app').fadeOut();
+}
 
 // Markets
 jQuery('#cat-select').on('change', function() {
+	jQuery('#doc-s').val('');
 	var catID = this.value;
 	// Reset Applications
 	jQuery('.select-app').prop('selectedIndex',0);
 	// Reset Documents
-	jQuery('.tech-doc').fadeIn();
+	jQuery('.tech-doc').fadeIn();	
 	jQuery('.select-app').fadeOut();
 	jQuery(".select-app").promise().done(function() {
     	jQuery('select#cat-' + catID).css('display', 'inline-block').hide().fadeIn( "fast", function() {
 			resetResults();
   		});
 	});
+	resetResults();
 });
 
 // Applications
 jQuery('.select-app').on('change', function(e) {
+	jQuery('#doc-s').val('');
 	var catID = this.value;
 	if (catID == '') {
 		jQuery('.tech-doc').fadeIn();
@@ -136,9 +149,69 @@ jQuery('.select-app').on('change', function(e) {
     		jQuery('.cat-' + catID).css('display', 'inline-block').hide().fadeIn( "fast", function() {
 				resetResults();
   			});
+  			resetResults();
 		});
 	}
-})	
+});
+
+function preg_quote( str ) {
+    // http://kevin.vanzonneveld.net
+    // +   original by: booeyOH
+    // +   improved by: Ates Goral (http://magnetiq.com)
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   bugfixed by: Onno Marsman
+    // *     example 1: preg_quote("$40");
+    // *     returns 1: '\$40'
+    // *     example 2: preg_quote("*RRRING* Hello?");
+    // *     returns 2: '\*RRRING\* Hello\?'
+    // *     example 3: preg_quote("\\.+*?[^]$(){}=!<>|:");
+    // *     returns 3: '\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:'
+
+    return (str+'').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1");
+}	
+
+jQuery(document).ready(function(){
+    jQuery('#doc-s').keyup(function(){
+	    resetFilters();
+        page = jQuery('.tech-docs').text().toLowerCase();
+        searchedText = jQuery('#doc-s').val();
+        if (page.indexOf(searchedText.toLowerCase()) >= 0) {
+            jQuery( ".tech-doc" ).each(function( index ) {
+	            var $this = jQuery(this);
+				var $items = $this.find("h3, span.tag");
+				var found = false;
+                jQuery( $items ).each(function( index ) {
+                	thisText = jQuery(this).html();
+                	var find = '<span class="hl">';
+                	thisText = thisText.replace(new RegExp(find, 'g'), '');
+                	var find = '</span><!--hl-->';
+                	thisText = thisText.replace(new RegExp(find, 'g'), '');                
+                	thisText = thisText.replace( new RegExp( "(" + preg_quote( searchedText ) + ")" , 'gi' ), '<span class="hl">$1</span><!--hl-->' );
+                	jQuery(this).html(thisText);
+                	if (searchedText.length > 2 && thisText.toLowerCase().indexOf(searchedText.toLowerCase()) >= 0) {
+	                	found = true;
+	                }
+                });
+                if (found) {
+                	jQuery(this).addClass('active');
+                } else {
+	            	jQuery(this).removeClass('active'); 
+                }           
+            });
+        }
+ 		// Hide docs that don't match
+ 		jQuery('.tech-doc:not(.active)').fadeOut( "fast", function() {
+			resetResults();
+  		});       
+        
+        // If there are no matches, show all documents
+        if (jQuery(".tech-doc.active").length < 1) {
+			jQuery('.tech-doc').fadeIn( "fast", function() {
+				resetResults();
+  			});			            
+        }        
+    });
+});
 </script>
 
 <?php get_footer();
