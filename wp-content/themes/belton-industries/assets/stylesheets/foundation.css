@@ -2037,9 +2037,6 @@ section.primary-background {
 section.secondary-background {
   background: #b3e09c; }
 
-.featured-image img {
-  width: 100%; }
-
 .slider-container {
   overflow: hidden; }
 
@@ -2575,7 +2572,7 @@ body#tinymce {
     .button.green a:hover svg polygon {
       fill: #69C13C; }
 
-.button.white.arrow svg polygon, .faux-button.white.arrow svg polygon {
+.button.white.arrow a svg.right-arrow polygon, .faux-button.white.arrow svg.right-arrow polygon {
   fill: #1365C3; }
 
 .button.arrow a, .faux-button.arrow {
@@ -4075,10 +4072,12 @@ section.container {
   padding-left: 32px;
   padding-right: 32px; }
 
-.featured-image {
+section.container > .featured-image {
   position: relative;
   background: #1365C3; }
-  .featured-image .gradient-overlay {
+  section.container > .featured-image img {
+    width: 100%; }
+  section.container > .featured-image .gradient-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -4088,13 +4087,13 @@ section.container {
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(2%, rgba(43, 158, 227, 0)), color-stop(37%, rgba(43, 158, 227, 0.15)), color-stop(76%, #1365C3), to(#1365C3));
     background-image: -webkit-linear-gradient(top, rgba(43, 158, 227, 0) 2%, rgba(43, 158, 227, 0.15) 37%, #1365C3 76%, #1365C3 100%);
     background-image: linear-gradient(-180deg, rgba(43, 158, 227, 0) 2%, rgba(43, 158, 227, 0.15) 37%, #1365C3 76%, #1365C3 100%); }
-  .featured-image .featured-overlay {
+  section.container > .featured-image .featured-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     padding: 5%; }
-  .featured-image h1.entry-title {
+  section.container > .featured-image h1.entry-title {
     font-size: 54px;
     color: #fff; }
 
