@@ -174,7 +174,7 @@ jQuery( document ).ready(function() {
 	}
 });
 
-jQuery.holdReady( true );
+/* jQuery.holdReady( true );
 setTimeout(function() {
 	jQuery.holdReady( false );
-}, 2000);
+}, 2000); */
