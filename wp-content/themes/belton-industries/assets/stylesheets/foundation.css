@@ -2069,6 +2069,8 @@ section.secondary-background {
     position: absolute;
     bottom: 50%;
     left: 50%;
+    width: 172px;
+    margin-bottom: 20px;
     margin-left: -86px; }
   .loading-inner .load-awesome {
     position: absolute;
@@ -3039,57 +3041,31 @@ body > .fl-modal .fl-modal-content {
     font-size: 20px;
     line-height: 50px; } }
 
-ul.post-meta {
-  margin-left: 0;
-  display: block;
-  float: left;
-  width: 100%; }
-  ul.post-meta .eta {
-    display: inherit; }
-  ul.post-meta li svg.icons {
-    width: 15px;
-    float: left;
-    display: block;
-    fill: #aaa;
-    margin: 3px 7px 0 0; }
-  ul.post-meta li a {
-    color: #aaa; }
-    ul.post-meta li a:hover {
-      color: #919191; }
-
 .post-meta li {
   float: left;
   list-style: none;
   margin-right: 14px;
-  color: #aaa;
+  color: #C1C4C7;
+  font-weight: 300;
+  font-size: 14px; }
+
+.blog-search {
+  margin-bottom: 50px; }
+
+.blogpost-entry header .featured-image {
+  float: left;
+  margin-right: 23px; }
+
+.blogpost-entry header h2 {
+  font-size: 20px; }
+
+.blogpost-entry header .post-meta li {
   font-size: 14px;
-  text-transform: uppercase; }
+  color: #C1C4C7; }
 
-.post-meta .fa {
-  margin-right: 6px; }
-
-.entry-content .featured-image {
-  margin-bottom: 20px; }
-
-.widget {
-  margin-bottom: 15px; }
-
-.themeform.searchform {
-  position: relative; }
-
-.themeform.searchform div input {
-  padding-left: 40px;
-  line-height: 20px; }
-
-.themeform.searchform div:after {
-  color: #ccc;
-  line-height: 24px;
+.blogpost-entry .entry-content p {
   font-size: 14px;
-  content: "\f002";
-  position: absolute;
-  left: 16px;
-  top: 16px;
-  font-family: FontAwesome; }
+  color: #788087; }
 
 section.hero {
   -webkit-background-size: cover !important;

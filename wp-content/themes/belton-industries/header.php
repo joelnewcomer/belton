@@ -9,6 +9,11 @@
  */
 ?>
 <!doctype html>
+
+<script>
+	var logoURL = '<?php echo get_template_directory_uri();  ?>/assets/images/belton-logo.svg'; 
+</script>
+
 <html class="no-js" <?php language_attributes(); ?> >
 	<head>
 		<meta charset="<?php bloginfo( 'charset' ); ?>" />

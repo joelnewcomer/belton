@@ -142,7 +142,7 @@ jQuery( document ).ready(function() {
 	if (!jQuery( "body" ).hasClass( "no-sr" ) && !jQuery("body").hasClass("ie9")) {
 		window.sr = ScrollReveal().reveal('.sr', { viewFactor: 0.05 });
 	}
-
+	
 	if (jQuery(".animsition")[0]){
 		jQuery(".animsition").animsition({
 			inClass: 'fade-in',
@@ -159,7 +159,7 @@ jQuery( document ).ready(function() {
 			// http://github.danielcardoso.net/load-awesome/animations.html
 			// https://connoratherton.com/loaders
 			// https://codepen.io/patrikhjelm/details/hItqn
-			loadingInner: '<div class="loading-inner"><img src="http://localhost:8888/drumstarter/wp-content/themes/drum-roll-1/assets/images/logo@2x.png" alt="Drum Starter Theme Logo"/><div class="load-awesome la-timer"><div></div></div></div>',
+			loadingInner: '<div class="loading-inner"><img src="' + logoURL + '" alt="Belton Logo"/><div class="load-awesome la-timer"><div></div></div></div>',
 			timeout: false,
 			timeoutCountdown: 5000,
 			onLoadEvent: true,
@@ -173,3 +173,8 @@ jQuery( document ).ready(function() {
 		});
 	}
 });
+
+jQuery.holdReady( true );
+setTimeout(function() {
+	jQuery.holdReady( false );
+}, 2000);

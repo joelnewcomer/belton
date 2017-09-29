@@ -28,37 +28,40 @@ get_header(); ?>
 	<div class="row">
 		<div class="shadow-container">
 			<div class="shadow-container-inner">
-				<div class="large-12 columns smart-search">
-					<form class="ss-form easy-autocomplete" role="search" id="searchform" onsubmit="return false;">
-						<input type="hidden" id="selectedValue">
-						<label class="sr-only" for="doc-s">Search</label>
-						<input type="text" value="" name="s" id="doc-s" placeholder="<?php esc_attr_e( 'Search...', 'foundationpress' ); ?>">
+				<div class="large-12 columns">
+					<form class="easy-autocomplete blog-search" role="search" method="get" id="searchform" action="<?php echo home_url( '/' ); ?>">
+					    <!-- limit search to products post type -->
+					    <input type="hidden" name="post_type" value="products" />
+					    <input type="text" placeholder="Search and hit Enter" name="s" id="s" />
+					    <!-- <input type="submit" id="searchsubmit" class="button fa" value="&#61442;" /> -->
 					</form>
 
-
-        <article>
-        <?php if ( have_posts() ) : ?>
-
-            <?php /* Start the Loop */ ?>
-            <?php while ( have_posts() ) : the_post(); ?>
-                <?php get_template_part( 'template-parts/content', get_post_format() ); ?>
-            <?php endwhile; ?>
-
-            <?php else : ?>
-                <?php get_template_part( 'template-parts/content', 'none' ); ?>
-
-            <?php endif; // End have_posts() check. ?>
-
-            <?php /* Display navigation to next/previous pages when applicable */ ?>
-            <?php if ( function_exists( 'foundationpress_pagination' ) ) { foundationpress_pagination(); } else if ( is_paged() ) { ?>
-                <nav id="post-nav">
-                    <div class="post-previous"><?php next_posts_link( __( '&larr; Older posts', 'foundationpress' ) ); ?></div>
-                    <div class="post-next"><?php previous_posts_link( __( 'Newer posts &rarr;', 'foundationpress' ) ); ?></div>
-                </nav>
-            <?php } ?>
-
-        </article>
-    </div>
-</div>
+					<article>
+					<?php if ( have_posts() ) : ?>
+					
+					    <?php /* Start the Loop */ ?>
+					    <?php while ( have_posts() ) : the_post(); ?>
+					        <?php get_template_part( 'template-parts/content', get_post_format() ); ?>
+					    <?php endwhile; ?>
+					
+					    <?php else : ?>
+					        <?php get_template_part( 'template-parts/content', 'none' ); ?>
+					
+					    <?php endif; // End have_posts() check. ?>
+					
+					    <?php /* Display navigation to next/previous pages when applicable */ ?>
+					    <?php if ( function_exists( 'foundationpress_pagination' ) ) { foundationpress_pagination(); } else if ( is_paged() ) { ?>
+					        <nav id="post-nav">
+					            <div class="post-previous"><?php next_posts_link( __( '&larr; Older posts', 'foundationpress' ) ); ?></div>
+					            <div class="post-next"><?php previous_posts_link( __( 'Newer posts &rarr;', 'foundationpress' ) ); ?></div>
+					        </nav>
+					    <?php } ?>
+					
+					</article>
+				</div> <!-- columns -->
+			</div> <!-- shadow-container-inner -->
+		</div> <!-- shadow-container -->
+	</div> <!-- row -->
+</section>
 
 <?php get_footer(); ?>
