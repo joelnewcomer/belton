@@ -2527,7 +2527,7 @@ body#tinymce {
   max-width: 67.375rem;
   padding: 1.25rem !important; }
 
-.button a, input.button, .faux-button {
+.button a, input.button, .faux-button, button.alm-load-more-btn {
   display: inline-block;
   margin-bottom: 10px;
   background: #1365C3;
@@ -2543,25 +2543,25 @@ body#tinymce {
   -ms-transition: all .5s;
   /* Opera */ }
   @media only screen and (max-width: 40.063em) {
-    .button a, input.button, .faux-button {
+    .button a, input.button, .faux-button, button.alm-load-more-btn {
       font-size: 14px; } }
   @media screen and (min-width: 40em) {
-    .button a, input.button, .faux-button {
+    .button a, input.button, .faux-button, button.alm-load-more-btn {
       margin-right: 15px; } }
-  .button a:last-child, input.button:last-child, .faux-button:last-child {
+  .button a:last-child, input.button:last-child, .faux-button:last-child, button.alm-load-more-btn:last-child {
     margin-right: 0; }
-  .button a:hover, input.button:hover, .faux-button:hover {
+  .button a:hover, input.button:hover, .faux-button:hover, button.alm-load-more-btn:hover {
     background: transparent;
     color: #1365C3; }
 
 .button.arrow a:hover svg polygon, .faux-button.arrow.white:hover svg polygon {
   fill: #fff; }
 
-.button.white a, .faux-button.white {
+.button.white a, .faux-button.white, button.alm-load-more-btn {
   background: #fff;
   color: #788087;
   border: none; }
-  .button.white a:hover, .faux-button.white:hover {
+  .button.white a:hover, .faux-button.white:hover, button.alm-load-more-btn:hover {
     background: #1365C3;
     color: #fff; }
 
@@ -2616,7 +2616,7 @@ body#tinymce {
   height: 14px;
   top: 9px; }
 
-.button.shadow a, .faux-button.shadow {
+.button.shadow a, .faux-button.shadow, button.alm-load-more-btn {
   -webkit-box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.1);
           box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.1); }
 
@@ -7323,5 +7323,81 @@ div.ginput_complex.ginput_container.gf_name_has_3 span.name_last {
 
 .gfield_checkbox > li {
   min-height: 25px; }
+
+button.alm-load-more-btn {
+  width: auto;
+  border: none;
+  margin: 0 0 4px;
+  position: relative;
+  transition: all .5s;
+  -webkit-transition: all .5s;
+  /* Safari and Chrome */
+  -ms-transition: all .5s;
+  /* Opera */
+  text-align: center;
+  text-decoration: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  /* Loading */
+  /* Loaded / Done */
+  /* Loading Icon */
+  /* Loading :before */ }
+
+button.alm-load-more-btn:hover {
+  text-decoration: none; }
+
+button.alm-load-more-btn:active {
+  -webkit-box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
+  text-decoration: none; }
+
+button.alm-load-more-btn:focus, button.alm-load-more-btn:active {
+  outline: none; }
+
+button.alm-load-more-btn.loading {
+  padding-left: 44px; }
+
+button.alm-load-more-btn.done {
+  cursor: default;
+  opacity: 0.2;
+  outline: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important; }
+
+button.alm-load-more-btn:before, button.alm-load-more-btn.done:before {
+  background: none;
+  width: 0; }
+
+button.alm-load-more-btn.loading:before {
+  background: #fff url("../images/ajax-loader.gif") no-repeat center center;
+  width: 30px;
+  height: 30px;
+  margin: 4px;
+  border-radius: 2px;
+  display: inline-block;
+  z-index: 0;
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  -webkit-transition: width 0.5s ease-in-out;
+  transition: width 0.5s ease-in-out; }
+
+.alm-masonry,
+.alm-btn-wrap {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+
+.alm-btn-wrap {
+  text-align: center;
+  padding: 10px 0 25px; }
 
 /*# sourceMappingURL=foundation.css.map */
