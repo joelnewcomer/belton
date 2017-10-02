@@ -69,7 +69,7 @@ get_header(); ?>
 						$classes .= ' cat-' . $cat->term_id;
 					}
 					?>
-					<a href="<?php echo get_field('file'); ?>" class="tech-doc <?php echo $classes; ?>">
+					<a href="<?php echo get_field('file'); ?>" class="tech-doc sr <?php echo $classes; ?>">
 						<?php get_template_part('assets/images/doc', 'icon.svg'); ?><h3><?php the_title(); ?></h3>
 						<div class="doc-date"><?php echo get_the_date(); ?></div>
 						<div class="tags">
