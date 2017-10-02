@@ -18,7 +18,7 @@ if (get_page_template_slug() == 'page-templates/product-search.php' || get_page_
 }
 ?>
 
-<section class="cta<?php echo $hide_for_small; ?>">
+<section class="sr cta<?php echo $hide_for_small; ?>">
 	<div class="row">
 		<div class="large-12 columns text-center<?php echo $compressed; ?>">
 			<?php if (!is_front_page()) : ?>

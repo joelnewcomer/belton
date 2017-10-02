@@ -90,7 +90,7 @@ $hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&h
 		</div>
 		<?php if(get_field('feature_bullet_groups')): ?>
 			<?php while(has_sub_field('feature_bullet_groups')): ?>
-				<div class="large-4 medium-6 columns bullet-block">
+				<div class="large-4 medium-6 columns bullet-block sr">
 					<div class="bullet-block-inner">
 						<div class="block-header text-center">
 							<?php echo file_get_contents(get_sub_field('icon')); ?>
@@ -120,7 +120,7 @@ $hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&h
 		<?php endif; ?>
 		<?php if(get_field('feature_blocks')): ?>
 			<?php while(has_sub_field('feature_blocks')): ?>
-				<div class="large-6 medium-6 columns bullet-block">
+				<div class="large-6 medium-6 columns bullet-block sr">
 					<div class="feature-block-inner">
 						<div class="block-header text-center">
 							<?php echo file_get_contents(get_sub_field('icon')); ?>
@@ -153,7 +153,7 @@ $hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&h
 		
 	<?php get_template_part('template-parts/product','guide'); ?>
 
-	<section class="custom" style="background-image: url(<?php echo get_field('custom_bg'); ?>);">
+	<section class="custom sr" style="background-image: url(<?php echo get_field('custom_bg'); ?>);">
 		<div class="large-8 medium-10 large-offset-2 medium-offset-1 columns text-center custom-top">
 			<h2><?php echo get_field('custom_header'); ?></h2>
 			<p><?php echo get_field('custom_blurb'); ?></p>

@@ -10,7 +10,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 				<h2><span>Let Us Help You Find A</span><br />Pre-Designed Solution</h2>
 			</div>
 			<div class="steps">
-				<div class="step step-1 active">
+				<div class="step step-1 active sr">
 					<h3><span class="number">1</span><span class="checkmark"><?php get_template_part('assets/images/checkmark.svg'); ?></span>Select Your Market</h3><div class="edit-step" data-edit="step-1">Edit</div>
 					<p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
 				</div>

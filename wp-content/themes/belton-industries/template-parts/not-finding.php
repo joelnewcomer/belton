@@ -1,4 +1,4 @@
-		<div class="not-finding" style="background-image: url(<?php echo get_field('contact_bg','option'); ?>);">
+		<div class="not-finding sr" style="background-image: url(<?php echo get_field('contact_bg','option'); ?>);">
 			<div class="large-6 medium-6 columns not-finding-left text-center">
 				<div class="nf-inner">
 					<h2>Not finding the perfect solution?</h2>

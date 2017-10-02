@@ -200,6 +200,7 @@ jQuery('.ss-form #product-s').easyAutocomplete(options);
 		jQuery('.sub-cats').addClass('active');
 		jQuery('.' + catID).addClass('active');
 		jQuery('#products-' + catID).addClass('active');
+		jQuery('html, body').animate({ scrollTop: jQuery('.sub-cats').offset().top - 70}, 500);
 	});
 
 	// Subcategory Click Function

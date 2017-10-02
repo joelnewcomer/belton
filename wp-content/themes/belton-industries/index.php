@@ -31,7 +31,7 @@ get_header(); ?>
 				<div class="large-12 columns">
 					<form class="easy-autocomplete blog-search" role="search" method="get" id="searchform" action="<?php echo home_url( '/' ); ?>">
 					    <!-- limit search to products post type -->
-					    <input type="hidden" name="post_type" value="products" />
+					    <input type="hidden" name="post_type" value="posts" />
 					    <input type="text" placeholder="Search and hit Enter" name="s" id="s" />
 					    <!-- <input type="submit" id="searchsubmit" class="button fa" value="&#61442;" /> -->
 					</form>
