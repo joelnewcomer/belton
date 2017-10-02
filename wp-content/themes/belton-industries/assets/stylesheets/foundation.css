@@ -3253,6 +3253,9 @@ section.hero {
         max-width: 600px;
         color: #788087; } }
 
+body.ie section.hero .blue-overlay {
+  opacity: .84; }
+
 .bounce {
   -webkit-animation-name: bounce;
   animation-name: bounce; }
