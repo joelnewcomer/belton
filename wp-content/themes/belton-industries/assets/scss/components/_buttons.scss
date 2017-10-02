@@ -1,4 +1,4 @@
-.button a, input.button, .faux-button {
+.button a, input.button, .faux-button, button.alm-load-more-btn {
 	display: inline-block;
 	margin-bottom: 10px;
 	background: $primary-color;
@@ -30,7 +30,7 @@
 	fill: #fff;
 }
 
-.button.white a, .faux-button.white {
+.button.white a, .faux-button.white, button.alm-load-more-btn {
 	background: #fff;
 	color: #788087;
 	border: none;
@@ -98,7 +98,7 @@
 	top: 9px;
 }
 
-.button.shadow a, .faux-button.shadow {
+.button.shadow a, .faux-button.shadow, button.alm-load-more-btn {
 	box-shadow: 0 6px 12px 0 rgba(0,0,0,0.10);
 }
 
