@@ -125,7 +125,7 @@ section.hero {
 }
 
 // IE doesn't support SVG gradient opacity so this is a fix.
-body.ie section.hero .blue-overlay {
+body.ie section.hero .blue-overlay, body.windows section.hero .blue-overlay {
 	opacity: .84;
 }
 
