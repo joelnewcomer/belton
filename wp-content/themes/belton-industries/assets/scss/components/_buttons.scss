@@ -58,9 +58,18 @@
 	}	
 }
 
-.button.arrow a, .faux-button.arrow {
+.button.arrow a, .faux-button.arrow, .faux-link.arrow {
 	position: relative;
 	padding-right: 46px;
+}
+
+.faux-link.arrow {
+	display: inline-block;
+	padding-right: 35px;
+}
+
+.faux-link {
+	position: relative;
 }
 
 .button.small a, .faux-button.small {
@@ -70,7 +79,7 @@
 	padding-bottom: 6px;
 }
 
-.button.arrow a svg.right-arrow, .faux-button svg.right-arrow {
+.button.arrow a svg.right-arrow, .faux-button svg.right-arrow, .faux-link svg.right-arrow {
 	display: block;
 	position: absolute;
 	width: 11px;

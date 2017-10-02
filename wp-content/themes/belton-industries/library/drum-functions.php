@@ -20,7 +20,8 @@ add_filter( 'use_default_gallery_style', '__return_false' );
 //Add the read more link to excerpts
 function new_excerpt_more( $more ) {
 	global $post;
-	return '...<br /><span class="faux-link">Read More</span>';
+	$right_arrow = '<svg class="right-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.25 20"><polygon id="Combined-Shape" class="right-arrow-1" points="0 1.4 1.25 0 11.25 10 1.25 20 0 18.8 8.75 10 0 1.4"/></svg>';
+	return '... <span class="faux-link arrow read-more">Read More ' . $right_arrow . '</span>';
 }
 add_filter('excerpt_more', 'new_excerpt_more');
 

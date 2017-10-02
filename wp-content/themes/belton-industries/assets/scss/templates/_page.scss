@@ -4,6 +4,10 @@ section.breadcrumbs {
 	margin: 0;
 }
 
+#page section.breadcrumbs, #single-post section.breadcrumbs {
+	padding: 20px 0 0 20px !important;
+}
+
 section.container {
 	background: #e6ebf0;
 	overflow: hidden;
@@ -28,6 +32,10 @@ section.container {
 	.breadcrumb_last {
 		opacity: .6;
 	}
+}
+
+#page #breadcrumbs span.bc-divider, #single-post #breadcrumbs span.bc-divider {
+	background: url(../images/breadcrumb-divider-blue.svg) center center no-repeat;
 }
 
 .entry-content > section {

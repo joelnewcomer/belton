@@ -9,6 +9,9 @@
 
 .blog-search {
 	margin-bottom: 50px;
+	@media only screen and (max-width: 40.063em) {
+		margin-bottom: 0;	
+	}
 }
 
 .shadow-fade {
@@ -42,14 +45,29 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', e
 	.featured-image {
 		float: left;
 		margin-right: 24px;
+		@media only screen and (max-width: 40.063em) {
+			margin-right: 0;
+			width: 100%;
+			img {
+				width: 100%;
+				margin-bottom: 12px;
+			}	
+		}
 	}
 	.content-container {
 		padding: 16px 24px 0 24px;
+		@media only screen and (max-width: 40.063em) {
+			padding: 16px 16px 0 16px;	
+		}
+		.post-meta {
+			margin-left: 0;
+		}
 	}
 	header {
 
 		h2 {
 			font-size: 20px;
+			color: $primary-color;
 		}
 		.post-meta li {
 			font-size: 14px;
@@ -60,4 +78,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', e
 		font-size: 14px;
 		color: #788087;
 	}
+}
+
+.faux-link {
+	text-transform: uppercase;
+	font-size: 12px;
+}
+
+.faux-link svg.right-arrow {
+	width: 8px;
+	height: 13px;
+	top: 1px;
+}
+
+.faux-link svg.right-arrow polygon {
+	fill: #2fa0e4;
 }
