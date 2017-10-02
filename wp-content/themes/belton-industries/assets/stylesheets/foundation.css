@@ -3755,7 +3755,8 @@ section.solutions .cat-products {
     display: block;
     float: left;
     clear: left;
-    color: #737373; }
+    color: #737373;
+    margin-bottom: 8px; }
     .cat-product .tags .tag {
       font-size: 14px;
       color: #737373; }
