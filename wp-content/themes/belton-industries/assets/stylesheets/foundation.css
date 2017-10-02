@@ -3052,20 +3052,49 @@ body > .fl-modal .fl-modal-content {
 .blog-search {
   margin-bottom: 50px; }
 
-.blogpost-entry header .featured-image {
+.shadow-fade {
+  display: block;
   float: left;
-  margin-right: 23px; }
+  width: 110%;
+  height: 85px;
+  margin-left: -5%;
+  margin-top: -75px;
+  margin-bottom: -10px;
+  position: relative;
+  z-index: 1;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+45,ffffff+45,ffffff+85&0+0,0.48+46,1+84 */
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.47) 45%, rgba(255, 255, 255, 0.48) 46%, white 84%, white 85%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), color-stop(45%, rgba(255, 255, 255, 0.47)), color-stop(46%, rgba(255, 255, 255, 0.48)), color-stop(84%, white), color-stop(85%, white));
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.47) 45%, rgba(255, 255, 255, 0.48) 46%, white 84%, white 85%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 );
+  /* IE6-9 */ }
 
-.blogpost-entry header h2 {
-  font-size: 20px; }
+.shadow-fade + .columns {
+  position: relative;
+  z-index: 2; }
 
-.blogpost-entry header .post-meta li {
-  font-size: 14px;
-  color: #C1C4C7; }
-
-.blogpost-entry .entry-content p {
-  font-size: 14px;
-  color: #788087; }
+.blogpost-entry {
+  display: block;
+  float: left;
+  width: 100%;
+  border: 1px solid rgba(193, 196, 199, 0.3);
+  margin-bottom: 16px; }
+  .blogpost-entry .featured-image {
+    float: left;
+    margin-right: 24px; }
+  .blogpost-entry .content-container {
+    padding: 16px 24px 0 24px; }
+  .blogpost-entry header h2 {
+    font-size: 20px; }
+  .blogpost-entry header .post-meta li {
+    font-size: 14px;
+    color: #C1C4C7; }
+  .blogpost-entry .entry-content p {
+    font-size: 14px;
+    color: #788087; }
 
 section.hero {
   -webkit-background-size: cover !important;
