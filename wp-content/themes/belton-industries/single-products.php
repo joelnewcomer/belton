@@ -37,7 +37,7 @@ get_header(); ?>
 	<div class="row">
 		<?php 
 		$images = get_field('gallery');
-		if( $images ): ?>
+		if( $images || has_post_thumbnail()): ?>
 			<section class="slider">
 			    <ul class="bxslider">
 				    <li><?php the_post_thumbnail( array( 'width' => 378, 'height' => 237, 'crop' => true ) ) ?></li>

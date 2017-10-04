@@ -3783,7 +3783,7 @@ section.solutions .cat-products {
         float: none; } }
 
 .cat-products.active:not(.filtered) .cat-product.active {
-  max-height: 500px;
+  max-height: 600px;
   opacity: 1;
   padding: 20px;
   margin-bottom: 16px; }
