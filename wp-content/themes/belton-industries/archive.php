@@ -17,9 +17,20 @@
 
 get_header(); ?>
 
-<div id="page" class="white-bg" role="main">
+<section class="short-header text-center with-breadcrumb">
 	<div class="row">
-		<article class="main-content large-8 medium-8 columns">
+		<div class="large-12 columns">
+			<h1 class="entry-header"><?php single_cat_title(); ?></h1>
+		</div> <!-- columns -->
+	</div> <!-- row -->
+</section> <!-- short-header -->
+
+<section class="header-margin product-search">
+	<div class="row">
+		<div class="shadow-container">
+			<div class="shadow-container-inner">
+
+		<article class="main-content large-12 columns">
 		<?php if ( have_posts() ) : ?>
 		
 			<?php /* Start the Loop */ ?>
@@ -41,8 +52,10 @@ get_header(); ?>
 			<?php } ?>
 		
 		</article>
-		<?php get_sidebar(); ?>
+		
+			</div>
+		</div>
 	</div> <!-- row -->
-</div> <!-- #page -->
+</section> <!-- #page -->
 
 <?php get_footer();
