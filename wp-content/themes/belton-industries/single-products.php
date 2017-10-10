@@ -68,9 +68,17 @@ get_header(); ?>
 			?>
 			</div> <!-- tag-filters -->
 		</section>		
+		<?php
+		$data_sheet = get_field('product_data_sheet');
+		$installation = get_field('installation_guideline');
+		?>
 		<section class="downloads text-center">
-			<div class="button icon arrow blue"><a href="<?php echo get_field('product_data_sheet'); ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Product Data Sheet<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
-			<div class="button icon arrow blue"><a href="<?php echo get_field('installation_guideline'); ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Installation Guideline<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+			<?php if ($data_sheet != ""): ?>
+				<div class="button icon arrow blue"><a href="<?php echo $data_sheet; ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Product Data Sheet<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+			<?php endif; ?>
+			<?php if ($installation != ""): ?>
+				<div class="button icon arrow blue"><a href="<?php echo $installation; ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Installation Guideline<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+			<?php endif; ?>
 		</section>
 		<?php get_template_part('template-parts/not','finding'); ?>
 	</div> <!-- row -->	
