@@ -11,7 +11,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 			</div>
 			<div class="steps">
 				<div class="step step-1 active sr">
-					<h3><span class="number">1</span><span class="checkmark"><?php get_template_part('assets/images/checkmark.svg'); ?></span>Select Your Market</h3><div class="edit-step" data-edit="step-1">Edit</div>
+					<h3><span class="number">1</span><span class="checkmark"><?php get_template_part('assets/images/checkmark.svg'); ?></span><span class="market">Select Your</span> Market</h3><div class="edit-step" data-edit="step-1">Edit</div>
 					<p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
 				</div>
 				
@@ -253,6 +253,8 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 				e.preventDefault();
 				var bgURL = jQuery(this).data('bg-url');
 				jQuery('.cat-icons').css('background-image', 'url(' + bgURL + ')');
+				var catName = jQuery(this).find('.cat-name').html();
+				jQuery('.market').html(catName);
 				var catID = jQuery(this).data( "cat-id" );
 				jQuery('a.cat-icon').fadeOut("slow", function() {
 					jQuery('.' + catID).addClass('active').fadeIn("fast", function() {
@@ -276,6 +278,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 				jQuery(this).parent().removeClass('completed').addClass('active');
 				jQuery(this).parent().nextAll().removeClass('completed');
 				if (toEdit == 'step-1') {
+					jQuery('.market').html('Select Your');
 					jQuery('.cat-products').removeClass('active');
 					jQuery('.sub-cat').removeClass('active').fadeOut("fast", function() {
 						jQuery('a.cat-icon').fadeIn();
