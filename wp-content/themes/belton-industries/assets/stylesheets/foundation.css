@@ -3141,6 +3141,11 @@ section.hero {
   background-position: center center;
   background-repeat: no-repeat;
   padding: 100px 0 180px 0; }
+  @media only screen and (min-width: 1800px) {
+    section.hero {
+      width: 1800px;
+      left: 50%;
+      margin-left: -900px; } }
   @media only screen and (max-width: 40.063em) {
     section.hero {
       padding: 65px 0 180px 0; } }
