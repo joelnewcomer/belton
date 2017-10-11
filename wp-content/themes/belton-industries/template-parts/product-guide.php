@@ -291,7 +291,9 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
   					});					
 				}
 				resetContBtn();
-				jQuery.fn.matchHeight._update();
+				setTimeout(function(){
+					jQuery.fn.matchHeight._update();
+				}, 1000);
 			});
 			// Subcategory checkbox change function
 			jQuery('input[name="subcat"]').on('change', function() {
@@ -329,6 +331,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 				setTimeout(function(){
 					jQuery.fn.matchHeight._update();
 				}, 1000);
+				jQuery('.cat-icons').css('background-image', 'none');
 			});
 			// Filter click function
 			jQuery(".filter").on( "click", function(e) {
