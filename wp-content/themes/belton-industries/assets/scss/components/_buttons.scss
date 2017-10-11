@@ -125,3 +125,7 @@
 	padding: 20px 50px;
 	font-size: 25px;
 }
+
+.button + h1, .button + h2, .button + h3, .button + h4 {
+	margin-top: 30px;
+}
