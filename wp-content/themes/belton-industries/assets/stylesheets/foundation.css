@@ -3664,6 +3664,12 @@ section.solutions .cat-icons {
   @media only screen and (max-width: 64.063em) {
     section.solutions .cat-icons {
       padding: 40px 50px; } }
+  @media only screen and (max-width: 770px) {
+    section.solutions .cat-icons {
+      padding: 20px; } }
+  @media only screen and (max-width: 670px) {
+    section.solutions .cat-icons {
+      padding: 20px 10px 20px 16px; } }
   @media only screen and (max-width: 40.063em) {
     section.solutions .cat-icons {
       padding: 20px;
@@ -3731,7 +3737,7 @@ section.solutions .cat-products {
   section.solutions .cat-products.active {
     max-height: none;
     opacity: 1; }
-    @media only screen and (min-width: 40.063em) {
+    @media only screen and (min-width: 1026px) {
       section.solutions .cat-products.active {
         margin-top: -110px; } }
     @media only screen and (max-width: 40.063em) {
