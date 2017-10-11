@@ -99,3 +99,7 @@ section.breadcrumbs + section {
 		color: #2B9EE3;
 	}
 }
+
+.main-content > .entry-content > section:last-child {
+	padding-bottom: 60px;
+}

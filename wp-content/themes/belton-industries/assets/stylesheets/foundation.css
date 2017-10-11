@@ -4175,6 +4175,9 @@ section.breadcrumbs + section {
   section.breadcrumbs + section h1, section.breadcrumbs + section h2, section.breadcrumbs + section h3, section.breadcrumbs + section h4, section.breadcrumbs + section h5, section.breadcrumbs + section h6 {
     color: #2B9EE3; }
 
+.main-content > .entry-content > section:last-child {
+  padding-bottom: 60px; }
+
 .short-header {
   display: block;
   float: left;
