@@ -4390,6 +4390,8 @@ select.select-app {
     margin-right: 8px; }
   .doc-filters select {
     width: 234px; }
+    .doc-filters select.active {
+      color: #1365C3; }
   .doc-filters #cat-select {
     margin-left: 16px;
     margin-right: 7px; }

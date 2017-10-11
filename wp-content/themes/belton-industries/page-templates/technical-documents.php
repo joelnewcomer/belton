@@ -123,6 +123,11 @@ function resetFilters() {
 jQuery('#cat-select').on('change', function() {
 	jQuery('#doc-s').val('');
 	var catID = this.value;
+	if (catID != "") {
+		jQuery(this).addClass('active');
+	} else {
+		jQuery(this).removeClass('active');
+	}
 	// Reset Applications
 	jQuery('.select-app').prop('selectedIndex',0);
 	// Reset Documents
@@ -139,11 +144,13 @@ jQuery('#cat-select').on('change', function() {
 // Applications
 jQuery('.select-app').on('change', function(e) {
 	jQuery('#doc-s').val('');
-	var catID = this.value;
+	var catID = this.value;	
 	if (catID == '') {
 		jQuery('.tech-doc').fadeIn();
+		jQuery(this).removeClass('active');
 		resetResults();
 	} else {
+		jQuery(this).addClass('active');
 		jQuery('.tech-doc').fadeOut();
 		jQuery('.tech-doc').promise().done(function() {
     		jQuery('.cat-' + catID).css('display', 'inline-block').hide().fadeIn( "fast", function() {
