@@ -193,6 +193,8 @@ jQuery('.ss-form #product-s').easyAutocomplete(options);
 	// Primary category Click Function
 	jQuery("a.cat-icon").on( "click", function(e) {
 		e.preventDefault();
+		jQuery('a.cat-icon').removeClass('active');
+		jQuery(this).addClass('active');
 		var catID = jQuery(this).data( "cat-id" );
 		jQuery('.sub-cat').removeClass('active');
 		jQuery('.cat-products').removeClass('active');
@@ -205,6 +207,8 @@ jQuery('.ss-form #product-s').easyAutocomplete(options);
 
 	// Subcategory Click Function
 	jQuery(".subcat").on( "click", function() {
+		jQuery('.subcat').removeClass('active');
+		jQuery(this).addClass('active');
 		var subcatID = jQuery(this).attr( "id" );
 		jQuery('.cat-product').removeClass('active');
 		jQuery('.cat-' + subcatID).addClass('active');

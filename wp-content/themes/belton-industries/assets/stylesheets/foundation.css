@@ -3694,11 +3694,11 @@ section.solutions .cat-icons {
   @media only screen and (max-width: 40.063em) {
     .cat-icons a.cat-icon {
       width: 33%; } }
-  .cat-icons a.cat-icon:hover {
+  .cat-icons a.cat-icon:hover, .cat-icons a.cat-icon.active {
     color: #69C13C;
     border-color: #69C13C;
     background: rgba(105, 193, 60, 0.05); }
-    .cat-icons a.cat-icon:hover svg path {
+    .cat-icons a.cat-icon:hover svg path, .cat-icons a.cat-icon.active svg path {
       fill: #69C13C; }
 
 .cat-icons .subcat-cont.disabled {
@@ -4275,10 +4275,10 @@ section.product-search {
         font-weight: 700;
         color: #788087;
         cursor: pointer; }
-        section.product-search .sub-cats.active .subcat .subcat-inner:hover {
-          background: rgba(19, 101, 195, 0.05);
-          border: 2px solid #1365C3;
-          padding: 11px 14px; }
+      section.product-search .sub-cats.active .subcat:hover .subcat-inner, section.product-search .sub-cats.active .subcat.active .subcat-inner {
+        background: rgba(19, 101, 195, 0.05);
+        border: 2px solid #1365C3;
+        padding: 11px 14px; }
   section.product-search .guide-link {
     padding: 16px 0 38px 0; }
     @media only screen and (max-width: 40.063em) {

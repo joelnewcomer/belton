@@ -635,7 +635,7 @@ section.solutions {
 		text-align: center;
 		padding: 18px 4px 4px 4px;
 		color: #788087;
-		&:hover {
+		&:hover, &.active {
 			color: $secondary-color;
 			border-color: #69C13C;
 			background: rgba(#69C13C, .05);
