@@ -49,7 +49,7 @@ get_header(); ?>
 			<div class="sub-cats-inner">
 				<?php foreach ($results as $term) { ?>
 					<div class="<?php echo $term->term_id; ?> sub-cat transition text-center">
-						<?php $subcats = get_terms('search_cats', array ( 'parent' => $term->term_id, 'hide_empty' => false  )); ?>
+						<?php $subcats = get_terms('search_cats', array ( 'parent' => $term->term_id  )); ?>
 						<?php foreach ($subcats as $subcat) : ?>
 							<div class="subcat" id="<?php echo $subcat->term_id; ?>">
 								<div class="subcat-inner transition">
