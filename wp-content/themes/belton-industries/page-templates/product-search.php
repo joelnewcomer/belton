@@ -12,7 +12,7 @@ get_header(); ?>
 	</div>
 </section>
 
-<?php $results = get_terms('search_cats', array ( 'parent' => 0, 'hide_empty' => false  )); ?>
+<?php $results = get_terms('search_cats', array ( 'parent' => 0  )); ?>
 
 <section class="header-margin product-search">
 	<div class="row">
