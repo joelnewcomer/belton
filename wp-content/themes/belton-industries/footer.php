@@ -80,7 +80,7 @@ if (get_page_template_slug() == 'page-templates/product-search.php' || get_page_
 			<footer id="footer" class="row">
 				<div class="large-12 medium-12 columns address-phone">
 					<?php // get_template_part('assets/images/footer', 'logo.svg'); ?>
-					<img src="<?php echo get_template_directory_uri(); ?>/assets/images/footer-logo.png" alt="Belton Industries logo">
+					<img src="<?php echo get_template_directory_uri(); ?>/assets/images/footer-logo.svg" alt="Belton Industries logo">
 					<div class="address">
 						<p>
 						<?php // function drum_smart_phone($phone, $phone_text, $phone_prefix)
