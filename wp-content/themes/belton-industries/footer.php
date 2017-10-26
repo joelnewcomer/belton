@@ -33,7 +33,7 @@ if (get_page_template_slug() == 'page-templates/product-search.php' || get_page_
 					    array( 'orderby' => 'date', 'posts_per_page' => '1')
 					);
 					while($query->have_posts()) : $query->the_post(); ?>
-					    <a class="footer-blog-block" href="<?php echo get_permalink(); ?>">
+					    <a class="footer-blog-block <?php if (!has_post_thumbnail()) { echo 'no-thumb'; } ?>" href="<?php echo get_permalink(); ?>">
 					        <?php the_post_thumbnail( array( 'width' => 216, 'height' => 138, 'crop' => true ) ) ?>
 						    <h3><?php the_title(); ?></h3>
 					        <?php the_excerpt(); ?>

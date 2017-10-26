@@ -40,6 +40,9 @@ section.cta {
 	}
 	.footer-blog-block {
 		padding-right: 20px;
+		&.no-thumb {
+			padding-left: 20px;
+		}
 		display: inline-block;
 		max-width: 676px;
 		background: #FFFFFF;
