@@ -2324,6 +2324,8 @@ section.cta {
     border: 1px solid rgba(193, 196, 199, 0.3);
     text-align: left;
     margin-bottom: 36px; }
+    section.cta .footer-blog-block.no-thumb {
+      padding-left: 20px; }
     section.cta .footer-blog-block h3 {
       font-size: 20px;
       color: #1365C3;
