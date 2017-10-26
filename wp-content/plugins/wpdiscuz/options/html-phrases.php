@@ -9,6 +9,7 @@ if (!defined('ABSPATH')) {
     </div>
     <h1 style="padding-bottom:20px; padding-top:15px;"><?php _e('wpDiscuz Front-end Phrases', 'wpdiscuz'); ?></h1>
     <br style="clear:both" />
+    <?php settings_errors('wpdiscuz'); ?>
     <form action="<?php echo admin_url(); ?>edit-comments.php?page=<?php echo WpdiscuzCore::PAGE_PHRASES; ?>" method="post" name="<?php echo WpdiscuzCore::PAGE_PHRASES; ?>" class="wc-phrases-settings-form wc-form">
         <?php
         if (function_exists('wp_nonce_field')) {
@@ -68,7 +69,7 @@ if (!defined('ABSPATH')) {
                 <tr valign="top">
                     <td colspan="4">
                         <p class="submit">
-                            <input type="submit" class="button button-primary" name="wc_submit_phrases" value="<?php _e('Save Changes', 'wpdiscuz'); ?>" />
+                            <input type="submit" class="button button-primary" name="wc_submit_phrases" value="<?php _e('Save Changes', 'wpdiscuz'); ?>" style="float: right;" />
                         </p>
                     </td>
                 </tr>

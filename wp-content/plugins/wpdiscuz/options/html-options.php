@@ -10,15 +10,16 @@ if (!defined('ABSPATH')) {
     <h1 style="padding-bottom:20px; padding-top:15px;"><?php _e('wpDiscuz General Settings', 'wpdiscuz'); ?></h1>
     <br style="clear:both" />
     <?php do_action('wpdiscuz_option_page'); ?>
+    <?php settings_errors('wpdiscuz'); ?>
     <table width="100%" border="0" cellspacing="1" class="widefat" style="background-color:#FdFdFd;">
         <tr>
             <td valign="top" style="padding:3px;">
                 <table width="100%" border="0" cellspacing="2">
                     <tr>
-                        <th style="font-size:16px;"><a href="https://wordpress.org/support/view/plugin-reviews/wpdiscuz?filter=5" target="_blank" title="We'd greatly appreciate your feedback on WordPress.org"><?php _e('Like wpDiscuz?','wpdiscuz');?></a></th>
-                        <th style="font-size:16px; width:135px; text-align:center;"><a href="http://wpdiscuz.com/wpdiscuz-documentation/" style="color:#008EC2; overflow:hidden; outline:none;" target="_blank"><?php _e('Documentation','wpdiscuz');?></a></th>
-                        <th style="font-size:16px; width:75px; text-align:center;"><a href="https://gvectors.com/forum/" style="color:#008EC2; overflow:hidden; outline:none;" target="_blank"><?php _e('Support','wpdiscuz');?></a></th>
-                        <th style="font-size:16px; width:75px; text-align:center;"><a href="http://wpdiscuz.com/addons/" style="color:#008EC2; overflow:hidden; outline:none;" target="_blank"><?php _e('Addons','wpdiscuz');?></a></th>
+                        <th style="font-size:16px;"><a href="https://wordpress.org/support/view/plugin-reviews/wpdiscuz?filter=5" target="_blank" title="We'd greatly appreciate your feedback on WordPress.org"><?php _e('Like wpDiscuz?', 'wpdiscuz'); ?></a></th>
+                        <th style="font-size:16px; width:135px; text-align:center;"><a href="http://wpdiscuz.com/wpdiscuz-documentation/" style="color:#008EC2; overflow:hidden; outline:none;" target="_blank"><?php _e('Documentation', 'wpdiscuz'); ?></a></th>
+                        <th style="font-size:16px; width:75px; text-align:center;"><a href="https://gvectors.com/forum/" style="color:#008EC2; overflow:hidden; outline:none;" target="_blank"><?php _e('Support', 'wpdiscuz'); ?></a></th>
+                        <th style="font-size:16px; width:75px; text-align:center;"><a href="http://wpdiscuz.com/addons/" style="color:#008EC2; overflow:hidden; outline:none;" target="_blank"><?php _e('Addons', 'wpdiscuz'); ?></a></th>
                     </tr>
                 </table>
             </td>
@@ -142,14 +143,13 @@ if (!defined('ABSPATH')) {
                 <tr valign="top">
                     <td colspan="4">
                         <p class="submit">
-                            <?php $resetOptionsUrl = admin_url() . 'edit-comments.php?page=' . WpdiscuzCore::PAGE_SETTINGS . '&wpdiscuz_reset_options=1';
-                             $resetOptionsUrl = wp_nonce_url($resetOptionsUrl,'wpdiscuz_reset_options_nonce');
-                             ?>
-                            <a style="float: left;" class="button button-secondary" href="<?php echo $resetOptionsUrl;?>"><?php _e('Reset Options', 'wpdiscuz'); ?></a>
-                            <?php $clearChildrenUrl = admin_url('admin-post.php/?action=clearChildrenData&clear=1'); ?>
-                            <a href="<?php echo wp_nonce_url($clearChildrenUrl, 'clear_children_data'); ?>" class="button button-secondary" title="Use this button if wpDiscuz has been deactivated for a while." style="margin-left: 5px;" id="wpdiscuz_synch_comments"><?php _e('Refresh comment optimization', 'wpdiscuz'); ?></a>
+                            <?php
+                            $resetOptionsUrl = admin_url() . 'edit-comments.php?page=' . WpdiscuzCore::PAGE_SETTINGS . '&wpdiscuz_reset_options=1';
+                            $resetOptionsUrl = wp_nonce_url($resetOptionsUrl, 'wpdiscuz_reset_options_nonce');
+                            ?>
+                            <a id="wpdiscuz-reset-options" style="float: left;" class="button button-secondary" href="<?php echo $resetOptionsUrl; ?>"><?php _e('Reset Options', 'wpdiscuz'); ?></a>                            
                             <?php $voteUrl = admin_url('admin-post.php/?action=removeVoteData&remove=1'); ?>
-                            <a href="<?php echo wp_nonce_url($voteUrl, 'remove_vote_data'); ?>" class="button button-secondary" style="margin-left: 5px;" id="wpdiscuz_clear_votes"><?php _e('Remove vote data', 'wpdiscuz'); ?></a>
+                            <a id="wpdiscuz-remove-votes" href="<?php echo wp_nonce_url($voteUrl, 'remove_vote_data'); ?>" class="button button-secondary" style="margin-left: 5px;" id="wpdiscuz_clear_votes"><?php _e('Remove vote data', 'wpdiscuz'); ?></a>
                             <input style="float: right;" type="submit" class="button button-primary" name="wc_submit_options" value="<?php _e('Save Changes', 'wpdiscuz'); ?>" />                                
                         </p>
                     </td>

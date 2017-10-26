@@ -28,7 +28,7 @@ if (!post_password_required($post->ID)) {
     if (!$wpdiscuz->optionsSerialized->votingButtonsShowHide) {
         $wpdiscuz->dbManager->checkVoteData($post->ID);
     }
-    $commentsCount = $wpdiscuz->dbManager->getCommentsCount($post->ID);
+    $commentsCount = get_comments_number(); 
     $header_text = '<span class="wc_header_text_count">' . $commentsCount . '</span> ';
     $header_text .= ($commentsCount > 1) ? $wpdiscuz->optionsSerialized->phrases['wc_header_text_plural'] : $wpdiscuz->optionsSerialized->phrases['wc_header_text'];
     $header_text .= ' ' . $wpdiscuz->optionsSerialized->phrases['wc_header_on_text'];
@@ -96,7 +96,7 @@ if (!post_password_required($post->ID)) {
     ?>
     <div class="wpdiscuz_top_clearing"></div>
     <?php
-    if ($post->comment_status == 'open') {
+    if (comments_open($post)) {
         $wpdiscuz->helper->superSocializerFix();
         $form = $wpdiscuz->wpdiscuzForm->getForm($post->ID);
         $formCustomCss = $form->getCustomCSS();
@@ -178,7 +178,7 @@ if (!post_password_required($post->ID)) {
                                 </div>
                             <?php } ?>
                             <div class="wpdiscuz-subscribe-form-button">
-                                <input id="wpdiscuz_subscription_button" type="submit" value="&rsaquo;" name="wpdiscuz_subscription_button" />
+                                <input id="wpdiscuz_subscription_button" type="submit" value="<?php echo $wpdiscuz->optionsSerialized->phrases['wc_form_subscription_submit']; ?>" name="wpdiscuz_subscription_button" />
                             </div> 
                             <?php wp_nonce_field('wpdiscuz_subscribe_form_nonce_action', 'wpdiscuz_subscribe_form_nonce'); ?>
                             <input type="hidden" value="<?php echo $post->ID; ?>" name="wpdiscuzSubscriptionPostId" />
@@ -241,12 +241,9 @@ if (!post_password_required($post->ID)) {
                     <?php
                     $args = array();
                     $showLoadeMore = 1;
-                    if (isset($_GET['_escaped_fragment_'])) {
-                        parse_str($_GET['_escaped_fragment_'], $query_array);
-                        $lastParentId = isset($query_array['parentId']) ? intval($query_array['parentId']) : 0;
-                        if ($lastParentId) {
+                    $lastParentId = filter_input(INPUT_GET, 'wpdParentID', FILTER_SANITIZE_NUMBER_INT);
+                    if ($lastParentId) {
                             $args['last_parent_id'] = $lastParentId--;
-                        }
                     }
 
                     if ($wpdiscuz->optionsSerialized->showSortingButtons && $wpdiscuz->optionsSerialized->mostVotedByDefault && !$wpdiscuz->optionsSerialized->votingButtonsShowHide) {
@@ -261,7 +258,7 @@ if (!post_password_required($post->ID)) {
                             $loadMoreButtonText = ($wpdiscuz->optionsSerialized->commentListLoadType == 1) ? $wpdiscuz->optionsSerialized->phrases['wc_load_rest_comments_submit_text'] : $wpdiscuz->optionsSerialized->phrases['wc_load_more_submit_text'];
                             ?>
                             <div class="wc-load-more-submit-wrap">
-                                <a class="wc-load-more-link" href="<?php echo get_permalink($post->ID) . '#!parentId=' . $commentData['last_parent_id']; ?>">
+                                <a class="wc-load-more-link" href="<?php echo  $wpdiscuz->helper->loadMoreLink($commentData['last_parent_id'],$post->ID);?>">
                                     <button name="submit"  class="wc-load-more-submit wc-loaded button">
                                         <?php echo $loadMoreButtonText; ?>
                                     </button>
@@ -269,7 +266,7 @@ if (!post_password_required($post->ID)) {
                             </div>
                             <input id="wpdiscuzHasMoreComments" type="hidden" value="<?php echo $commentData['is_show_load_more']; ?>" />
                             <?php
-                        } else {
+                        } else if($wpdiscuz->optionsSerialized->wordpressIsPaginate){
                             paginate_comments_links();
                         }
                         ?>

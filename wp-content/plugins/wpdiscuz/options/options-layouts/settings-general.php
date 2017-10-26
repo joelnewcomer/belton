@@ -23,7 +23,11 @@ if (!defined('ABSPATH')) {
                     </p>
                 </th>
                 <td><input type="checkbox" <?php checked($this->optionsSerialized->isUserByEmail == 1) ?> value="1" name="isUserByEmail" id="isUserByEmail" /></td>
-            </tr>            
+            </tr>
+            <tr valign="top">
+                <th scope="row"><label for="isNotifyOnCommentApprove"><?php _e('Notify comment author if comment was approved', 'wpdiscuz'); ?></label></th>
+                <td><input type="checkbox" <?php checked($this->optionsSerialized->isNotifyOnCommentApprove == 1) ?> value="1" name="isNotifyOnCommentApprove" id="isNotifyOnCommentApprove" /></td>
+            </tr>
             <tr valign="top">
                 <th scope="row">
                     <?php _e('Comment author name min length (for guests only)', 'wpdiscuz'); ?>

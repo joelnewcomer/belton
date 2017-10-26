@@ -1,9 +1,9 @@
 === WordPress Comments Plugin - wpDiscuz ===
 Contributors: gVectors Team
 Tags: comment, comments, ajax comments, custom comment form, custom comment field
-Requires at least: 3.8.0
+Requires at least: 4.4
 Tested up to: 4.8
-Stable tag: 4.0.14
+Stable tag: 4.0.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -140,10 +140,15 @@ Support Forum: https://gvectors.com/forum/
 
 == Changelog ==
 
-= 4.0.14 =
+= 4.0.15 =
 
-* Fixed Bug: Use backslash symbol in comment textarea: '\'
-* Fixed Bug: Loose custom field data on comment editing
+* Now wpDiscuz requires at least WordPress 4.4 version
+* Added Option : Send notification to comment author when comment was approved
+* Added Phrase : Comment approved notification email subject
+* Added Phrase : Comment approved notification email message
+* Added Phrase : Top bar subscription submit button
+* Fixed Bug : Comment showing only after page refresh
+
 
 IMPORTANT:
 
@@ -151,6 +156,11 @@ IMPORTANT:
 - If you have a Cache Plugin, please delete all caches after wpDiscuz update.
 - If you use CDN and found some issue please purge it.
 - If your server PHP version is lower than 5.4, [please change it to hogher](https://wordpress.org/support/topic/wpdiscuz-4-requires-php-5-4-and-higher/)
+
+= 4.0.14 =
+
+* Fixed Bug: Use backslash symbol in comment textarea: '\'
+* Fixed Bug: Loose custom field data on comment editing
 
 = 4.0.13 =
 
@@ -407,7 +417,7 @@ IMPORTANT:
 
 = 3.1.0 =
 
-* Ðccelerated: Better WordPress comments cache compatibility
+* Accelerated: Better WordPress comments cache compatibility
 * Added: Finally we make wpDiscuz compatible from 3.8.0 Wordpress version
 * Added: Comment front-end editing for all user roles (+ admin, editor, author)
 * Fixed Bug: Show/Hide replies button disappearing when clicking on sorting buttons
@@ -438,7 +448,7 @@ IMPORTANT:
 * Added: Option to set maximum number of comment text words before breaking.
 * Added: Turkish (tr_TR) translation, thanks to Enes Emen
 * Optimized: some core functions and reduced database requests (SQL queries)
-* Ðaccelerated: new and faster function to recursively get comments (1.5s faster for 100 comments)
+* Accelerated: new and faster function to recursively get comments (1.5s faster for 100 comments)
 * Fixed Bug: problems related to comment edit/save functions 
 
 = 3.0.6 =
@@ -494,11 +504,11 @@ IMPORTANT: If you have a Cache Plugin and CDN, please delete all caches and purg
 IMPORTANT: If your're updating from wpDiscuz 1.x or from 2.x you should do one-time data optimization of existing comments. Please go to Comments > wpDiscuz Settings > Comments Optimization Tab and click on [Supercharge my comments] button and wait for 100% result. 
 
 * Boosted: Supports dozens of thousands comments per post (tested with 50k/per post)
-* Ðccelerated: First page load x10 faster (for >100 comments)
-* Ðccelerated: Load more comments (button) x12 faster  (for >100 comments)
-* Ðccelerated: Live Update x20 faster (for >100 new comments)
-* Ðccelerated: Commenting x2 faster
-* Ðccelerated: Voting x2 faster
+* Accelerated: First page load x10 faster (for >100 comments)
+* Accelerated: Load more comments (button) x12 faster  (for >100 comments)
+* Accelerated: Live Update x20 faster (for >100 new comments)
+* Accelerated: Commenting x2 faster
+* Accelerated: Voting x2 faster
 * Optimized: SQL queries are x10 less
 * Optimized: Memory usage x6 less
 * Optimized: Better SEO with AJAX crawling technology for Search Engine Bots

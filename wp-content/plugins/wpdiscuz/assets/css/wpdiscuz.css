@@ -130,7 +130,7 @@
 #wpcomm .wpdiscuz-subscribe-form-button{font-size:14px;float:left;display:block;box-sizing:border-box}
 #wpcomm .wpdiscuz-subscribe-form-email select{width:100%!important}
 #wpcomm .wpdiscuz-subscribe-form-email input[type="email"]{font-size:13px!important;padding:3px!important;width:100%!important;height:auto!important;line-height:20px!important;box-sizing:border-box!important;clear:both;float:none;margin:0}
-#wpcomm .wpdiscuz-subscribe-form-button input[type="submit"]{font-size:16px!important;min-height:29px!important;height:29px!important;padding:1px 3px 5px 3px!important;width:40px;line-height:14px!important;box-sizing:border-box!important;border:1px solid #ddd;clear:both;float:none;margin:0}
+#wpcomm .wpdiscuz-subscribe-form-button input[type="submit"]{font-size:16px!important;min-height:29px!important;height:29px!important;padding:1px 3px 5px 3px!important;min-width:40px;line-height:14px!important;box-sizing:border-box!important;border:1px solid #ddd;clear:both;float:none;margin:0}
 #wpcomm .wc-comment-link{font-size:12px;float:right;text-align:right;line-height:20px;height:15px;padding:0 0 0 10px; margin:5px;}
 #wpcomm .wc-comment-link .wpf-cta{ cursor:pointer; font-size:13px; padding:3px 4px; min-width:22px; text-align:center; display:inline-block; margin:1px; line-height:16px;}
 

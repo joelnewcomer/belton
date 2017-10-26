@@ -19,13 +19,26 @@ jQuery(document).ready(function ($) {
         } else {
             $('#row_mostVotedByDefault').addClass('wc-hidden');
         }
-    });   
-    
-    $('#wc_share_button_fb').click(function(){
+    });
+
+    $('#wc_share_button_fb').click(function () {
         if ($(this).is(':checked')) {
-            $('#wpc-fb-api-cont').attr('style','');
+            $('#wpc-fb-api-cont').attr('style', '');
         } else {
-            $('#wpc-fb-api-cont').attr('style','display:none');
+            $('#wpc-fb-api-cont').attr('style', 'display:none');
         }
-    });   
+    });
+
+    $('#wpdiscuz-reset-options').click(function (e) {
+        if (!confirm(wpdiscuzObj.msgConfirmResetOptions)) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    $('#wpdiscuz-remove-votes').click(function (e) {
+        if (!confirm(wpdiscuzObj.msgConfirmRemoveVotes)) {
+            e.preventDefault();
+            return false;
+        }
+    });
 });

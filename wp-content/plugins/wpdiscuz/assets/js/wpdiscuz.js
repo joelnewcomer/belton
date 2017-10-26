@@ -25,6 +25,7 @@ jQuery(document).ready(function ($) {
     var commentTextMaxLength = wpdiscuzAjaxObj.wpdiscuz_options.commentTextMaxLength;
     var wpdGoogleRecaptchaValid = true;
     var wpdiscuzReplyButton = '';
+    var wpdiscuzCookiehash = wpdiscuzAjaxObj.wpdiscuz_options.cookiehash;;
 
     loginButtonsClone();
     displayShowHideReplies();
@@ -252,12 +253,12 @@ jQuery(document).ready(function ($) {
                 data.append('fileName', fileName);
             }
 
-            if (Cookies.get('wc_author_name') && !$('.wc_name', wcForm).val()) {
-                data.append('wc_name', Cookies.get('wc_author_name'));
+            if (Cookies.get('comment_author_' + wpdiscuzCookiehash) && !$('.wc_name', wcForm).val()) {
+                data.append('wc_name', Cookies.get('comment_author_' + wpdiscuzCookiehash));
             }
 
-            if (Cookies.get('wc_author_email') && !$('.wc_email', wcForm).val()) {
-                data.append('wc_email', Cookies.get('wc_author_email'));
+            if (Cookies.get('comment_author_email_' + wpdiscuzCookiehash) && !$('.wc_email', wcForm).val()) {
+                data.append('wc_email', Cookies.get('comment_author_email_' + wpdiscuzCookiehash));
             }
 
             if (wpdiscuzAjaxObj.wpdiscuz_options.wpdiscuz_zs) {
@@ -374,14 +375,14 @@ jQuery(document).ready(function ($) {
     }
 
     function setCookieInForm() {
-        if (Cookies.get('wc_author_name') && Cookies.get('wc_author_name').indexOf('Anonymous') < 0) {
-            $('.wc_comm_form .wc_name').val(Cookies.get('wc_author_name'));
+        if (Cookies.get('comment_author_' + wpdiscuzCookiehash) && Cookies.get('comment_author_' + wpdiscuzCookiehash).indexOf('Anonymous') < 0) {
+            $('.wc_comm_form .wc_name').val(Cookies.get('comment_author_' + wpdiscuzCookiehash));
         }
-        if (Cookies.get('wc_author_email') && Cookies.get('wc_author_email').indexOf('@example.com') < 0) {
-            $('.wc_comm_form .wc_email').val(Cookies.get('wc_author_email'));
+        if (Cookies.get('comment_author_email_' + wpdiscuzCookiehash) && Cookies.get('comment_author_email_' + wpdiscuzCookiehash).indexOf('@example.com') < 0) {
+            $('.wc_comm_form .wc_email').val(Cookies.get('comment_author_email_' + wpdiscuzCookiehash));
         }
-        if (Cookies.get('wc_author_website')) {
-            $('.wc_comm_form .wc_website').val(Cookies.get('wc_author_website'));
+        if (Cookies.get('comment_author_url_' + wpdiscuzCookiehash)) {
+            $('.wc_comm_form .wc_website').val(Cookies.get('comment_author_url_' + wpdiscuzCookiehash));
         }
     }
 
@@ -399,17 +400,17 @@ jQuery(document).ready(function ($) {
             name = obj.user_name;
         }
         if (storeCommenterData == null) {
-            Cookies.set('wc_author_email', email);
-            Cookies.set('wc_author_name', name);
+            Cookies.set('comment_author_email_' + wpdiscuzCookiehash, email);
+            Cookies.set('comment_author_' + wpdiscuzCookiehash, name);
             if ($('.wc_website', wcForm).length) {
-                Cookies.set('wc_author_website', $('.wc_website', wcForm).val());
+                Cookies.set('comment_author_url_' + wpdiscuzCookiehash, $('.wc_website', wcForm).val());
             }
         } else {
             storeCommenterData = parseInt(storeCommenterData);
-            Cookies.set('wc_author_email', email, {expires: storeCommenterData, path: '/'});
-            Cookies.set('wc_author_name', name, {expires: storeCommenterData, path: '/'});
+            Cookies.set('comment_author_email_' + wpdiscuzCookiehash, email, {expires: storeCommenterData, path: '/'});
+            Cookies.set('comment_author_' + wpdiscuzCookiehash, name, {expires: storeCommenterData, path: '/'});
             if ($('.wc_website', wcForm).length) {
-                Cookies.set('wc_author_website', $('.wc_website', wcForm).val(), {expires: storeCommenterData, path: '/'});
+                Cookies.set('comment_author_url_' + wpdiscuzCookiehash, $('.wc_website', wcForm).val(), {expires: storeCommenterData, path: '/'});
             }
         }
     }
@@ -748,7 +749,7 @@ jQuery(document).ready(function ($) {
 
     function liveUpdate() {
         var visibleCommentIds = getVisibleCommentIds();
-        var email = (Cookies.get('wc_author_email') != undefined && Cookies.get('wc_author_email') != '') ? Cookies.get('wc_author_email') : '';
+        var email = (Cookies.get('comment_author_email_' + wpdiscuzCookiehash) != undefined && Cookies.get('comment_author_email_' + wpdiscuzCookiehash) != '') ? Cookies.get('comment_author_email_' + wpdiscuzCookiehash) : '';
         var data = new FormData();
         data.append('action', 'updateAutomatically');
         data.append('loadLastCommentId', loadLastCommentId);

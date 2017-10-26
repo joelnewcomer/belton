@@ -632,6 +632,9 @@ class Form {
                                 $hasForm = false;
                                 $formRelExistsInfo = '<p class="wpd-info" style="padding-top:3px;">' . __('The red marked post types are already attached to other comment form. If you set this form too, the old forms will not be used for them.', 'wpdiscuz') . '</p>';
                                 foreach ($registeredPostTypes as $typeKey => $typeValue) {
+                                    if (!post_type_supports($typeKey, 'comments')) {
+                                        continue;
+                                    }
                                     $checked = array_key_exists($typeKey, $this->formPostTypes) ? 'checked' : '';
                                     $formRelExistsClass = '';
                                     if (!$checked && isset($formContentTypeRel[$typeKey][$lang])) {

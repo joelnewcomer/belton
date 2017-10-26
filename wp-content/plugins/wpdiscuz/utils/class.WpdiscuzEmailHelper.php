@@ -181,12 +181,15 @@ class WpdiscuzEmailHelper {
         }
     }
 
-    public function notificationFromDashboard($comment_ID, $comment_approved, $commentdata) {
+    public function notificationFromDashboard($comment_ID, $comment_approved) {
         $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-        if ($comment_approved == 1 && $referer && (strpos($referer, 'edit-comments.php') !== false)) {
-            $postId = $commentdata['comment_post_ID'];
-            $email = $commentdata['comment_author_email'];
-            $parentComment = get_comment($commentdata['comment_parent']);
+        $commentdata = get_comment($comment_ID);
+        $commentsPage = strpos($referer, 'edit-comments.php') !== false;
+        $postCommentsPage = (strpos($referer, 'post.php') !== false) && (strpos($referer, 'action=edit') !== false);
+        if ($comment_approved == 1 && ($commentsPage || $postCommentsPage) && $commentdata) {
+            $postId = $commentdata->comment_post_ID;
+            $email = $commentdata->comment_author_email;
+            $parentComment = get_comment($commentdata->comment_parent);
             $this->notifyPostSubscribers($postId, $comment_ID, $email);
             if ($parentComment) {
                 $parentCommentEmail = $parentComment->comment_author_email;
@@ -195,6 +198,29 @@ class WpdiscuzEmailHelper {
                     $this->notifyCommentSubscribers($parentComment->comment_ID, $comment_ID, $email);
                 }
             }
+        }
+    }
+
+    public function notifyOnApproving($comment) {
+        if ($comment) {
+            $user = $comment->user_id ? get_userdata($comment->user_id) : null;
+            if ($user) {
+                $email = $user->user_email;
+            } else {
+                $email = $comment->comment_author_email;
+            }
+            $permalink = get_comment_link($comment);
+            $phraseSubject = $this->optionsSerialized->phrases['wc_comment_approved_email_subject'];
+            $phraseMessage = $this->optionsSerialized->phrases['wc_comment_approved_email_message'];
+            $message = "$phraseMessage<br/><br/><a href='$permalink'>$permalink</a>";
+            $message .= "<br/><br/>{$comment->comment_content}";
+            $headers = array();
+            $content_type = apply_filters('wp_mail_content_type', 'text/html');
+            $from_name = apply_filters('wp_mail_from_name', get_option('blogname'));
+            $from_email = apply_filters('wp_mail_from', get_option('admin_email'));
+            $headers[] = "Content-Type:  $content_type; charset=UTF-8";
+            $headers[] = "From: " . $from_name . " <" . $from_email . "> \r\n";
+            wp_mail($email, $phraseSubject, $message, $headers);
         }
     }
 

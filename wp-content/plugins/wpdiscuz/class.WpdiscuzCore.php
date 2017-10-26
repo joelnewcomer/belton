@@ -1,9 +1,9 @@
 <?php
 
 /*
- * Plugin Name: WordPress Comments Plugin – wpDiscuz
+ * Plugin Name: wpDiscuz
  * Description: Better comment system. Wordpress post comments and discussion plugin. Allows your visitors discuss, vote for comments and share.
- * Version: 4.0.14
+ * Version: 4.0.15
  * Author: gVectors Team (A. Chakhoyan, G. Zakaryan, H. Martirosyan)
  * Author URI: https://gvectors.com/
  * Plugin URI: http://wpdiscuz.com/
@@ -18,8 +18,8 @@ define('WPDISCUZ_DS', DIRECTORY_SEPARATOR);
 define('WPDISCUZ_DIR_PATH', dirname(__FILE__));
 define('WPDISCUZ_DIR_NAME', basename(WPDISCUZ_DIR_PATH));
 
-include_once 'utils/functions.php';
 include_once 'utils/interface.WpDiscuzConstants.php';
+include_once 'utils/functions.php';
 include_once 'options/class.WpdiscuzOptions.php';
 include_once 'options/class.WpdiscuzOptionsSerialized.php';
 include_once 'utils/class.WpdiscuzHelper.php';
@@ -92,13 +92,9 @@ class WpdiscuzCore implements WpDiscuzConstants {
         add_action('wp_ajax_nopriv_checkNotificationType', array(&$this->emailHelper, 'checkNotificationType'));
         add_action('wp_ajax_redirect', array(&$this, 'redirect'));
         add_action('wp_ajax_nopriv_redirect', array(&$this, 'redirect'));
-        add_action('admin_post_clearChildrenData', array(&$this->optimizationHelper, 'clearChildrenData'));
         add_action('admin_post_removeVoteData', array(&$this->optimizationHelper, 'removeVoteData'));
-        add_action('wp_insert_comment', array(&$this->optimizationHelper, 'addCommentToTree'), 2689, 2);
-        add_action('comment_post', array(&$this->emailHelper, 'notificationFromDashboard'), 2712, 3);
+        add_action('comment_post', array(&$this->emailHelper, 'notificationFromDashboard'), 2712, 2);
         add_action('transition_comment_status', array(&$this->optimizationHelper, 'statusEventHandler'), 265, 3);
-        add_action('delete_comment', array(&$this->optimizationHelper, 'initSubComments'), 266);
-        add_action('deleted_comment', array(&$this->optimizationHelper, 'deleteCommentFromTree'), 267);
         $plugin = plugin_basename(__FILE__);
         add_filter("plugin_action_links_$plugin", array(&$this, 'addPluginSettingsLink'));
         add_filter('comments_clauses', array(&$this, 'getCommentsArgs'));
@@ -121,6 +117,8 @@ class WpdiscuzCore implements WpDiscuzConstants {
         }
 
         add_action('wp_loaded', array(&$this, 'addNewRoles'));
+        add_filter('comments_template_query_args', array(&$this, 'commentsTemplateQueryArgs'));
+        add_action('pre_get_comments', array(&$this, 'preGetComments'));
     }
 
     public function pluginActivation($networkwide) {
@@ -441,7 +439,7 @@ class WpdiscuzCore implements WpDiscuzConstants {
                         'comment_ID' => $commentId,
                         'comment_content' => $commentContent,
                         'comment_author_IP' => $author_ip,
-                        'comment_agent' =>  $userAgent,
+                        'comment_agent' => $userAgent,
                         'comment_approved' => $comment->comment_approved
                     );
                     wp_update_comment(wp_slash($commentarr));
@@ -486,7 +484,7 @@ class WpdiscuzCore implements WpDiscuzConstants {
             $tree = array();
             $tree = $this->optimizationHelper->getTreeByParentId($parentComment->comment_ID, $tree);
             $this->commentsArgs = $this->getDefaultCommentsArgs();
-            $this->commentsArgs['wc_comments'] = array_merge(array($parentComment->comment_ID), $tree);
+            $this->commentsArgs['comment__in'] = array_merge(array($parentComment->comment_ID), $tree);
             $comments = get_comments($this->commentsArgs);
             $commentListArgs = $this->getCommentListArgs($postId);
             $commentListArgs['isSingle'] = true;
@@ -569,11 +567,6 @@ class WpdiscuzCore implements WpDiscuzConstants {
 
             if ($isUserVoted != '') {
                 $vote = intval($isUserVoted) + $voteType;
-
-//                if ($isUserVoted == 0 && !$this->optionsSerialized->votingButtonsStyle) {
-//                    $messageArray['code'] = 'wc_vote_only_one_time';
-//                    wp_die(json_encode($messageArray));
-//                }
 
                 if ($vote >= -1 && $vote <= 1) {
                     $this->dbManager->updateVoteType($userIdOrIp, $commentId, $vote);
@@ -684,27 +677,50 @@ class WpdiscuzCore implements WpDiscuzConstants {
     }
 
     private function _getWPComments(&$commentListArgs, &$commentData) {
+        $commentList = array();
         if (!$this->optionsSerialized->wordpressIsPaginate) {
-            $this->commentsArgs['wc_comments'] = $this->dbManager->getCommentList($this->commentsArgs);
-            $commentData['last_parent_id'] = $this->commentsArgs['wc_comments'] ? $this->commentsArgs['wc_comments'][count($this->commentsArgs['wc_comments']) - 1] : 0;
+            $this->commentsArgs['comment__in'] = $this->dbManager->getCommentList($this->commentsArgs);
+            $commentData['last_parent_id'] = $this->commentsArgs['comment__in'] ? $this->commentsArgs['comment__in'][count($this->commentsArgs['comment__in']) - 1] : 0;
             if ($this->commentsArgs['is_threaded']) {
-                $commentmetaIds = $this->optimizationHelper->getCommentListByParentIds($this->commentsArgs['wc_comments'], $this->commentsArgs['post_id']);
-                $this->commentsArgs['wc_comments'] = array_merge($this->commentsArgs['wc_comments'], $commentmetaIds);
+                $parentComments = get_comments($this->commentsArgs);
+                foreach ($parentComments as $parentComment) {
+                    $commentList[] = $parentComment;
+                    $childComments = $parentComment->get_children(array(
+                        'format' => 'flat',
+                        'status' => $this->commentsArgs['status'],
+                        'orderby' => $this->commentsArgs['orderby']
+                    ));
+                    foreach ($childComments as $childComment) {
+                        $commentList[] = $childComment;
+                    }
+                }
+            } else {
+                $commentList = get_comments($this->commentsArgs);
             }
             $commentListArgs['page'] = 1;
             $commentListArgs['last_parent_id'] = $commentData['last_parent_id'];
-            $commentData['is_show_load_more'] = $this->helper->isShowLoadMore($commentData['last_parent_id'], $this->commentsArgs);
+            $commentData['is_show_load_more'] = $this->dbManager->isShowLoadMore;
+        } else {
+            unset($commentListArgs['reverse_top_level']);
+            $commentList = null;
         }
-        if (isset($_COOKIE['wc_moderate_comments_' . $this->commentsArgs['post_id']])) {
-            $moderateComments = explode(',', $_COOKIE['wc_moderate_comments_' . $this->commentsArgs['post_id']]);
-            if ($moderateComments && is_array($moderateComments) && is_array($this->commentsArgs['wc_comments'])) {
-                $this->commentsArgs['status'] = 'all';
-                $this->commentsArgs['wc_comments'] = array_merge($this->commentsArgs['wc_comments'], $moderateComments);
-                $commentListArgs['comment_status'] = array_merge($commentListArgs['comment_status'], array(0));
-            }
-        }
-        $commentList = get_comments($this->commentsArgs);
         return $commentList;
+    }
+
+    public function commentsTemplateQueryArgs($args) {
+        global $post;
+        if ($this->helper->isLoadWpdiscuz($post) && !$this->optionsSerialized->wordpressIsPaginate) {
+            $args['post__not_in'] = $post->ID;
+        }
+        return $args;
+    }
+
+    public function preGetComments($queryObj) {
+        if ($this->commentsArgs['caller'] === 'wpdiscuz-') {
+            $vars = $queryObj->query_vars;
+            $vars['comment__in'] = '';
+            $queryObj->query_vars = $vars;
+        }
     }
 
     /**
@@ -713,15 +729,12 @@ class WpdiscuzCore implements WpDiscuzConstants {
      */
     public function getCommentsArgs($args) {
         global $wpdb;
-        if ($this->commentsArgs['caller'] === 'wpdiscuz' && $this->commentsArgs['wc_comments']) {
+        if ($this->commentsArgs['caller'] === 'wpdiscuz' && $this->commentsArgs['comment__in']) {
             $orderby = '';
-            $args['caller'] = 'wpdiscuz-';
-            $comments = implode(',', $this->commentsArgs['wc_comments']);
-            $commentIds = trim($comments, ',');
-            $args['where'] .= " AND " . $wpdb->comments . ".comment_ID IN ($commentIds) ";
+            $args['caller'] = $this->commentsArgs['caller'] = 'wpdiscuz-';
             if (!$this->optionsSerialized->votingButtonsShowHide) {
                 $args['join'] .= "INNER JOIN " . $wpdb->commentmeta . " ON " . $wpdb->comments . ".comment_ID = " . $wpdb->commentmeta . ".comment_id";
-                $args['where'] .= "AND (" . $wpdb->commentmeta . ".meta_key = '" . self::META_KEY_VOTES . "')";
+                $args['where'] .= " AND (" . $wpdb->commentmeta . ".meta_key = '" . self::META_KEY_VOTES . "')";
             }
             if ($this->commentsArgs['orderby'] == 'by_vote') {
                 $orderby = $wpdb->commentmeta . ".meta_value+0 DESC, ";
@@ -733,6 +746,8 @@ class WpdiscuzCore implements WpDiscuzConstants {
     }
 
     private function getDefaultCommentsArgs($postId = 0) {
+        global $user_ID;
+        $commenter = wp_get_current_commenter();
         $args = array(
             'caller' => 'wpdiscuz',
             'post_id' => intval($postId),
@@ -744,8 +759,23 @@ class WpdiscuzCore implements WpDiscuzConstants {
             'limit' => $this->optionsSerialized->wordpressCommentPerPage,
             'is_threaded' => $this->optionsSerialized->wordpressThreadComments,
             'status' => 'approve',
-            'wc_comments' => ''
+            'comment__in' => '',
+            'hierarchical' => 'threaded',
+            'update_comment_meta_cache' => false,
+            'no_found_rows' => false,
         );
+
+        if (current_user_can('moderate_comments')) {
+            $args['status'] = 'all';
+        }
+        if (!$this->optionsSerialized->wordpressThreadComments) {
+            $args['hierarchical'] = false;
+        }
+        if ($user_ID) {
+            $args['include_unapproved'] = array($user_ID);
+        } elseif (!empty($commenter['comment_author_email'])) {
+            $args['include_unapproved'] = array($commenter['comment_author_email']);
+        }
         return apply_filters('wpdiscuz_comments_args', $args);
     }
 
@@ -767,8 +797,13 @@ class WpdiscuzCore implements WpDiscuzConstants {
      */
     public function adminPageStylesScripts() {
         global $typenow;
-        $wpdiscuzPages = array(self::PAGE_SETTINGS, self::PAGE_PHRASES, self::PAGE_TOOLS, self::PAGE_ADDONS);
+        $wpdiscuzPages = apply_filters('wpdiscuz_admin_pages', array(self::PAGE_SETTINGS, self::PAGE_PHRASES, self::PAGE_TOOLS, self::PAGE_ADDONS));
         if ((isset($_GET['page']) && in_array($_GET['page'], $wpdiscuzPages)) || ($typenow == 'wpdiscuz_form')) {
+            $args = array(
+                'msgConfirmResetOptions' => __('Do you really want to reset all options?', 'wpdiscuz'),
+                'msgConfirmRemoveVotes' => __('Do you really want to remove voting data?', 'wpdiscuz'),
+            );
+
             wp_register_style('wpdiscuz-font-awesome', plugins_url(WPDISCUZ_DIR_NAME . '/assets/third-party/font-awesome-4.6.3/css/font-awesome.min.css'), null, '4.6.3');
             wp_enqueue_style('wpdiscuz-font-awesome');
             wp_register_style('wpdiscuz-cp-index-css', plugins_url(WPDISCUZ_DIR_NAME . '/assets/third-party/colorpicker/css/index.css'));
@@ -789,6 +824,7 @@ class WpdiscuzCore implements WpDiscuzConstants {
             wp_enqueue_style('wpdiscuz-options-css');
             wp_register_script('wpdiscuz-options-js', plugins_url(WPDISCUZ_DIR_NAME . '/assets/js/wpdiscuz-options.js'), array('jquery'));
             wp_enqueue_script('wpdiscuz-options-js');
+            wp_localize_script('wpdiscuz-options-js', 'wpdiscuzObj', $args);
             wp_enqueue_script('thickbox');
             wp_register_script('wpdiscuz-jquery-cookie', plugins_url(WPDISCUZ_DIR_NAME . '/assets/third-party/wpdcookiejs/customcookie.js'), array('jquery'), '2.1.3', true);
             wp_enqueue_script('wpdiscuz-jquery-cookie');
@@ -828,11 +864,14 @@ class WpdiscuzCore implements WpDiscuzConstants {
             wp_enqueue_script('wpdiscuz-cookie-js');
             wp_register_script('autogrowtextarea-js', plugins_url(WPDISCUZ_DIR_NAME . '/assets/third-party/autogrow/jquery.autogrowtextarea.min.js'), array('jquery'), '3.0', false);
             wp_enqueue_script('autogrowtextarea-js');
-            $cArgs = $this->getDefaultCommentsArgs($post->ID);
             $this->wpdiscuzOptionsJs = $this->optionsSerialized->getOptionsForJs();
             $this->wpdiscuzOptionsJs['version'] = $this->version;
             $this->wpdiscuzOptionsJs['wc_post_id'] = $post->ID;
-            $this->wpdiscuzOptionsJs['loadLastCommentId'] = $this->dbManager->getLastCommentId($cArgs);
+            $this->wpdiscuzOptionsJs['loadLastCommentId'] = 0;
+            if($this->optionsSerialized->commentListUpdateType) {
+                $cArgs = $this->getDefaultCommentsArgs($post->ID);
+                $this->wpdiscuzOptionsJs['loadLastCommentId'] = $this->dbManager->getLastCommentId($cArgs);
+            }
             $this->wpdiscuzOptionsJs = apply_filters('wpdiscuz_js_options', $this->wpdiscuzOptionsJs);
             wp_enqueue_script('jquery-form');
             wp_register_script('wpdiscuz-ajax-js', plugins_url(WPDISCUZ_DIR_NAME . '/assets/js/wpdiscuz.js'), array('jquery'), $this->version);
@@ -855,7 +894,6 @@ class WpdiscuzCore implements WpDiscuzConstants {
     public function pluginNewVersion() {
         $this->dbManager->createEmailNotificationTable();
         $wc_plugin_data = get_plugin_data(__FILE__);
-//        $this->initPluginVersion();
         if (version_compare($wc_plugin_data['Version'], $this->version, '>')) {
             $this->wpdiscuzForm->createDefaultForm($this->version);
             $options = $this->changeOldOptions(get_option(self::OPTION_SLUG_OPTIONS));

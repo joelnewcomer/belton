@@ -282,31 +282,6 @@ class WpdiscuzHelper {
         return $id_strings;
     }
 
-    public function isShowLoadMore($parentId, $args) {
-        $postId = $args['post_id'];
-        $postAllParent = $this->dbManager->getAllParentCommentCount($postId, $this->optionsSerialized->wordpressThreadComments);
-        $showLoadeMore = false;
-        if ($postAllParent) {
-            if ($args['orderby'] == 'comment_date_gmt') {
-                if ($args['order'] == 'desc' && $parentId) {
-                    $minId = min($postAllParent);
-                    $showLoadeMore = $minId < $parentId;
-                } else {
-                    $maxId = max($postAllParent);
-                    $showLoadeMore = $maxId > $parentId;
-                }
-                $showLoadeMore = $showLoadeMore && $this->optionsSerialized->wordpressCommentPerPage && (count($postAllParent) > $this->optionsSerialized->wordpressCommentPerPage);
-            } else {
-                if ($this->optionsSerialized->commentListLoadType == 1 && $args['limit'] == 0) {
-                    $showLoadeMore = false;
-                } else {
-                    $showLoadeMore = $args['offset'] + $this->optionsSerialized->wordpressCommentPerPage < count($postAllParent);
-                }
-            }
-        }
-        return $showLoadeMore;
-    }
-
     public function superSocializerFix() {
         if (function_exists('the_champ_login_button')) {
             ?>
@@ -431,6 +406,13 @@ class WpdiscuzHelper {
                 }
                 $authorURL = apply_filters('author_link', $authorURL, $author_id, $author_nicename);
                 return $authorURL;
+            }
+            
+            public function loadMoreLink($parentCommentID,$post_id){
+                global $wp_rewrite;
+                $loadMoreLink = !$wp_rewrite->using_permalinks() ? get_permalink($post_id) . "&" : get_permalink($post_id) . "?";
+                $loadMoreLink.= 'wpdParentID='.$parentCommentID;
+                return $loadMoreLink;
             }
 
         }

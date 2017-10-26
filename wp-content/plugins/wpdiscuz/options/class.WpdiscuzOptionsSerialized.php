@@ -1,6 +1,6 @@
 <?php
 
-class WpdiscuzOptionsSerialized {
+class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
 
     /**
      * Type - Checkbox
@@ -276,14 +276,14 @@ class WpdiscuzOptionsSerialized {
      * Default Value - #FFD700
      */
     public $ratingActivColor;
-    
+
     /**
      * Type - Checkbox
      * Available Values - before , after
      * Description - Display ratings on page 
      * Default Value - after
      */
-    public $displayRatingOnPost; 
+    public $displayRatingOnPost;
 
     // == RATING == //
 
@@ -436,7 +436,6 @@ class WpdiscuzOptionsSerialized {
      */
     public $enableImageConversion;
 
-    
     /**
      * Type - Radio Button
      * Available Values - 1 Replace non-https content to simple link URLs  / 2 Just replace http protocols to https (https may not be supported by content provider) / 3 Ignore non-https content 
@@ -444,8 +443,7 @@ class WpdiscuzOptionsSerialized {
      * Default Value - 1 Replace non-https content to simple link URLs
      */
     public $commentLinkFilter;
-    
-    
+
     /**
      * Type - Input
      * Available Values - Integer (after the limit has been reached show read more link)
@@ -453,7 +451,7 @@ class WpdiscuzOptionsSerialized {
      * Default Value - 100 words
      */
     public $commenterNameMinLength;
-    
+
     /**
      * Type - Checkbox
      * Available Values - checked / unchecked
@@ -461,7 +459,7 @@ class WpdiscuzOptionsSerialized {
      * Default Value - unchecked
      */
     public $disableTips;
-    
+
     /**
      * Type - Checkbox
      * Available Values - checked / unchecked
@@ -492,6 +490,14 @@ class WpdiscuzOptionsSerialized {
     public $facebookAppID;
 
     /**
+     * Type - Checkbox
+     * Available Values - checked / unchecked
+     * Description - Notify comment author if comment was approved
+     * Default Value - checked
+     */
+    public $isNotifyOnCommentApprove;
+
+    /**
      * wordpress options
      */
     public $wordpressDateFormat;
@@ -508,7 +514,7 @@ class WpdiscuzOptionsSerialized {
         $this->dbManager = $dbmanager;
         $this->initPhrases();
         $this->addOptions();
-        $this->initOptions(get_option(WpdiscuzCore::OPTION_SLUG_OPTIONS));
+        $this->initOptions(get_option(self::OPTION_SLUG_OPTIONS));
         $this->wordpressDateFormat = get_option('date_format');
         $this->wordpressTimeFormat = get_option('time_format');
         $this->wordpressThreadComments = get_option('thread_comments');
@@ -517,7 +523,7 @@ class WpdiscuzOptionsSerialized {
         $this->wordpressCommentOrder = get_option('comment_order');
         $this->wordpressCommentPerPage = get_option('comments_per_page');
         $this->wordpressShowAvatars = get_option('show_avatars');
-        $this->wordpressDefaultCommentsPage = get_option('default_comments_page');
+        $this->wordpressDefaultCommentsPage = get_option('default_comments_page');        
         $this->initFormRelations();
         $this->initGoodbyeCaptchaField();
         add_action('init', array(&$this, 'initPhrasesOnLoad'), 2126);
@@ -583,6 +589,7 @@ class WpdiscuzOptionsSerialized {
         $this->commenterNameMinLength = isset($options['commenterNameMinLength']) ? $options['commenterNameMinLength'] : 1;
         $this->commenterNameMaxLength = isset($options['commenterNameMaxLength']) ? $options['commenterNameMaxLength'] : 50;
         $this->facebookAppID = isset($options['facebookAppID']) ? $options['facebookAppID'] : '';
+        $this->isNotifyOnCommentApprove = isset($options['isNotifyOnCommentApprove']) ? $options['isNotifyOnCommentApprove'] : 0;
         do_action('wpdiscuz_init_options', $this);
     }
 
@@ -649,8 +656,7 @@ class WpdiscuzOptionsSerialized {
             'wc_second_text' => array('datetime' => array(__('second', 'wpdiscuz'), 6)),
             'wc_second_text_plural' => array('datetime' => array(__('seconds', 'wpdiscuz'), 6)), // PLURAL
             'wc_right_now_text' => __('right now', 'wpdiscuz'),
-            'wc_ago_text' => __('ago', 'wpdiscuz'),
-            'wc_posted_today_text' => __('Today', 'wpdiscuz'),
+            'wc_ago_text' => __('ago', 'wpdiscuz'),            
             'wc_you_must_be_text' => __('You must be', 'wpdiscuz'),
             'wc_logged_in_as' => __('You are logged in as', 'wpdiscuz'),
             'wc_log_out' => __('Log out', 'wpdiscuz'),
@@ -684,7 +690,10 @@ class WpdiscuzOptionsSerialized {
             'wc_msg_required_fields' => __('Please fill out required fields', 'wpdiscuz'),
             'wc_connect_with' => __('Connect with', 'wpdiscuz'),
             'wc_subscribed_to' => __('You\'re subscribed to', 'wpdiscuz'),
-            'wc_postmatic_subscription_label' => __('Participate in this discussion via email', 'wpdiscuz')
+            'wc_postmatic_subscription_label' => __('Participate in this discussion via email', 'wpdiscuz'),
+            'wc_form_subscription_submit' => __('&rsaquo;', 'wpdiscuz'),
+            'wc_comment_approved_email_subject' => __('Comment was approved', 'wpdiscuz'),
+            'wc_comment_approved_email_message' => __('Hi, <br/> Your comment was approved.', 'wpdiscuz'),
         );
     }
 
@@ -748,12 +757,13 @@ class WpdiscuzOptionsSerialized {
             'commenterNameMinLength' => $this->commenterNameMinLength,
             'commenterNameMaxLength' => $this->commenterNameMaxLength,
             'facebookAppID' => $this->facebookAppID,
+            'isNotifyOnCommentApprove' => $this->isNotifyOnCommentApprove,
         );
         return $options;
     }
 
     public function updateOptions() {
-        update_option(WpdiscuzCore::OPTION_SLUG_OPTIONS, serialize($this->toArray()));
+        update_option(self::OPTION_SLUG_OPTIONS, serialize($this->toArray()));
     }
 
     public function addOptions() {
@@ -821,9 +831,10 @@ class WpdiscuzOptionsSerialized {
             'commenterNameMinLength' => '3',
             'commenterNameMaxLength' => '50',
             'facebookAppID' => '',
+            'isNotifyOnCommentApprove' => '1',
             'wcf_google_map_api_key' => '',
         );
-        add_option(WpdiscuzCore::OPTION_SLUG_OPTIONS, serialize($options));
+        add_option(self::OPTION_SLUG_OPTIONS, serialize($options));
     }
 
     public function initPhrasesOnLoad() {
@@ -889,6 +900,8 @@ class WpdiscuzOptionsSerialized {
         $js_options['isCaptchaInSession'] = (boolean) $this->isCaptchaInSession;
         $js_options['isGoodbyeCaptchaActive'] = (boolean) $this->isGoodbyeCaptchaActive;
         $js_options['facebookAppID'] = $this->facebookAppID;
+        $js_options['cookiehash'] = COOKIEHASH;
+
         return $js_options;
     }
 

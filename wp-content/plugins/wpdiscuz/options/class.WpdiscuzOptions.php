@@ -86,8 +86,10 @@ class WpdiscuzOptions {
             $this->optionsSerialized->commenterNameMinLength = isset($_POST['commenterNameMinLength']) && intval($_POST['commenterNameMinLength']) >= 1 ? $_POST['commenterNameMinLength'] : 1;
             $this->optionsSerialized->commenterNameMaxLength = isset($_POST['commenterNameMaxLength']) && intval($_POST['commenterNameMaxLength']) >= 3 && intval($_POST['commenterNameMaxLength']) <= 50 ? $_POST['commenterNameMaxLength'] : 50;
             $this->optionsSerialized->facebookAppID = isset($_POST['facebookAppID']) ? $_POST['facebookAppID'] : '';
+            $this->optionsSerialized->isNotifyOnCommentApprove = isset($_POST['isNotifyOnCommentApprove']) ? $_POST['isNotifyOnCommentApprove'] : 0;
             do_action('wpdiscuz_save_options', $_POST);
             $this->optionsSerialized->updateOptions();
+            add_settings_error('wpdiscuz', 'settings_updated', __('Settings updated', 'wpdiscuz'), 'updated');
         }
         include_once 'html-options.php';
     }
@@ -159,8 +161,7 @@ class WpdiscuzOptions {
             $this->optionsSerialized->phrases['wc_second_text']['datetime'][0] = $_POST['wc_second_text'];
             $this->optionsSerialized->phrases['wc_second_text_plural']['datetime'][0] = $_POST['wc_second_text_plural'];
             $this->optionsSerialized->phrases['wc_right_now_text'] = $_POST['wc_right_now_text'];
-            $this->optionsSerialized->phrases['wc_ago_text'] = $_POST['wc_ago_text'];
-            $this->optionsSerialized->phrases['wc_posted_today_text'] = $_POST['wc_posted_today_text'];
+            $this->optionsSerialized->phrases['wc_ago_text'] = $_POST['wc_ago_text'];            
             $this->optionsSerialized->phrases['wc_you_must_be_text'] = $_POST['wc_you_must_be_text'];
             $this->optionsSerialized->phrases['wc_logged_in_as'] = $_POST['wc_logged_in_as'];
             $this->optionsSerialized->phrases['wc_log_out'] = $_POST['wc_log_out'];
@@ -194,6 +195,9 @@ class WpdiscuzOptions {
             $this->optionsSerialized->phrases['wc_msg_required_fields'] = $_POST['wc_msg_required_fields'];
             $this->optionsSerialized->phrases['wc_connect_with'] = $_POST['wc_connect_with'];
             $this->optionsSerialized->phrases['wc_subscribed_to'] = $_POST['wc_subscribed_to'];
+            $this->optionsSerialized->phrases['wc_form_subscription_submit'] = $_POST['wc_form_subscription_submit'];
+            $this->optionsSerialized->phrases['wc_comment_approved_email_subject'] = $_POST['wc_comment_approved_email_subject'];
+            $this->optionsSerialized->phrases['wc_comment_approved_email_message'] = $_POST['wc_comment_approved_email_message'];
             if (class_exists('Prompt_Comment_Form_Handling') && $this->optionsSerialized->usePostmaticForCommentNotification) {
                 $this->optionsSerialized->phrases['wc_postmatic_subscription_label'] = $_POST['wc_postmatic_subscription_label'];
             }
@@ -201,6 +205,7 @@ class WpdiscuzOptions {
                 $this->optionsSerialized->phrases['wc_blog_role_' . $roleName] = $_POST['wc_blog_role_' . $roleName];
             }
             $this->dbManager->updatePhrases($this->optionsSerialized->phrases);
+            add_settings_error('wpdiscuz', 'phrases_updated', __('Phrases updated', 'wpdiscuz'), 'updated');
         }
         $this->optionsSerialized->initPhrasesOnLoad();
 
