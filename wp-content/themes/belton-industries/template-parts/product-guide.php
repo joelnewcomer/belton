@@ -113,6 +113,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 							<div class="filters-inner">
 								<?php
 								$args = array(
+									'posts_per_page' => -1,
 									'post_type' => 'products',
 									'tax_query' => array(
 										array(
