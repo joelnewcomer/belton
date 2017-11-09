@@ -72,6 +72,7 @@ get_header(); ?>
 				<!-- PRODUCTS -->
 				<?php
 				$args = array(
+					'posts_per_page' => -1,
 					'post_type' => 'products',
 					'tax_query' => array(
 						array(
