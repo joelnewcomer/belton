@@ -55,7 +55,7 @@
             "label": "Contact",
             "name": "contact",
             "type": "group",
-            "instructions": "For top-level categories only.",
+            "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -148,5 +148,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1510255663
+    "modified": 1510256200
 }

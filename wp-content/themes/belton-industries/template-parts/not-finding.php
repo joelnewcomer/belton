@@ -11,16 +11,36 @@
 					<h2>Contact Us to Get Started Today!</h2>
 					
 					<?php					
-					$cats = wp_get_post_terms( $post->ID, 'guide_cats');
-					$parent_cat = $cats[0]->parent;
-					$field_id = 'guide_cats_' . $parent_cat;
-					$name = get_field('contact_full_name', $field_id);
-					$phone = get_field('contact_phone', $field_id);
-					$email = get_field('contact_email', $field_id);
+					// Get contact information - check to see if product has contact info, then category, then parent category, then site-wide default.
+					// PRODUCT CONTACT
+					$name = get_field('contact_full_name');
+					$phone = get_field('contact_phone');
+					$email = get_field('contact_email');					
+					
 					if ($name == '') {
-						$name = get_field('contact_name','option');
-						$phone = get_field('contact_phone','option');
-						$email = get_field('contact_email','option');
+						// CATEGORY CONTACT
+						$cats = wp_get_post_terms( $post->ID, 'guide_cats');
+						$cat = $cats[0]->term_id;
+						$field_id = 'guide_cats_' . $cat;
+						$name = get_field('contact_full_name', $field_id);
+						$phone = get_field('contact_phone', $field_id);
+						$email = get_field('contact_email', $field_id);
+						
+						if ($name == '') {
+							// PARENT CATEGORY CONTACT
+							$parent_cat = $cats[0]->parent;
+							$field_id = 'guide_cats_' . $parent_cat;
+							$name = get_field('contact_full_name', $field_id);
+							$phone = get_field('contact_phone', $field_id);
+							$email = get_field('contact_email', $field_id);
+							
+							// SITEWIDE DEFAULT CONTACT
+							if ($name == '') {
+								$name = get_field('contact_name','option');
+								$phone = get_field('contact_phone','option');
+								$email = get_field('contact_email','option');
+							}
+						}
 					}
 					?>
 					
