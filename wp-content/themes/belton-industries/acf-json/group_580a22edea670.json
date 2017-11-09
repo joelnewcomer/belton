@@ -23,7 +23,7 @@
         },
         {
             "key": "field_59c9075aae671",
-            "label": "Contact",
+            "label": "Default Contact",
             "name": "contact",
             "type": "group",
             "instructions": "",
@@ -477,5 +477,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1506965016
+    "modified": 1510255696
 }

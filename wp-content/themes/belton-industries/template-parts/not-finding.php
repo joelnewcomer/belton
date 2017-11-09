@@ -9,10 +9,25 @@
 			<div class="large-6 medium-6 columns not-finding-right text-center no-padding" style="background-image: url(<?php echo get_field('contact_bg','option'); ?>);">
 				<div class="nf-inner">
 					<h2>Contact Us to Get Started Today!</h2>
+					
+					<?php					
+					$cats = wp_get_post_terms( $post->ID, 'guide_cats');
+					$parent_cat = $cats[0]->parent;
+					$field_id = 'guide_cats_' . $parent_cat;
+					$name = get_field('contact_full_name', $field_id);
+					$phone = get_field('contact_phone', $field_id);
+					$email = get_field('contact_email', $field_id);
+					if ($name == '') {
+						$name = get_field('contact_name','option');
+						$phone = get_field('contact_phone','option');
+						$email = get_field('contact_email','option');
+					}
+					?>
+					
 					<p class="side-rule">
-						<span><?php echo get_field('contact_name','option'); ?></span><br />
-						<?php echo get_field('contact_phone','option'); ?><br />
-						<a href="mailto:<?php echo get_field('contact_email','option'); ?>"><?php echo get_field('contact_email','option'); ?></a>
+						<span><?php echo $name; ?></span><br />
+						<?php echo $phone; ?><br />
+						<a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a>
 					</p>
 				</div>
 			</div>
