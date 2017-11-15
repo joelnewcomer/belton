@@ -73,6 +73,14 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
      * Default Value - Disabled
      */
     public $commentListLoadType;
+    
+    /**
+     * Type - Checkbox
+     * Available Values - Checked/Unchecked
+     * Description - Load comments only after scrolling down
+     * Default Value - Unchecked
+     */
+    public $lazyLoadOnPageLoad;
 
     /**
      * Type - Checkbox
@@ -284,6 +292,14 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
      * Default Value - after
      */
     public $displayRatingOnPost;
+    
+    /**
+     * Type - Checkbox
+     * Available Values - Checked/Unchecked
+     * Description - Display ratings on none single pages
+     * Default Value - Unchecked
+     */
+    public $ratingCssOnNoneSingular;
 
     // == RATING == //
 
@@ -523,7 +539,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
         $this->wordpressCommentOrder = get_option('comment_order');
         $this->wordpressCommentPerPage = get_option('comments_per_page');
         $this->wordpressShowAvatars = get_option('show_avatars');
-        $this->wordpressDefaultCommentsPage = get_option('default_comments_page');        
+        $this->wordpressDefaultCommentsPage = get_option('default_comments_page');
         $this->initFormRelations();
         $this->initGoodbyeCaptchaField();
         add_action('init', array(&$this, 'initPhrasesOnLoad'), 2126);
@@ -540,6 +556,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
         $this->redirectPage = isset($options['wpdiscuz_redirect_page']) ? $options['wpdiscuz_redirect_page'] : 0;
         $this->isGuestCanVote = isset($options['wc_is_guest_can_vote']) ? $options['wc_is_guest_can_vote'] : 0;
         $this->commentListLoadType = isset($options['commentListLoadType']) ? $options['commentListLoadType'] : 0;
+        $this->lazyLoadOnPageLoad = isset($options['lazyLoadOnPageLoad']) ? $options['lazyLoadOnPageLoad'] : 0;
         $this->votingButtonsShowHide = isset($options['wc_voting_buttons_show_hide']) ? $options['wc_voting_buttons_show_hide'] : 0;
         $this->votingButtonsStyle = isset($options['votingButtonsStyle']) ? $options['votingButtonsStyle'] : 0;
         $this->shareButtons = isset($options['wpdiscuz_share_buttons']) ? $options['wpdiscuz_share_buttons'] : array('fb', 'twitter', 'google');
@@ -573,6 +590,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
         $this->disableTips = isset($options['disableTips']) ? $options['disableTips'] : 0;
         $this->disableProfileURLs = isset($options['disableProfileURLs']) ? $options['disableProfileURLs'] : 0;
         $this->displayRatingOnPost = isset($options['displayRatingOnPost']) ? $options['displayRatingOnPost'] : array();
+        $this->ratingCssOnNoneSingular = isset($options['ratingCssOnNoneSingular']) ? $options['ratingCssOnNoneSingular'] : 0;
         $this->customCss = isset($options['wc_custom_css']) ? $options['wc_custom_css'] : '.comments-area{width:auto; margin: 0 auto;}';
         $this->showPluginPoweredByLink = isset($options['wc_show_plugin_powerid_by']) ? $options['wc_show_plugin_powerid_by'] : 0;
         $this->isUsePoMo = isset($options['wc_is_use_po_mo']) ? $options['wc_is_use_po_mo'] : 0;
@@ -656,7 +674,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
             'wc_second_text' => array('datetime' => array(__('second', 'wpdiscuz'), 6)),
             'wc_second_text_plural' => array('datetime' => array(__('seconds', 'wpdiscuz'), 6)), // PLURAL
             'wc_right_now_text' => __('right now', 'wpdiscuz'),
-            'wc_ago_text' => __('ago', 'wpdiscuz'),            
+            'wc_ago_text' => __('ago', 'wpdiscuz'),
             'wc_you_must_be_text' => __('You must be', 'wpdiscuz'),
             'wc_logged_in_as' => __('You are logged in as', 'wpdiscuz'),
             'wc_log_out' => __('Log out', 'wpdiscuz'),
@@ -708,6 +726,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
             'wpdiscuz_redirect_page' => $this->redirectPage,
             'wc_is_guest_can_vote' => $this->isGuestCanVote,
             'commentListLoadType' => $this->commentListLoadType,
+            'lazyLoadOnPageLoad' => $this->lazyLoadOnPageLoad,
             'wc_voting_buttons_show_hide' => $this->votingButtonsShowHide,
             'votingButtonsStyle' => $this->votingButtonsStyle,
             'wpdiscuz_share_buttons' => $this->shareButtons,
@@ -741,6 +760,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
             'disableTips' => $this->disableTips,
             'disableProfileURLs' => $this->disableProfileURLs,
             'displayRatingOnPost' => $this->displayRatingOnPost,
+            'ratingCssOnNoneSingular' => $this->ratingCssOnNoneSingular,
             'wc_custom_css' => $this->customCss,
             'wc_show_plugin_powerid_by' => $this->showPluginPoweredByLink,
             'wc_is_use_po_mo' => $this->isUsePoMo,
@@ -778,6 +798,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
             'wc_is_guest_can_vote' => '1',
             'commentsLoadType' => '0',
             'commentListLoadType' => '0',
+            'lazyLoadOnPageLoad' => '0',
             'wc_voting_buttons_show_hide' => '0',
             'votingButtonsStyle' => '0',
             'wpdiscuz_share_buttons' => $this->shareButtons,
@@ -815,6 +836,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
             'disableTips' => '0',
             'disableProfileURLs' => '0',
             'displayRatingOnPost' => array('after'),
+            'ratingCssOnNoneSingular' => 0,
             'wc_custom_css' => '.comments-area{width:auto;}',
             'wc_show_plugin_powerid_by' => '0',
             'wc_is_use_po_mo' => '0',
@@ -877,6 +899,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
         $js_options['wc_msg_input_max_length'] = $this->phrases['wc_msg_input_max_length'];
         $js_options['is_user_logged_in'] = is_user_logged_in();
         $js_options['commentListLoadType'] = $this->commentListLoadType;
+        $js_options['lazyLoadOnPageLoad'] = $this->lazyLoadOnPageLoad;
         $js_options['commentListUpdateType'] = $this->commentListUpdateType;
         $js_options['commentListUpdateTimer'] = $this->commentListUpdateTimer;
         $js_options['liveUpdateGuests'] = $this->liveUpdateGuests;
@@ -887,6 +910,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
         $js_options['wordpressThreadCommentsDepth'] = $this->wordpressThreadCommentsDepth;
         $js_options['wordpressIsPaginate'] = $this->wordpressIsPaginate;
         $js_options['commentTextMaxLength'] = $this->commentTextMaxLength ? $this->commentTextMaxLength : null;
+        $js_options['wordpressIsPaginate'] = $this->wordpressIsPaginate;
         if ($this->storeCommenterData < 0) {
             $js_options['storeCommenterData'] = 100000;
         } else if ($this->storeCommenterData == 0) {

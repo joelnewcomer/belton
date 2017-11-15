@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('ABSPATH')) {
+    exit();
+}
+
 interface WpDiscuzConstants {
     /* === OPTIONS SLUGS === */
     const OPTION_SLUG_OPTIONS                         = 'wc_options';
@@ -21,4 +25,6 @@ interface WpDiscuzConstants {
     const ACTION_CAPTCHA_NONCE                        = 'wpdiscuz_captcha_nonce_action';
     /* === TRANSIENT KEYS === */
     const TRS_POSTS_AUTHORS                           = 'wpdiscuz_posts_authors';
+    /* ===  COOKIES === */
+    const COOKIE_LAST_VISIT                           = 'wpdiscuz_last_visit';
 }

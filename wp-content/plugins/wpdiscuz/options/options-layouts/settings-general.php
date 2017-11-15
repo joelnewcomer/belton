@@ -110,7 +110,7 @@ if (!defined('ABSPATH')) {
                     wp_dropdown_pages(array(
                         'name' => 'wpdiscuz_redirect_page',
                         'selected' => isset($this->optionsSerialized->redirectPage) ? $this->optionsSerialized->redirectPage : 0,
-                        'show_option_none' => __('Do not redirect','wpdiscuz'),
+                        'show_option_none' => __('Do not redirect', 'wpdiscuz'),
                         'option_none_value' => 0
                     ));
                     ?>
@@ -128,22 +128,26 @@ if (!defined('ABSPATH')) {
                     </p>
                 </th>
                 <td>
-                    <fieldset class="commentListLoadType">
+                    <fieldset>
                         <?php $commentListLoadType = isset($this->optionsSerialized->commentListLoadType) ? $this->optionsSerialized->commentListLoadType : 0; ?>
                         <label title="<?php _e('[Load more] Button', 'wpdiscuz') ?>">
-                            <input type="radio" value="0" <?php checked('0' == $commentListLoadType); ?> name="commentListLoadType" id="commentListLoadDefault" /> 
+                            <input type="radio" value="0" <?php checked('0' == $commentListLoadType); ?> name="commentListLoadType" id="commentListLoadDefault" class="commentListLoadType"/> 
                             <span><?php _e('[Load more] Button', 'wpdiscuz') ?></span>
                         </label> &nbsp;<br/>
                         <label title="<?php _e('[Load rest of all comments] Button', 'wpdiscuz') ?>">
-                            <input type="radio" value="1" <?php checked('1' == $commentListLoadType); ?> name="commentListLoadType" id="commentListLoadRest" /> 
+                            <input type="radio" value="1" <?php checked('1' == $commentListLoadType); ?> name="commentListLoadType" id="commentListLoadRest" class="commentListLoadType" /> 
                             <span><?php _e('[Load rest of all comments] Button', 'wpdiscuz') ?></span>
                         </label><br>    
                         <label title="<?php _e('Lazy load comments on scrolling', 'wpdiscuz') ?>">
-                            <input type="radio" value="2" <?php checked('2' == $commentListLoadType); ?> name="commentListLoadType" id="commentListLoadLazy" /> 
+                            <input type="radio" value="2" <?php checked('2' == $commentListLoadType); ?> name="commentListLoadType" id="commentListLoadLazy" class="commentListLoadType commentListLoadLazy" /> 
                             <span><?php _e('Lazy load comments on scrolling', 'wpdiscuz') ?></span>
                         </label> &nbsp;<br/>          
                     </fieldset>
                 </td>
+            </tr>
+            <tr valign="top" id="row_lazyLoadOnPageLoad">
+                <th scope="row"><label for="lazyLoadOnPageLoad"><?php _e('Enable first comments loading before scroll position is on comment box', 'wpdiscuz'); ?></label></th>
+                <td><input type="checkbox" <?php checked($this->optionsSerialized->lazyLoadOnPageLoad == 1) ?> value="1" name="lazyLoadOnPageLoad" id="lazyLoadOnPageLoad" /></td>
             </tr>            
             <tr valign="top">
                 <th scope="row">

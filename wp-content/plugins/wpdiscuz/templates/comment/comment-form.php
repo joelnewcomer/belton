@@ -22,19 +22,16 @@ if (!function_exists('wpdiscuz_close_divs')) {
 
 }
 
-$current_user = wp_get_current_user();
-do_action('wpdiscuz_before_load', $post, $current_user, null);
+$currentUser = $wpdiscuz->helper->getCurrentUser();
+do_action('wpdiscuz_before_load', $post, $currentUser, null);
 if (!post_password_required($post->ID)) {
-    if (!$wpdiscuz->optionsSerialized->votingButtonsShowHide) {
-        $wpdiscuz->dbManager->checkVoteData($post->ID);
-    }
-    $commentsCount = get_comments_number(); 
+    $commentsCount = get_comments_number();
     $header_text = '<span class="wc_header_text_count">' . $commentsCount . '</span> ';
     $header_text .= ($commentsCount > 1) ? $wpdiscuz->optionsSerialized->phrases['wc_header_text_plural'] : $wpdiscuz->optionsSerialized->phrases['wc_header_text'];
     $header_text .= ' ' . $wpdiscuz->optionsSerialized->phrases['wc_header_on_text'];
     $header_text .= ' "' . get_the_title($post) . '"';
 
-    $wpCommClasses = $current_user && $current_user->ID ? 'wpdiscuz_auth' : 'wpdiscuz_unauth';
+    $wpCommClasses = $currentUser && $currentUser->ID ? 'wpdiscuz_auth' : 'wpdiscuz_unauth';
     $wpCommClasses .= $wpdiscuz->optionsSerialized->wordpressShowAvatars ? '' : ' wpdiscuz_no_avatar';
 
     $ob_stat = ini_get('output_buffering');
@@ -42,7 +39,7 @@ if (!post_password_required($post->ID)) {
         $wc_ob_allowed = true;
         ob_start();
         do_action('comment_form_top');
-        do_action('wpdiscuz_comment_form_top', $post, $current_user, $commentsCount);
+        do_action('wpdiscuz_comment_form_top', $post, $currentUser, $commentsCount);
         $wc_comment_form_top_content = ob_get_contents();
         ob_get_clean();
         $wc_comment_form_top_content = wpdiscuz_close_divs($wc_comment_form_top_content);
@@ -76,8 +73,8 @@ if (!post_password_required($post->ID)) {
             $subscriptionMsg = __('Subscription not successed', 'wpdiscuz');
         } else {
             if (isset($_GET['subscriptionID']) && ($subscriptionID = trim($_GET['subscriptionID']))) {
-                $noNeedMemberConfirm = ($current_user->ID && $wpdiscuz->optionsSerialized->disableMemberConfirm);
-                $noNeedGuestsConfirm = (!$current_user->ID && $wpdiscuz->optionsSerialized->disableGuestsConfirm && $wpdiscuz->dbManager->hasConfirmedSubscriptionByID($subscriptionID));
+                $noNeedMemberConfirm = ($currentUser->ID && $wpdiscuz->optionsSerialized->disableMemberConfirm);
+                $noNeedGuestsConfirm = (!$currentUser->ID && $wpdiscuz->optionsSerialized->disableGuestsConfirm && $wpdiscuz->dbManager->hasConfirmedSubscriptionByID($subscriptionID));
                 if ($noNeedMemberConfirm || $noNeedGuestsConfirm) {
                     $subscriptionMsg = $wpdiscuz->optionsSerialized->phrases['wc_subscribe_message'];
                 } else {
@@ -107,15 +104,15 @@ if (!post_password_required($post->ID)) {
         <h3 id="wc-comment-header"><?php echo $form->getHeaderText(); ?></h3>
         <?php
         if ($wpdiscuz->optionsSerialized->showHideLoggedInUsername) {
-            if ($current_user && $current_user->ID) {
-                $user_url = get_author_posts_url($current_user->ID);
+            if ($currentUser && $currentUser->ID) {
+                $user_url = get_author_posts_url($currentUser->ID);
                 ?>
                 <div id="wc_show_hide_loggedin_username">
                     <span class="wc_show_hide_loggedin_username">
                         <?php
                         $logout = wp_loginout(get_permalink(), false);
                         $logout = preg_replace('!>([^<]+)!is', '>' . $wpdiscuz->optionsSerialized->phrases['wc_log_out'], $logout);
-                        echo $wpdiscuz->optionsSerialized->phrases['wc_logged_in_as'] . ' <a href="' . $user_url . '">' . $wpdiscuz->helper->getCurrentUserDisplayName($current_user) . '</a> | ' . $logout;
+                        echo $wpdiscuz->optionsSerialized->phrases['wc_logged_in_as'] . ' <a href="' . $user_url . '">' . $wpdiscuz->helper->getCurrentUserDisplayName($currentUser) . '</a> | ' . $logout;
                         ?>
                     </span>
                 </div>
@@ -139,20 +136,20 @@ if (!post_password_required($post->ID)) {
                     echo $wc_comment_form_top_content;
                 } else {
                     do_action('comment_form_top');
-                    do_action('wpdiscuz_comment_form_top', $post, $current_user, $commentsCount);
+                    do_action('wpdiscuz_comment_form_top', $post, $currentUser, $commentsCount);
                 }
                 ?>
             </div>
             <?php
             $isPostmaticActive = !class_exists('Prompt_Comment_Form_Handling') || (class_exists('Prompt_Comment_Form_Handling') && !$wpdiscuz->optionsSerialized->usePostmaticForCommentNotification);
-            if ($form->isShowSubscriptionBar() && $isPostmaticActive) {
-                $subscriptionData = $wpdiscuz->dbManager->hasSubscription($post->ID, $current_user->user_email);
+            if ($form->isShowSubscriptionBar() && $isPostmaticActive) {               
+                $wpdiscuz->userSubscriptionData = $wpdiscuz->dbManager->hasSubscription($post->ID, $currentUser->user_email);
                 $subscriptionType = null;
-                if ($subscriptionData) {
-                    $isConfirmed = $subscriptionData['confirm'];
-                    $subscriptionType = $subscriptionData['type'];
+                if ($wpdiscuz->subscriptionData) {
+                    $isConfirmed = $wpdiscuz->subscriptionData['confirm'];
+                    $subscriptionType = $wpdiscuz->subscriptionData['type'];
                     if ($subscriptionType == WpdiscuzCore::SUBSCRIPTION_POST || $subscriptionType == WpdiscuzCore::SUBSCRIPTION_ALL_COMMENT) {
-                        $unsubscribeLink = $wpdiscuz->dbManager->unsubscribeLink($post->ID, $current_user->user_email);
+                        $unsubscribeLink = $wpdiscuz->dbManager->unsubscribeLink($post->ID, $currentUser->user_email);
                     }
                 }
                 ?>
@@ -162,7 +159,7 @@ if (!post_password_required($post->ID)) {
                         ?>
                         <form action="<?php echo admin_url('admin-ajax.php') . '?action=addSubscription'; ?>" method="post" id="wpdiscuz-subscribe-form">
                             <div class="wpdiscuz-subscribe-form-intro"><?php echo $wpdiscuz->optionsSerialized->phrases['wc_notify_of']; ?> </div>
-                            <div class="wpdiscuz-subscribe-form-option" style="width:<?php echo (!$current_user->ID) ? '40%' : '65%'; ?>;">
+                            <div class="wpdiscuz-subscribe-form-option" style="width:<?php echo (!$currentUser->ID) ? '40%' : '65%'; ?>;">
                                 <select class="wpdiscuz_select" name="wpdiscuzSubscriptionType" >
                                     <?php if ($wpdiscuz->optionsSerialized->subscriptionType != 3) { ?>
                                         <option value="<?php echo WpdiscuzCore::SUBSCRIPTION_POST; ?>"><?php echo $wpdiscuz->optionsSerialized->phrases['wc_notify_on_new_comment']; ?></option>
@@ -172,7 +169,7 @@ if (!post_password_required($post->ID)) {
                                     <?php } ?>
                                 </select>
                             </div>
-                            <?php if (!$current_user->ID) { ?>
+                            <?php if (!$currentUser->ID) { ?>
                                 <div class="wpdiscuz-item wpdiscuz-subscribe-form-email">
                                     <input  class="email" type="email" name="wpdiscuzSubscriptionEmail" required="required" value="" placeholder="<?php echo $wpdiscuz->optionsSerialized->phrases['wc_email_text']; ?>"/>
                                 </div>
@@ -198,9 +195,9 @@ if (!post_password_required($post->ID)) {
                 </div>
                 <?php
             }
-            $wpdiscuz->wpdiscuzForm->renderFrontForm($commentsCount, $current_user);
+            $wpdiscuz->wpdiscuzForm->renderFrontForm($commentsCount, $currentUser);
             do_action('comment_form_after');
-            do_action('wpdiscuz_comment_form_after', $post, $current_user, $commentsCount);
+            do_action('wpdiscuz_comment_form_after', $post, $currentUser, $commentsCount);
         } else {
             if ($commentsCount > 0) {
                 $wpdiscuz->helper->superSocializerFix();
@@ -211,12 +208,11 @@ if (!post_password_required($post->ID)) {
                 <?php } ?>
                 <?php
                 do_action('comment_form_closed');
-                do_action('wpdiscuz_comment_form_closed', $post, $current_user, $commentsCount);
+                do_action('wpdiscuz_comment_form_closed', $post, $currentUser, $commentsCount);                
                 ?>
                 <div id="wpcomm" class="<?php echo $wpCommClasses; ?>" style="border:none;">
                 <?php } ?>
-                <?php do_action('wpdiscuz_before_comments', $post, $current_user, $commentsCount); ?>
-
+                <?php do_action('wpdiscuz_before_comments', $post, $currentUser, $commentsCount); ?>                    
                 <?php if ($commentsCount && $wpdiscuz->optionsSerialized->showSortingButtons && !$wpdiscuz->optionsSerialized->wordpressIsPaginate) { ?>
                     <div class="wpdiscuz-front-actions">
                         <div class="wpdiscuz-sort-buttons" style="font-size:14px;"><?php echo $wpdiscuz->optionsSerialized->phrases['wc_sort_by']; ?>: &nbsp;
@@ -239,16 +235,21 @@ if (!post_password_required($post->ID)) {
                 <?php } ?>
                 <div id="wcThreadWrapper" class="wc-thread-wrapper">
                     <?php
-                    $args = array();
+                    $args = array('first_load' => 1);
                     $showLoadeMore = 1;
                     $lastParentId = filter_input(INPUT_GET, 'wpdParentID', FILTER_SANITIZE_NUMBER_INT);
                     if ($lastParentId) {
-                            $args['last_parent_id'] = $lastParentId--;
+                        $args['last_parent_id'] = $lastParentId--;
                     }
 
                     if ($wpdiscuz->optionsSerialized->showSortingButtons && $wpdiscuz->optionsSerialized->mostVotedByDefault && !$wpdiscuz->optionsSerialized->votingButtonsShowHide) {
                         $args['orderby'] = 'by_vote';
                     }
+                    
+                    if (isset($_COOKIE[WpDiscuzCore::COOKIE_LAST_VISIT])) {
+                        $args[WpDiscuzCore::COOKIE_LAST_VISIT] = $_COOKIE[WpDiscuzCore::COOKIE_LAST_VISIT];
+                    }
+                    
                     $commentData = $wpdiscuz->getWPComments($args);
                     echo $commentData['comment_list'];
                     ?>                
@@ -258,7 +259,7 @@ if (!post_password_required($post->ID)) {
                             $loadMoreButtonText = ($wpdiscuz->optionsSerialized->commentListLoadType == 1) ? $wpdiscuz->optionsSerialized->phrases['wc_load_rest_comments_submit_text'] : $wpdiscuz->optionsSerialized->phrases['wc_load_more_submit_text'];
                             ?>
                             <div class="wc-load-more-submit-wrap">
-                                <a class="wc-load-more-link" href="<?php echo  $wpdiscuz->helper->loadMoreLink($commentData['last_parent_id'],$post->ID);?>">
+                                <a class="wc-load-more-link" href="<?php echo $wpdiscuz->helper->loadMoreLink($commentData['last_parent_id'], $post->ID); ?>">
                                     <button name="submit"  class="wc-load-more-submit wc-loaded button">
                                         <?php echo $loadMoreButtonText; ?>
                                     </button>
@@ -266,14 +267,14 @@ if (!post_password_required($post->ID)) {
                             </div>
                             <input id="wpdiscuzHasMoreComments" type="hidden" value="<?php echo $commentData['is_show_load_more']; ?>" />
                             <?php
-                        } else if($wpdiscuz->optionsSerialized->wordpressIsPaginate){
+                        } else if ($wpdiscuz->optionsSerialized->wordpressIsPaginate) {
                             paginate_comments_links();
                         }
                         ?>
                     </div>
                 </div>
                 <div class="wpdiscuz_clear"></div>
-                <?php do_action('wpdiscuz_after_comments', $post, $current_user, $commentsCount); ?>
+                <?php do_action('wpdiscuz_after_comments', $post, $currentUser, $commentsCount); ?>
                 <?php if ($commentsCount) { ?>
                     <?php if ($wpdiscuz->optionsSerialized->showPluginPoweredByLink) { ?>
                         <div class="by-wpdiscuz">
@@ -286,6 +287,6 @@ if (!post_password_required($post->ID)) {
                 <?php } ?>
             </div>
         </div>
-        <div class="wpdiscuz-loading-bar <?php echo ($current_user->ID) ? 'wpdiscuz-loading-bar-auth' : 'wpdiscuz-loading-bar-unauth'; ?>"><img class="wpdiscuz-loading-bar-img" alt="<?php _e('wpDiscuz', 'wpdiscuz'); ?>" src="<?php echo plugins_url(WPDISCUZ_DIR_NAME . '/assets/img/loading.gif'); ?>" width="32" height="25" /></div>
+        <div class="wpdiscuz-loading-bar <?php echo ($currentUser->ID) ? 'wpdiscuz-loading-bar-auth' : 'wpdiscuz-loading-bar-unauth'; ?>"><img class="wpdiscuz-loading-bar-img" alt="<?php _e('wpDiscuz', 'wpdiscuz'); ?>" src="<?php echo plugins_url(WPDISCUZ_DIR_NAME . '/assets/img/loading.gif'); ?>" width="32" height="25" /></div>
         <?php
     }

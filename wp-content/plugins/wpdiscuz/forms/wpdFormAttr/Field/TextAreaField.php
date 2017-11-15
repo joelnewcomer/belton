@@ -58,7 +58,7 @@ class TextAreaField extends Field {
         $html .= '</td><td>';
         $html .= '<div class="wpdiscuz-item">';
         $required = $data['required'] ? 'required="required"' : '';
-        $html .= '<textarea  ' . $required . ' class="wpd-field wpd-field-textarea" id="' . $key . '"  name="' . $key . '">'.$value.'</textarea>';
+        $html .= '<textarea  ' . $required . ' class="wpd-field wpd-field-textarea" id="' . $key . '"  name="' . $key . '">'.esc_html($value).'</textarea>';
         $html .= '</div>';
         $html .= '</td></tr >';
         return $html;
@@ -84,7 +84,7 @@ class TextAreaField extends Field {
             return '';
         }
         $html = '<div class="wpd-custom-field wpd-cf-text">';
-        $html .= '<div class="wpd-cf-label">' . $args['name'] . '</div> <div class="wpd-cf-value"> ' . apply_filters('wpdiscuz_custom_field_textarea', $value , $args) . '</div>';
+        $html .= '<div class="wpd-cf-label">' . $args['name'] . '</div> <div class="wpd-cf-value"> ' . apply_filters('wpdiscuz_custom_field_textarea', nl2br($value) , $args) . '</div>';
         $html .= '</div>';
         return $html;
     }

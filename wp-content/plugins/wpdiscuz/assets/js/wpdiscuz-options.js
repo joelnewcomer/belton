@@ -7,6 +7,21 @@ jQuery(document).ready(function ($) {
         }
     }
 
+    if ($('#commentListLoadLazy').is(':checked')) {
+        $('#row_lazyLoadOnPageLoad').removeClass('wc-hidden');
+    } else {
+        $('#row_lazyLoadOnPageLoad').addClass('wc-hidden');
+    }
+
+    $('.commentListLoadType').change(function () {
+        console.log($(this).attr('id'));
+        if ($(this).is(':checked') && $(this).hasClass('commentListLoadLazy')) {
+            $('#row_lazyLoadOnPageLoad').removeClass('wc-hidden');
+        } else {
+            $('#row_lazyLoadOnPageLoad').addClass('wc-hidden');
+        }
+    });
+    
     if ($('#show_sorting_buttons').attr('checked')) {
         $('#row_mostVotedByDefault').removeClass('wc-hidden');
     } else {

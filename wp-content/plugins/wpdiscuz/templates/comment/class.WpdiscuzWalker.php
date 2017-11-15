@@ -1,7 +1,7 @@
 <?php
 
 /** COMMENTS WALKER */
-class WpdiscuzWalker extends Walker_Comment {
+class WpdiscuzWalker extends Walker_Comment implements WpDiscuzConstants {
 
     public $tree_type = 'comment';
     public $db_fields = array('parent' => 'comment_parent', 'id' => 'comment_ID');
@@ -23,7 +23,7 @@ class WpdiscuzWalker extends Walker_Comment {
         $GLOBALS['comment_depth'] = $depth;
         $GLOBALS['comment'] = $comment;
         // BEGIN
-        $current_user = $args['current_user'];
+        $currentUser = $args['current_user'];
         $depth = isset($args['addComment']) ? $args['addComment'] : $depth;
         $uniqueId = $comment->comment_ID . '_' . $comment->comment_parent;
         $commentContent = $comment->comment_content;
@@ -32,7 +32,7 @@ class WpdiscuzWalker extends Walker_Comment {
         if ($this->optionsSerialized->enableImageConversion) {
             $commentContent = $this->helper->makeClickable($commentContent);
         }
-        
+
         $commentContent = apply_filters('comment_text', $commentContent, $comment, $args);
         $commentReadMoreLimit = $this->optionsSerialized->commentReadMoreLimit;
         if (strstr($commentContent, '[/spoiler]')) {
@@ -43,8 +43,15 @@ class WpdiscuzWalker extends Walker_Comment {
             $commentContent = $this->helper->getCommentExcerpt($commentContent, $uniqueId);
         }
         $commentContent .= $comment->comment_approved == 0 ? '<p class="wc_held_for_moderate">' . $this->optionsSerialized->phrases['wc_held_for_moderate'] . '</p>' : '';
+        $hideAvatarStyle = '';
+        if (!$this->optionsSerialized->wordpressShowAvatars) {
+            if (is_rtl()) {
+                $hideAvatarStyle = 'style = "margin-right : 0;"';
+            } else {
+                $hideAvatarStyle = 'style = "margin-left : 0;"';
+            }
+        }
 
-        $hideAvatarStyle = $this->optionsSerialized->wordpressShowAvatars ? '' : 'style = "margin-left : 0;"';
         if ($this->optionsSerialized->wordpressIsPaginate && $comment->comment_parent) {
             $rootComment = $this->optimizationHelper->getCommentRoot($comment->comment_parent);
         }
@@ -54,6 +61,22 @@ class WpdiscuzWalker extends Walker_Comment {
                 $commentWrapperClass .= ' wpdiscuz_single ';
             } else {
                 $depth = $this->optimizationHelper->getCommentDepth($comment->comment_ID);
+            }
+        }
+
+        if (!$this->optionsSerialized->wordpressIsPaginate && isset($args[self::COOKIE_LAST_VISIT])) {
+            $blogId = WpdiscuzCore::$CURRENT_BLOG_ID;
+            $lastVisit = json_decode(stripslashes($args[self::COOKIE_LAST_VISIT]), true);
+            $lastVisitForPost = isset($lastVisit[$blogId][$comment->comment_post_ID]) ? $lastVisit[$blogId][$comment->comment_post_ID] : 0;
+            if (isset($args['comment_author_email'])) {
+                $storedCookieEmail = $args['comment_author_email'];
+            } else {
+                $storedCookieEmail = isset($_COOKIE['comment_author_email_' . COOKIEHASH]) ? $_COOKIE['comment_author_email_' . COOKIEHASH] : '';
+            }
+
+            $commentTime = strtotime($comment->comment_date);
+            if ($lastVisitForPost && $commentTime > $lastVisitForPost && $storedCookieEmail != $comment->comment_author_email) {
+                $commentWrapperClass = ' wc-new-loaded-comment ';
             }
         }
 
@@ -118,7 +141,9 @@ class WpdiscuzWalker extends Walker_Comment {
         $authorName = apply_filters('wpdiscuz_comment_author', $authorName, $comment);
         $profileUrl = apply_filters('wpdiscuz_profile_url', $profileUrl, $user);
         $authorAvatarField = apply_filters('wpdiscuz_author_avatar_field', $authorAvatarField, $comment, $user, $profileUrl);
-        $authorAvatar = $this->optionsSerialized->wordpressShowAvatars ? get_avatar($authorAvatarField, 64, '', $authorName) : '';
+        $gravatarSize = 64;
+        $gravatarArgs = array('wpdiscuz_gravatar_field' => $authorAvatarField, 'wpdiscuz_gravatar_size' => $gravatarSize);
+        $authorAvatar = $this->optionsSerialized->wordpressShowAvatars ? get_avatar($authorAvatarField, $gravatarSize, '', $authorName, $gravatarArgs) : '';
         $trackOrPingback = $comment->comment_type == 'pingback' || $comment->comment_type == 'trackback' ? true : false;
         if ($trackOrPingback) {
             $authorAvatar = '<img class="avatar avatar-64 photo" width="64" height="64" src="' . plugins_url(WPDISCUZ_DIR_NAME . '/assets/img/trackback.png') . '" alt="trackback">';
@@ -138,13 +163,13 @@ class WpdiscuzWalker extends Walker_Comment {
             }
         }
 
-        if (!$this->optionsSerialized->isGuestCanVote && !$current_user->ID) {
-            $voteClass = ' wc_tooltipster';
+        if (!$this->optionsSerialized->isGuestCanVote && !$currentUser->ID) {
+            $voteClass = '';
             $voteTitleText = $this->optionsSerialized->phrases['wc_login_to_vote'];
             $voteUp = $voteTitleText;
             $voteDown = $voteTitleText;
         } else {
-            $voteClass = ' wc_vote wc_not_clicked wc_tooltipster';
+            $voteClass = ' wc_vote wc_not_clicked';
             $voteUp = $this->optionsSerialized->phrases['wc_vote_up'];
             $voteDown = $this->optionsSerialized->phrases['wc_vote_down'];
         }
@@ -183,22 +208,22 @@ class WpdiscuzWalker extends Walker_Comment {
             $twitt_content = urlencode($twitt_content);
             $twCommentLink = urlencode($commentLink);
             $output .= '<span class="share_buttons_box">';
-            $output .= (in_array('fb', $this->optionsSerialized->shareButtons) && $this->optionsSerialized->facebookAppID) ? '<span class="wc_fb"><i class="fa fa-facebook wpf-cta wc_tooltipster" aria-hidden="true" title=""></i><span>' . $this->optionsSerialized->phrases['wc_share_facebook'] . '</span></span>' : '';
-            $output .= in_array('twitter', $this->optionsSerialized->shareButtons) ? '<a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=' . $twitt_content . '&url='.$twCommentLink.'" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>' . $this->optionsSerialized->phrases['wc_share_twitter'] . '</span></a>' : '';
+            $output .= (in_array('fb', $this->optionsSerialized->shareButtons) && $this->optionsSerialized->facebookAppID) ? '<span class="wc_fb"><i class="fa fa-facebook wpf-cta" aria-hidden="true" title=""></i><span>' . $this->optionsSerialized->phrases['wc_share_facebook'] . '</span></span>' : '';
+            $output .= in_array('twitter', $this->optionsSerialized->shareButtons) ? '<a class="wc_tw" target="_blank" href="https://twitter.com/intent/tweet?text=' . $twitt_content . '&url=' . $twCommentLink . '" title=""><i class="fa fa-twitter wpf-cta" aria-hidden="true"></i><span>' . $this->optionsSerialized->phrases['wc_share_twitter'] . '</span></a>' : '';
             $output .= in_array('google', $this->optionsSerialized->shareButtons) ? '<a class="wc_go" target="_blank" href="https://plus.google.com/share?url=' . get_permalink($comment->comment_post_ID) . '" title=""><i class="fa fa-google wpf-cta" aria-hidden="true"></i><span>' . $this->optionsSerialized->phrases['wc_share_google'] . '</span></a>' : '';
             $output .= in_array('vk', $this->optionsSerialized->shareButtons) ? '<a class="wc_vk" target="_blank" href="http://vk.com/share.php?url=' . get_permalink($comment->comment_post_ID) . '" title=""><i class="fa fa-vk wpf-cta" aria-hidden="true"></i><span>' . $this->optionsSerialized->phrases['wc_share_vk'] . '</span></a>' : '';
             $output .= in_array('ok', $this->optionsSerialized->shareButtons) ? '<a class="wc_ok" target="_blank" href="http://www.odnoklassniki.ru/dk?st.cmd=addShare&st.s=1&st._surl=' . get_permalink($comment->comment_post_ID) . '" title=""><i class="fa fa-odnoklassniki wpf-cta" aria-hidden="true"></i><span>' . $this->optionsSerialized->phrases['wc_share_ok'] . '</span></a>' : '';
             $output .= '</span>';
         }
 
-        $output = apply_filters('wpdiscuz_before_comment_link', $output, $comment, $user, $current_user);
+        $output = apply_filters('wpdiscuz_before_comment_link', $output, $comment, $user, $currentUser);
 
         if (!$this->optionsSerialized->showHideCommentLink) {
             $commentLinkImg = '<span class="wc-comment-img-link-wrap"><i class="fa fa-link wc-comment-img-link wpf-cta" aria-hidden="true"/></i><span><input type="text" class="wc-comment-link-input" value="' . $commentLink . '" /></span></span>';
             $output .= apply_filters('wpdiscuz_comment_link_img', $commentLinkImg, $comment);
         }
 
-        $output = apply_filters('wpdiscuz_after_comment_link', $output, $comment, $user, $current_user);
+        $output = apply_filters('wpdiscuz_after_comment_link', $output, $comment, $user, $currentUser);
 
         $output .= '</div>';
         $output .= '<div class="wpdiscuz_clear"></div>';
@@ -208,8 +233,6 @@ class WpdiscuzWalker extends Walker_Comment {
         if (isset($args['comment_status']) && is_array($args['comment_status']) && in_array($comment->comment_approved, $args['comment_status'])) {
             $output .= '<div class="wc-comment-footer">';
             $output .= '<div class="wc-footer-left">';
-
-
             if (!$this->optionsSerialized->votingButtonsShowHide) {
                 if ($this->optionsSerialized->votingButtonsStyle) {
                     $votesArr = $this->dbManager->getVotes($comment->comment_ID);
@@ -222,65 +245,64 @@ class WpdiscuzWalker extends Walker_Comment {
                     }
                     $output .= '<span class="wc-vote-link wc-up wc-separate ' . $voteClass . '">';
                     $voteFaUpImg = '<i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>' . $voteUp . '</span>';
-                    $output .= apply_filters('wpdiscuz_vote_up_icon', $voteFaUpImg, $comment, $current_user);
+                    $output .= apply_filters('wpdiscuz_vote_up_icon', $voteFaUpImg, $comment, $currentUser);
                     $output .= '</span>';
                     $output .= '<span class="wc-vote-result wc-vote-result-like' . (($like) ? ' wc-positive' : '') . '">' . $like . '</span>';
                     $output .= '<span class="wc-vote-result wc-vote-result-dislike' . (($dislike) ? ' wc-negative' : '') . '">' . $dislike . '</span>';
                     $output .= '<span class="wc-vote-link wc-down wc-separate' . $voteClass . '">';
                     $voteFaDownImg = '<i class="fa fa-thumbs-down wc-vote-img-down"></i><span>' . $voteDown . '</span>';
-                    $output .= apply_filters('wpdiscuz_vote_down_icon', $voteFaDownImg, $comment, $current_user);
+                    $output .= apply_filters('wpdiscuz_vote_down_icon', $voteFaDownImg, $comment, $currentUser);
                     $output .= '</span>';
-                    $output = apply_filters('wpdiscuz_voters', $output, $uniqueId, $comment, $user, $current_user);
+                    $output = apply_filters('wpdiscuz_voters', $output, $uniqueId, $comment, $user, $currentUser);
                 } else {
-                    $voteCount = isset($comment->meta_value) ? $comment->meta_value : get_comment_meta($comment->comment_ID, WpdiscuzCore::META_KEY_VOTES, true);
-                    $output = apply_filters('wpdiscuz_voters', $output, $uniqueId, $comment, $user, $current_user);
+                    $voteCount = get_comment_meta($comment->comment_ID, WpdiscuzCore::META_KEY_VOTES, true);
+                    $output = apply_filters('wpdiscuz_voters', $output, $uniqueId, $comment, $user, $currentUser);
                     $output .= '<span class="wc-vote-link wc-up ' . $voteClass . '">';
                     $voteFaUpImg = '<i class="fa fa-thumbs-up fa-flip-horizontal wc-vote-img-up"></i><span>' . $voteUp . '</span>';
-                    $output .= apply_filters('wpdiscuz_vote_up_icon', $voteFaUpImg, $comment, $current_user);
+                    $output .= apply_filters('wpdiscuz_vote_up_icon', $voteFaUpImg, $comment, $currentUser);
                     $output .= '</span>';
                     $output .= '<span class="wc-vote-result">' . intval($voteCount) . '</span>';
                     $output .= '<span class="wc-vote-link wc-down ' . $voteClass . '">';
                     $voteFaDownImg = '<i class="fa fa-thumbs-down wc-vote-img-down"></i><span>' . $voteDown . '</span>';
-                    $output .= apply_filters('wpdiscuz_vote_down_icon', $voteFaDownImg, $comment, $current_user);
+                    $output .= apply_filters('wpdiscuz_vote_down_icon', $voteFaDownImg, $comment, $currentUser);
                     $output .= '</span>&nbsp;';
                 }
             }
 
             if (comments_open($comment->comment_post_ID) && $this->optionsSerialized->wordpressThreadComments) {
                 if (!$this->optionsSerialized->guestCanComment) {
-                    if (!$this->optionsSerialized->replyButtonMembersShowHide && $current_user->ID) {
+                    if (!$this->optionsSerialized->replyButtonMembersShowHide && $currentUser->ID) {
                         $output .= '<span class="wc-reply-button wc-cta-button" title="' . $replyText . '">' . '<i class="fa fa-reply" aria-hidden="true"></i> ' . $replyText . '</span>';
-                    } else if (in_array('administrator', $current_user->roles)) {
+                    } else if (in_array('administrator', $currentUser->roles)) {
                         $output .= '<span  class="wc-reply-button wc-cta-button" title="' . $replyText . '">' . '<i class="fa fa-reply" aria-hidden="true"></i> ' . $replyText . '</span>';
                     }
                 } else {
                     if (!$this->optionsSerialized->replyButtonMembersShowHide && !$this->optionsSerialized->replyButtonGuestsShowHide) {
                         $output .= '<span class="wc-reply-button wc-cta-button" title="' . $replyText . '">' . '<i class="fa fa-reply" aria-hidden="true"></i> ' . $replyText . '</span>';
-                    } else if (!$this->optionsSerialized->replyButtonMembersShowHide && $current_user->ID) {
+                    } else if (!$this->optionsSerialized->replyButtonMembersShowHide && $currentUser->ID) {
                         $output .= '<span class="wc-reply-button wc-cta-button" title="' . $replyText . '">' . '<i class="fa fa-reply" aria-hidden="true"></i> ' . $replyText . '</span>';
-                    } else if (!$this->optionsSerialized->replyButtonGuestsShowHide && !$current_user->ID) {
+                    } else if (!$this->optionsSerialized->replyButtonGuestsShowHide && !$currentUser->ID) {
                         $output .= '<span class="wc-reply-button wc-cta-button" title="' . $replyText . '">' . '<i class="fa fa-reply" aria-hidden="true"></i> ' . $replyText . '</span>';
-                    } else if (in_array('administrator', $current_user->roles)) {
+                    } else if (in_array('administrator', $currentUser->roles)) {
                         $output .= '<span class="wc-reply-button wc-cta-button" title="' . $replyText . '">' . '<i class="fa fa-reply" aria-hidden="true"></i> ' . $replyText . '</span>';
                     }
                 }
             }
-
-
 
             if (current_user_can('edit_comment', $comment->comment_ID)) {
                 $output .= '<span class="wc_editable_comment wc-cta-button"><i class="fa fa-pencil" aria-hidden="true"></i> ' . $this->optionsSerialized->phrases['wc_edit_text'] . '</span>';
                 $output .= '<span class="wc_cancel_edit wc-cta-button-x"><i class="fa fa-ban" aria-hidden="true"></i> ' . $this->optionsSerialized->phrases['wc_comment_edit_cancel_button'] . '</span>';
             } else {
                 $isInRange = $this->helper->isContentInRange($commentContent);
-                $isEditable = $this->optionsSerialized->commentEditableTime == 'unlimit' ? true && $isInRange : $this->helper->isCommentEditable($comment) && $isInRange;
-                if ($current_user && $current_user->ID && $current_user->ID == $comment->user_id && $isEditable) {
+                $isEditable = $this->optionsSerialized->commentEditableTime == 'unlimit' ? $isInRange : $this->helper->isCommentEditable($comment) && $isInRange;
+
+                if ($isEditable && $this->helper->canUserEditComment($comment, $currentUser, $args)) {
                     $output .= '<span class="wc_editable_comment wc-cta-button"><i class="fa fa-pencil" aria-hidden="true"></i> ' . $this->optionsSerialized->phrases['wc_edit_text'] . '</span>';
-                    $output .= '<span class="wc_cancel_edit"><i class="fa fa-ban" aria-hidden="true"></i> ' . $this->optionsSerialized->phrases['wc_comment_edit_cancel_button'] . '</span>';
+                    $output .= '<span class="wc_cancel_edit wc-cta-button-x"><i class="fa fa-ban" aria-hidden="true"></i> ' . $this->optionsSerialized->phrases['wc_comment_edit_cancel_button'] . '</span>';
                 }
             }
 
-            $output = apply_filters('wpdiscuz_comment_buttons', $output, $comment, $user, $current_user);
+            $output = apply_filters('wpdiscuz_comment_buttons', $output, $comment, $user, $currentUser);
 
             $output .= '</div>';
             $output .= '<div class="wc-footer-right">';

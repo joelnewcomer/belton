@@ -8,6 +8,7 @@ jQuery(document).ready(function ($) {
     var wpdiscuzRecaptcha = wpdiscuzAjaxObj.wpdiscuz_options.wpDiscuzReCaptcha;
     var isGoodbyeCaptchaActive = wpdiscuzAjaxObj.wpdiscuz_options.isGoodbyeCaptchaActive;
     var commentListLoadType = wpdiscuzAjaxObj.wpdiscuz_options.commentListLoadType;
+    var lazyLoadOnPageLoad = wpdiscuzAjaxObj.wpdiscuz_options.lazyLoadOnPageLoad;
     var wordpressIsPaginate = wpdiscuzAjaxObj.wpdiscuz_options.wordpressIsPaginate;
     var wpdiscuzPostId = wpdiscuzAjaxObj.wpdiscuz_options.wc_post_id;
     var commentListUpdateType = wpdiscuzAjaxObj.wpdiscuz_options.commentListUpdateType;
@@ -17,7 +18,7 @@ jQuery(document).ready(function ($) {
     var wpdiscuzCommentOrder = wpdiscuzAjaxObj.wpdiscuz_options.wordpress_comment_order;
     var commentsVoteOrder = wpdiscuzAjaxObj.wpdiscuz_options.commentsVoteOrder;
     var storeCommenterData = wpdiscuzAjaxObj.wpdiscuz_options.storeCommenterData;
-    var wpdiscuzLoadCount = 1;
+    var wpdiscuzLoadCount = commentListLoadType == 2 && !lazyLoadOnPageLoad ? 0 : 1;
     var wpdiscuzCommentOrderBy = 'comment_date_gmt';
     var wpdiscuzReplyArray = [];
     var wpdiscuzCommentArray = [];
@@ -25,10 +26,16 @@ jQuery(document).ready(function ($) {
     var commentTextMaxLength = wpdiscuzAjaxObj.wpdiscuz_options.commentTextMaxLength;
     var wpdGoogleRecaptchaValid = true;
     var wpdiscuzReplyButton = '';
-    var wpdiscuzCookiehash = wpdiscuzAjaxObj.wpdiscuz_options.cookiehash;;
-
+    var wpdiscuzCookiehash = wpdiscuzAjaxObj.wpdiscuz_options.cookiehash;
     loginButtonsClone();
     displayShowHideReplies();
+
+    if (!wpdiscuzAjaxObj.wpdiscuz_options.wordpressIsPaginate) {
+        var wpdiscuzLastVisitKey = wpdiscuzAjaxObj.wpdiscuz_options.lastVisitKey;
+        var wpdiscuzLastVisit = wpdiscuzAjaxObj.wpdiscuz_options.lastVisitCookie;
+        var wpdiscuzLastVisitExpires = wpdiscuzAjaxObj.wpdiscuz_options.lastVisitExpires;
+        Cookies.set(wpdiscuzLastVisitKey, (JSON.stringify(wpdiscuzLastVisit)), {expires: wpdiscuzLastVisitExpires, path: window.location});
+    }
 
     if (commentsVoteOrder) {
         $('.wpdiscuz-vote-sort-up').addClass('wpdiscuz-sort-button-active');
@@ -542,17 +549,26 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    var wpdiscuzHasMoreComments = $('#wpdiscuzHasMoreComments').val();
     var isRun = false;
     if (commentListLoadType == 2 && !wordpressIsPaginate) {
         $('.wc-load-more-submit').parents('.wpdiscuz-comment-pagination').hide();
+        wpdiscuzScrollEvents();
         $(window).scroll(function () {
-            var scrollHeight = document.getElementById('wcThreadWrapper').scrollHeight;
-            if ($(window).scrollTop() >= scrollHeight && isRun === false && wpdiscuzHasMoreComments == 1) {
+            wpdiscuzScrollEvents();
+        });
+    }
+
+    function wpdiscuzScrollEvents() {
+        var wpdiscuzHasMoreComments = $('#wpdiscuzHasMoreComments').val();
+        var scrollHeight = $(document).height();
+        var scrollPosition = $(window).height() + $(window).scrollTop();
+        if (scrollHeight && scrollPosition) {
+            var scrollPercent = scrollPosition * 100 / scrollHeight;
+            if (scrollPercent >= 80 && isRun === false && wpdiscuzHasMoreComments == 1) {
                 isRun = true;
                 wpdiscuzLoadComments($('.wc-load-more-submit'));
             }
-        });
+        }
     }
 
     function wpdiscuzLoadComments(loadButton, loaded, loading) {
@@ -564,6 +580,7 @@ jQuery(document).ready(function ($) {
         data.append('orderBy', wpdiscuzCommentOrderBy);
         data.append('order', wpdiscuzCommentOrder);
         data.append('lastParentId', getLastParentID());
+        data.append(wpdiscuzLastVisitKey, Cookies.get(wpdiscuzLastVisitKey));
         wpdiscuzLoadCount++;
         getAjaxObj(data).done(function (response) {
             try {
@@ -572,6 +589,7 @@ jQuery(document).ready(function ($) {
                 setLoadMoreVisibility(obj);
                 $('.wpdiscuz_single').remove();
                 isRun = false;
+                loadLastCommentId = obj.loadLastCommentId;
                 displayShowHideReplies();
             } catch (e) {
                 console.log(e);
@@ -584,17 +602,14 @@ jQuery(document).ready(function ($) {
     }
 
     function setLoadMoreVisibility(obj) {
-        var hasMoreComments = 0;
         if (obj.is_show_load_more == false) {
-            hasMoreComments = 0;
-            wpdiscuzHasMoreComments = 0;
+            $('#wpdiscuzHasMoreComments').val(0);
             $('.wc-load-more-submit').parents('.wpdiscuz-comment-pagination').hide();
         } else {
             setLastParentID(obj.last_parent_id);
-            wpdiscuzHasMoreComments = 1;
-            hasMoreComments = 1;
+            $('#wpdiscuzHasMoreComments').val(1);
         }
-        $('#wpdiscuzHasMoreComments').val(hasMoreComments);
+
         if (obj.callbackFunctions != null && obj.callbackFunctions != 'undefined' && obj.callbackFunctions.length) {
             $.each(obj.callbackFunctions, function (i) {
                 if (typeof wpdiscuzAjaxObj[obj.callbackFunctions[i]] === "function") {
@@ -665,7 +680,6 @@ jQuery(document).ready(function ($) {
 //============================== VOTE ============================== //
 //============================== SORTING ============================== //
     $(document).delegate('.wpdiscuz-sort-button', 'click', function () {
-        wpdiscuzHasMoreComments = $('#wpdiscuzHasMoreComments').val();
         if (!($(this).hasClass('wpdiscuz-sort-button-active'))) {
             var clickedBtn = $(this);
             if ($(this).hasClass('wpdiscuz-vote-sort-up')) {
@@ -743,7 +757,7 @@ jQuery(document).ready(function ($) {
     getSingleComment();
 //============================== SINGLE COMMENT ============================== //
 //============================== LIVE UPDATE ============================== // 
-    if (commentListUpdateType > 0 && loadLastCommentId && (isUserLoggedIn || (!isUserLoggedIn && !disableGuestsLiveUpdate))) {
+    if (commentListUpdateType && loadLastCommentId && (isUserLoggedIn || (!isUserLoggedIn && !disableGuestsLiveUpdate))) {
         setInterval(liveUpdate, parseInt(commentListUpdateTimer) * 1000);
     }
 

@@ -34,8 +34,7 @@ class Submit extends Field {
                 $isShowSubscribeWrapper = false;
                 if ($options->showHideReplyCheckbox) {
                     if ($currentUser->ID) {
-                        $subscriptionData = $wpdiscuz->dbManager->hasSubscription($post->ID, $currentUser->user_email);
-                        $isShowSubscribeWrapper = !$subscriptionData || ($subscriptionData && $subscriptionData['type'] == $wpdiscuz::SUBSCRIPTION_COMMENT) ? true : false;
+                        $isShowSubscribeWrapper = !$wpdiscuz->subscriptionData || ($wpdiscuz->subscriptionData && $wpdiscuz->subscriptionData['type'] == $wpdiscuz::SUBSCRIPTION_COMMENT) ? true : false;
                     } else {
                         $isShowSubscribeWrapper = true;
                     }

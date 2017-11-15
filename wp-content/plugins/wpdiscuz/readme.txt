@@ -1,13 +1,13 @@
-=== WordPress Comments Plugin - wpDiscuz ===
+=== Comments - wpDiscuz ===
 Contributors: gVectors Team
 Tags: comment, comments, ajax comments, custom comment form, custom comment field
 Requires at least: 4.4
-Tested up to: 4.8
-Stable tag: 4.0.15
+Tested up to: 4.9
+Stable tag: 4.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Wordpress Comments Plugin - wpDiscuz: AJAX powered comments, realtime comments. Designed to extend WordPress native comments. Custom comment forms and fields.
+AJAX powered realtime comments. Designed to extend WordPress native comments. Custom comment forms and fields.
 
 == Description ==
 
@@ -87,16 +87,22 @@ Integration with AntiSpam plugins
 * | [wpDiscuz - Comments Censure](https://gvectors.com/product/comments-censure-pro/)
 
 
-This comment system is also available for WooCommerce, Plugin name is WooDiscuz:
-https://wordpress.org/plugins/woodiscuz-woocommerce-comments/
+This comment system is also available for WooCommerce, Plugin name is WooDiscuz – WooCommerce Comments:
+<a target="_blank" href="https://wordpress.org/plugins/woodiscuz-woocommerce-comments/">https://wordpress.org/plugins/woodiscuz-woocommerce-comments/</a>
 
 
 == Installation ==
 
+= Note =
+
 IMPORTANT: If you have a Cache Plugin, please delete all caches after wpDiscuz update.
+
+= Installation =
 
 1. Upload plugin folder to the '/wp-content/plugins/' directory,
 2. Activate the plugin through the 'Plugins' menu in WordPress.
+
+After installing and activating the plugin, click on **Comments** menu item in the left sidebar in your website admin panel.
 
 == Frequently Asked Questions ==
 
@@ -104,26 +110,39 @@ IMPORTANT: If you have a Cache Plugin, please delete all caches after wpDiscuz u
 
 * If you have a Cache Plugin, please delete all caches after wpDiscuz update.
 * If wpDiscuz comment form is missing please read this support topic: 
-https://gvectors.com/forum/how-to-and-troubleshooting/resolved-wpdiscuz-comment-form-is-missing/
+* <a target="_blank" href="https://gvectors.com/forum/how-to-and-troubleshooting/resolved-wpdiscuz-comment-form-is-missing/">wpDiscuz comment form is missing</a>
 
+= Comments - wpDiscuz Settings =
 
-= Q&A =
+Basic configuration suits for most of cases, but if you want to configure **Comments - wpDiscuz** deeper, click on **» Settings** sub menu item which is under **Comments** menu item and change the settings as you want.
 
-wpDiscuz Documentation: http://wpdiscuz.com/wpdiscuz-documentation/
+= Comments - wpDiscuz Phrases =
 
-Support Forum: https://gvectors.com/forum/
+**Comments - wpDiscuz** has phrases for frontend, for those who want customize texts and messages without using .po/.mo files, but still you can use .po/.mo translation files with combination of **Comments - wpDiscuz** phrases. You just need to enable "Use Plugin .PO/.MO files" setting in **Comments - wpDiscuz** **» Settings** page
 
+= Comments - wpDiscuz Documentation =
 
-	* QUESTION: Does it fully replace the current comment system? That in this case what happens to old comments?
-	* ANSWER: wpDiscuz changes default comment system to a new interactive system and shows all old comments, nothing will be lost.
+Here you can find more detailed answers for your questions - <a target="_blank" href="http://wpdiscuz.com/wpdiscuz-documentation/">http://wpdiscuz.com/wpdiscuz-documentation/</a>
 
+= Support Forum =
 
-	* QUESTION: Where comments are stored?
-	* ANSWER: wpDiscuz uses the default WordPress comment storage system, all comments are on your database and all comments are manageable in Dashboard > Comments admin page. 
+For more deeper support please visit our <a target="_blank" href="https://gvectors.com/forum/">**Support Forum**</a>
 
+= Does this plugin fully replace the current comment system? =
 
-	* QUESTION: Will my comments be lost if I install this plugin, and then remove it? 
-	* ANSWER: wpDiscuz doesn't affect any data. You can install and uninstall whenever you want without any worries. 
+Yes! **Comments - wpDiscuz** changes default comment system to a new interactive system.
+
+= What will happen to old comments? =
+
+Nothing will be lost!  **Comments - wpDiscuz** will show all old comments.
+
+= Where comments are stored? =
+
+**Comments - wpDiscuz** uses the default WordPress comment storage system, all comments are on your database and all comments are manageable in Dashboard > Comments admin page. 
+
+= Will my comments be lost if I install this plugin, and then remove it? =
+
+**Comments - wpDiscuz** doesn't affect any data. You can install and uninstall whenever you want without any worries. 
 
 
 == Screenshots ==
@@ -140,6 +159,27 @@ Support Forum: https://gvectors.com/forum/
 
 == Changelog ==
 
+= 4.1.1 =
+
+* Added : Option to enable first comments loading before scroll position is on comment box
+
+IMPORTANT:
+
+- If you have JetPack installed please deactivate Jetpack comments, it affects wpDiscuz
+- If you have a Cache Plugin, please delete all caches after wpDiscuz update.
+- If you use CDN and found some issue please purge it.
+- If your server PHP version is lower than 5.4, [please change it to hogher](https://wordpress.org/support/topic/wpdiscuz-4-requires-php-5-4-and-higher/)
+
+= 4.1.0 =
+
+* Speed: v4.1 comes with new acelerated engine, it's twice faster than older versions 
+* Added: Lazy load improvement, loads comments once scroll position is on comment box
+* Added: With wpDiscuz v4.1 guest are also allowed to edit own comments
+* Added: Highlights new comments since user last visit.
+* Fixed Bug: Issues with live update function
+* Fixed Bug: Style issue on RTL pages if avatars are disabled
+* Fixed Bug: Lazy load doesn't work if scrollbar at the bottom of page after page loading
+
 = 4.0.15 =
 
 * Now wpDiscuz requires at least WordPress 4.4 version
@@ -149,13 +189,6 @@ Support Forum: https://gvectors.com/forum/
 * Added Phrase : Top bar subscription submit button
 * Fixed Bug : Comment showing only after page refresh
 
-
-IMPORTANT:
-
-- If you have JetPack installed please deactivate Jetpack comments, it affects wpDiscuz
-- If you have a Cache Plugin, please delete all caches after wpDiscuz update.
-- If you use CDN and found some issue please purge it.
-- If your server PHP version is lower than 5.4, [please change it to hogher](https://wordpress.org/support/topic/wpdiscuz-4-requires-php-5-4-and-higher/)
 
 = 4.0.14 =
 

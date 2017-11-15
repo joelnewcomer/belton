@@ -59,7 +59,7 @@ class wpDiscuzForm implements wpdFormConst {
             $postID = filter_input(INPUT_POST, 'comment_post_ID', FILTER_SANITIZE_NUMBER_INT);
             $this->getForm($postID);
             if ($this->form) {
-                $currentUser = wp_get_current_user();
+                $currentUser = WpdiscuzHelper::getCurrentUser();
                 $this->form->initFormFields();
                 $this->form->validateFields($currentUser);
             }

@@ -259,7 +259,7 @@ class Form {
             'itemprop' => true
                 ), $atts);
         $this->initFormFields();
-        if ($this->ratingsExists && is_singular()) {
+        if ($this->ratingsExists && (($this->wpdOptions->ratingCssOnNoneSingular && !is_singular()) || is_single())) {
             $wpdiscuzRatingCountMeta = get_post_meta($post->ID, 'wpdiscuz_rating_count', true);
             $wpdiscuzRatingCount = $wpdiscuzRatingCountMeta && is_array($wpdiscuzRatingCountMeta) ? $wpdiscuzRatingCountMeta : array();
             $ratingList = array();
@@ -465,6 +465,7 @@ class Form {
         $commentTextMaxLength = intval($this->wpdOptions->commentTextMaxLength);
         $commentTextLengthRange = ($commentTextMinLength && $commentTextMaxLength) ? 'pattern=".{' . $commentTextMinLength . ',' . $commentTextMaxLength . '}"' : '';
         $textareaMaxLength = $commentTextMaxLength ? "maxlength=$commentTextMaxLength" : '';
+        $message = '';
         ?>
         <div class="wc-form-wrapper <?php echo!$isMain ? 'wc-secondary-form-wrapper' : 'wc-main-form-wrapper'; ?>"  <?php echo!$isMain ? "id='wc-secondary-form-wrapper-$uniqueId'  style='display: none;'" : "id='wc-main-form-wrapper-$uniqueId'"; ?> >
             <div class="wpdiscuz-comment-message" style="display: block;"></div>
@@ -472,7 +473,7 @@ class Form {
                 <div class="wc-secondary-forms-social-content"></div>
             <?php } ?>
             <?php
-            if ($this->isGuestCanComment($currentUser->ID)) {
+            if ($this->isUserCanComment($currentUser->ID, $message)) {
                 ?>
                 <form class="wc_comm_form <?php echo!$isMain ? 'wc-secondary-form-wrapper' : 'wc_main_comm_form'; ?>" method="post"  enctype="multipart/form-data">
                     <div class="wc-field-comment">
@@ -515,10 +516,14 @@ class Form {
             <?php } else { ?>
                 <p class="wc-must-login">
                     <?php
-                    echo $this->wpdOptions->phrases['wc_you_must_be_text'];
-                    $login = wp_loginout(get_permalink(), false);
-                    $login = preg_replace('!>([^<]+)!is', '>' . $this->wpdOptions->phrases['wc_logged_in_text'], $login);
-                    echo ' ' . $login . ' ' . $this->wpdOptions->phrases['wc_to_post_comment_text'];
+                    if (!$message) {
+                        echo $this->wpdOptions->phrases['wc_you_must_be_text'];
+                        $login = wp_loginout(get_permalink(), false);
+                        $login = preg_replace('!>([^<]+)!is', '>' . $this->wpdOptions->phrases['wc_logged_in_text'], $login);
+                        echo ' ' . $login . ' ' . $this->wpdOptions->phrases['wc_to_post_comment_text'];
+                    } else {
+                        echo $message;
+                    }
                     ?>
                 </p>
                 <?php
@@ -589,7 +594,7 @@ class Form {
                                 <?php $lang = isset($this->generalOptions['lang']) ? $this->generalOptions['lang'] : get_locale(); ?>
                                 <input required="" type="text" name="<?php echo wpdFormConst::WPDISCUZ_META_FORMS_GENERAL_OPTIONS; ?>[lang]" value="<?php echo $lang; ?>" >
                             </td>
-                        </tr>
+                        </tr>                        
                         <tr>
                             <th>
                                 <?php _e('Allow guests to comment', 'wpdiscuz'); ?>
@@ -688,11 +693,20 @@ class Form {
         <?php
     }
 
-    private function isGuestCanComment($isUserLoggedIn) {
+    private function isUserCanComment($isUserLoggedIn, &$message) {
+        global $post;
         $user_can_comment = TRUE;
         if (!$this->generalOptions['guest_can_comment']) {
             if (!$isUserLoggedIn) {
                 $user_can_comment = FALSE;
+            }
+        }
+        if (class_exists('WooCommerce') && get_post_type($post->ID) == 'product') {
+            if (get_option('woocommerce_review_rating_verification_required') === 'no' || wc_customer_bought_product('', get_current_user_id(), $post->ID)) {
+                $user_can_comment = TRUE;
+            } else {
+                $user_can_comment = FALSE;
+                $message = '<p class="woocommerce-verification-required">' . __('Only logged in customers who have purchased this product may leave a review.', 'woocommerce') . '</p>';
             }
         }
         return $user_can_comment;
@@ -792,6 +806,7 @@ class Form {
 
     public function transferJSData($data) {
         $this->initFormFields();
+
         $data['wc_captcha_show_for_guest'] = $this->formFields[wpdFormConst::WPDISCUZ_FORMS_CAPTCHA_FIELD]['show_for_guests'];
         $data['wc_captcha_show_for_members'] = $this->formFields[wpdFormConst::WPDISCUZ_FORMS_CAPTCHA_FIELD]['show_for_users'];
         $data['is_email_field_required'] = $this->formFields[wpdFormConst::WPDISCUZ_FORMS_EMAIL_FIELD]['required'];

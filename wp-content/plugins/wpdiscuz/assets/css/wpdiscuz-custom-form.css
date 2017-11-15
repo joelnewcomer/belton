@@ -45,7 +45,7 @@
 #TB_ajaxContent .wpd-info{font-size:13px; color:#999999; font-style:italic; line-height:18px; width:90%; padding: 3px 0 1px; margin:0px;}
 #TB_ajaxContent .add-to-form-button-cont{text-align:right;}
 #TB_ajaxContent .wpdiscuz-tb-title{ font-size:20px; font-weight:400; color:#555; text-align:right; padding-bottom:10px; border-bottom:1px solid #eaeaea;}
-#TB_ajaxContent .wpd-field-button.button, #TB_ajaxContent .wpd-field-button.button{ margin:2px 1px 5px 1px;}
+#TB_ajaxContent .wpd-field-button.button, #TB_ajaxContent .wpd-field-button.button{ margin:2px 1px 5px 1px; min-width: 32%;}
 
 .wpdiscuz-wrapper .wpd-form-row-wrap{box-sizing: border-box; min-height: 60px; margin-top:35px; position:relative; border:4px dashed #dedede;}
 .wpdiscuz-wrapper .wpd-form-row-wrap .wpd-form-row-actions{background: #dedede;}

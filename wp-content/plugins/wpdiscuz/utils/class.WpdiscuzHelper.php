@@ -1,4 +1,7 @@
 <?php
+if (!defined('ABSPATH')) {
+    exit();
+}
 
 class WpdiscuzHelper {
 
@@ -20,7 +23,7 @@ class WpdiscuzHelper {
     private $dbManager;
     private $wpdiscuzForm;
 
-    function __construct($optionsSerialized, $dbManager, $wpdiscuzForm) {
+    public function __construct($optionsSerialized, $dbManager, $wpdiscuzForm) {
         $this->optionsSerialized = $optionsSerialized;
         $this->dbManager = $dbManager;
         $this->wpdiscuzForm = $wpdiscuzForm;
@@ -57,10 +60,10 @@ class WpdiscuzHelper {
 
     public function filterCommentText($commentContent) {
         kses_remove_filters();
-        remove_filter( 'comment_text', 'wp_kses_post' );
-	if ( ! current_user_can( 'unfiltered_html' ) ) {
-		$commentContent = wp_kses($commentContent, $this->filterKses());
-	}
+        remove_filter('comment_text', 'wp_kses_post');
+        if (!current_user_can('unfiltered_html')) {
+            $commentContent = wp_kses($commentContent, $this->filterKses());
+        }
         return $commentContent;
     }
 
@@ -274,6 +277,10 @@ class WpdiscuzHelper {
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
+
+        if ($ip == '::1') {
+            $ip = '127.0.0.1';
+        }
         return $ip;
     }
 
@@ -287,7 +294,7 @@ class WpdiscuzHelper {
             ?>
             <div id="comments" style="width: 0;height: 0;clear: both;margin: 0;padding: 0;"></div>
             <div id="respond" class="comments-area">
-        <?php } else { ?>
+            <?php } else { ?>
                 <div id="comments" class="comments-area">
                     <div id="respond" style="width: 0;height: 0;clear: both;margin: 0;padding: 0;"></div>
                     <?php
@@ -407,12 +414,32 @@ class WpdiscuzHelper {
                 $authorURL = apply_filters('author_link', $authorURL, $author_id, $author_nicename);
                 return $authorURL;
             }
-            
-            public function loadMoreLink($parentCommentID,$post_id){
+
+            public function loadMoreLink($parentCommentID, $post_id) {
                 global $wp_rewrite;
                 $loadMoreLink = !$wp_rewrite->using_permalinks() ? get_permalink($post_id) . "&" : get_permalink($post_id) . "?";
-                $loadMoreLink.= 'wpdParentID='.$parentCommentID;
+                $loadMoreLink .= 'wpdParentID=' . $parentCommentID;
                 return $loadMoreLink;
+            }
+
+            public static function getCurrentUser() {
+                global $user_ID;
+                if ($user_ID) {
+                    $user = get_userdata($user_ID);
+                } else {
+                    $user = wp_set_current_user(0);
+                }
+                return $user;
+            }
+
+            public function canUserEditComment($comment, $currentUser, $commentListArgs = array()) {
+                $currentIP = $this->getRealIPAddr();
+                if (isset($commentListArgs['comment_author_email'])) {
+                    $storedCookieEmail = $commentListArgs['comment_author_email'];
+                } else {
+                    $storedCookieEmail = isset($_COOKIE['comment_author_email_' . COOKIEHASH]) ? $_COOKIE['comment_author_email_' . COOKIEHASH] : '';
+                }
+                return ($storedCookieEmail == $comment->comment_author_email && $currentIP == $comment->comment_author_IP) || ($currentUser && $currentUser->ID && $currentUser->ID == $comment->user_id);
             }
 
         }

@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('ABSPATH')) {
+    exit();
+}
+
 class WpdiscuzEmailHelper {
 
     private $optionsSerialized;
@@ -12,21 +16,21 @@ class WpdiscuzEmailHelper {
 
     public function addSubscription() {
         global $wp_rewrite;
-        $current_user = wp_get_current_user();
+        $currentUser = WpdiscuzHelper::getCurrentUser();
         $subscribeFormNonce = filter_input(INPUT_POST, 'wpdiscuz_subscribe_form_nonce');
         $httpReferer = filter_input(INPUT_POST, '_wp_http_referer');
         $subscriptionType = filter_input(INPUT_POST, 'wpdiscuzSubscriptionType');
         $postId = filter_input(INPUT_POST, 'wpdiscuzSubscriptionPostId');
-        if ($current_user && $current_user->ID) {
-            $email = $current_user->user_email;
+        if ($currentUser && $currentUser->ID) {
+            $email = $currentUser->user_email;
         } else {
             $email = filter_input(INPUT_POST, 'wpdiscuzSubscriptionEmail');
         }
 
         $success = 0;
         if (wp_verify_nonce($subscribeFormNonce, 'wpdiscuz_subscribe_form_nonce_action') && $email && filter_var($email, FILTER_VALIDATE_EMAIL) !== false && in_array($subscriptionType, array(WpdiscuzCore::SUBSCRIPTION_POST, WpdiscuzCore::SUBSCRIPTION_ALL_COMMENT)) && $postId) {
-            $noNeedMemberConfirm = ($current_user->ID && $this->optionsSerialized->disableMemberConfirm);
-            $noNeedGuestsConfirm = (!$current_user->ID && $this->optionsSerialized->disableGuestsConfirm && $this->dbManager->hasConfirmedSubscription($email));
+            $noNeedMemberConfirm = ($currentUser->ID && $this->optionsSerialized->disableMemberConfirm);
+            $noNeedGuestsConfirm = (!$currentUser->ID && $this->optionsSerialized->disableGuestsConfirm && $this->dbManager->hasConfirmedSubscription($email));
             if ($noNeedMemberConfirm || $noNeedGuestsConfirm) {
                 $confirmData = $this->dbManager->addEmailNotification($postId, $postId, $email, $subscriptionType, 1);
                 if ($confirmData) {
@@ -106,9 +110,9 @@ class WpdiscuzEmailHelper {
         $comment_id = isset($_POST['comment_id']) ? intval($_POST['comment_id']) : 0;
         $email = isset($_POST['email']) ? trim($_POST['email']) : '';
         $isParent = isset($_POST['isParent']) ? intval($_POST['isParent']) : '';
-        $current_user = wp_get_current_user();
-        if ($current_user && $current_user->user_email) {
-            $email = $current_user->user_email;
+        $currentUser = WpdiscuzHelper::getCurrentUser();
+        if ($currentUser && $currentUser->user_email) {
+            $email = $currentUser->user_email;
         }
         if ($comment_id && $email && $postId) {
             $this->notifyPostSubscribers($postId, $comment_id, $email);

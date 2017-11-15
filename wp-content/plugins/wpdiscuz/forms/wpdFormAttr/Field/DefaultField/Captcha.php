@@ -32,19 +32,19 @@ class Captcha extends Field {
                 <p class="wpd-info"><?php _e('Field specific short description or some rule related to inserted information.', 'wpdiscuz'); ?></p>
             </div>
             <div class="wpd-field-option">
-                <label><?php _e('Show for guests', 'wpdiscuz'); ?>:</label> 
-                <input type="checkbox" value="1" <?php checked($this->fieldData['show_for_guests'], 1, true); ?> name="<?php echo $this->fieldInputName; ?>[show_for_guests]" />
+                <label for="wpd_captcha_show_for_guests"><?php _e('Show for guests', 'wpdiscuz'); ?>:</label> 
+                <input id="wpd_captcha_show_for_guests"  type="checkbox" value="1" <?php checked($this->fieldData['show_for_guests'], 1, true); ?> name="<?php echo $this->fieldInputName; ?>[show_for_guests]" />
             </div>
             <div class="wpd-field-option">
-                <label><?php _e('Show for logged in users', 'wpdiscuz'); ?>:</label> 
-                <input type="checkbox" value="1" <?php checked($this->fieldData['show_for_users'], 1, true); ?> name="<?php echo $this->fieldInputName; ?>[show_for_users]" />
+                <label for="wpd_captcha_show_for_users"><?php _e('Show for logged in users', 'wpdiscuz'); ?>:</label> 
+                <input id="wpd_captcha_show_for_users" type="checkbox" value="1" <?php checked($this->fieldData['show_for_users'], 1, true); ?> name="<?php echo $this->fieldInputName; ?>[show_for_users]" />
             </div>
             <div style="clear:both;"></div>
         </div>
         <?php
     }
 
-    public function frontFormHtml($name, $args, $options, $currentUser, $uniqueId,$isMainForm) {
+    public function frontFormHtml($name, $args, $options, $currentUser, $uniqueId, $isMainForm) {
         if ($options->isGoodbyeCaptchaActive) {
             echo $options->goodbyeCaptchaTocken;
         } else {
@@ -53,7 +53,7 @@ class Captcha extends Field {
                     global $wpDiscuzReCaptcha;
                     $wpDiscuzReCaptcha->recaptchaHtml($uniqueId);
                 } else {
-                    $this->generateCaptchaHtml($args,$options);
+                    $this->generateCaptchaHtml($args, $options);
                 }
             }
         }
@@ -78,8 +78,8 @@ class Captcha extends Field {
         return wp_parse_args($cleanData, $this->fieldDefaultData);
     }
 
-    public function validateFieldData($fieldName,$args, $options, $currentUser) {
-        if ($currentUser && $this->isShowCaptcha($currentUser->ID,$args) && !class_exists("wpDiscuzReCaptcha") && !$options->isGoodbyeCaptchaActive) {
+    public function validateFieldData($fieldName, $args, $options, $currentUser) {
+        if ($currentUser && $this->isShowCaptcha($currentUser->ID, $args) && !class_exists("wpDiscuzReCaptcha") && !$options->isGoodbyeCaptchaActive) {
             $captcha = isset($_POST[$fieldName]) ? trim($_POST[$fieldName]) : '';
             if ($options->isCaptchaInSession) {
                 if (!session_id()) {
@@ -117,11 +117,11 @@ class Captcha extends Field {
         $this->msgPNGCreationDisabled = __('PNG image creation disabled', 'wpdiscuz');
     }
 
-    private function generateCaptchaHtml($args,$options) {
+    private function generateCaptchaHtml($args, $options) {
         ?>
         <div class="wc-field-captcha wpdiscuz-item">
             <div class="wc-captcha-input">
-                <input type="text" maxlength="5" value="" autocomplete="off" required="required" name="wc_captcha"  class="wpd-field wc_field_captcha" placeholder="<?php echo $args['name']; ?>" title="Insert the CAPTCHA code">
+                <input type="text" maxlength="5" value="" autocomplete="off" required="required" name="wc_captcha"  class="wpd-field wc_field_captcha" placeholder="<?php echo $args['name']; ?>" title="<?php _e('Insert the CAPTCHA code', 'wpdiscuz'); ?>">
             </div>
             <div class="wc-label wc-captcha-label">
                 <?php
@@ -295,9 +295,13 @@ class Captcha extends Field {
     public function isShowCaptcha($isUserLoggedIn, $args) {
         return ($isUserLoggedIn && $args['show_for_users']) || (!$isUserLoggedIn && $args['show_for_guests']);
     }
-    
-    public function editCommentHtml($key, $value ,$data,$comment) {}
-    
-    public function frontHtml($value,$args) {}
+
+    public function editCommentHtml($key, $value, $data, $comment) {
+        
+    }
+
+    public function frontHtml($value, $args) {
+        
+    }
 
 }

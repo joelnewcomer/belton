@@ -150,13 +150,17 @@ if (!defined('ABSPATH')) {
                 <td><input type="checkbox" <?php checked($this->optionsSerialized->disableProfileURLs == 1) ?> value="1" name="disableProfileURLs" id="disableProfileURLs" /></td>
             </tr>
             <tr valign="top">
-                <th scope="row"><?php _e('Diplay Ratings', 'wpdiscuz'); ?></label></th>
+                <th scope="row"><?php _e('Display Ratings', 'wpdiscuz'); ?></label></th>
                 <td>
                     <input type="checkbox" <?php checked(in_array('before', $this->optionsSerialized->displayRatingOnPost)) ?> value="before" name="displayRatingOnPost[]" id="displayRatingOnPostBefore" />
                     <label for="displayRatingOnPostBefore"><?php _e('Before Content', 'wpdiscuz'); ?></label><br>
                     <input type="checkbox" <?php checked(in_array('after', $this->optionsSerialized->displayRatingOnPost)) ?> value="after" name="displayRatingOnPost[]" id="displayRatingOnPostAfter" />
                     <label for="displayRatingOnPostAfter"><?php _e('After Content', 'wpdiscuz'); ?></label>
                 </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row"><label for="ratingCssOnNoneSingular"><?php _e('Display ratings on none singular pages', 'wpdiscuz'); ?></label></th>
+                <td><input type="checkbox" <?php checked($this->optionsSerialized->ratingCssOnNoneSingular == 1) ?> value="1" name="ratingCssOnNoneSingular" id="ratingCssOnNoneSingular" /></td>
             </tr>
         </tbody>
     </table>
