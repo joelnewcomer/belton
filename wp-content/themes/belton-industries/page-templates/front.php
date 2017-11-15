@@ -8,7 +8,7 @@ get_header(); ?>
 <?php while ( have_posts() ) : the_post(); ?>
 
 <?php
-$hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&height=800');
+$hero_bg = wp_get_attachment_image_src( get_field('banner_image'), 'width=1600&height=800&crop=1');
 ?>
 <section class="hero full-width" style="background-image: url(<?php echo $hero_bg[0]; ?>)">
 	<div class="blue-overlay hide-for-medium-down">
