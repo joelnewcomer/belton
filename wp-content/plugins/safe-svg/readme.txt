@@ -4,7 +4,7 @@ Donate link: https://wpsvg.com/
 Tags: svg, sanitize, upload, sanitise, security, svg upload, image, vector, file, graphic, media, mime
 Requires at least: 4.0
 Tested up to: 4.9.0
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,9 @@ SVG Sanitization is done through the following library: [https://github.com/dary
 Install through the WordPress directory or download, unzip and upload the files to your `/wp-content/plugins/` directory
 
 == Changelog ==
+
+= 1.5.3 =
+* 1.5.2 introduced an issue that can freeze the media library. This fixes that issue. Sorry!
 
 = 1.5.2 =
 * Tested with 4.9.0

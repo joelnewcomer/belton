@@ -3,7 +3,7 @@
 Plugin Name: Safe SVG
 Plugin URI:  https://wpsvg.com/
 Description: Allows SVG uploads into WordPress and sanitizes the SVG before saving it
-Version:     1.5.2
+Version:     1.5.3
 Author:      Daryll Doyle
 Author URI:  http://enshrined.co.uk
 Text Domain: safe-svg
@@ -45,6 +45,7 @@ if ( ! class_exists( 'safe_svg' ) ) {
 			add_action( 'get_image_tag', array( $this, 'get_image_tag_override' ), 10, 6 );
 			add_filter( 'wp_generate_attachment_metadata', array( $this, 'skip_svg_regeneration' ), 10, 2 );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'add_upgrade_link' ) );
+			add_filter( 'wp_get_attachment_metadata', array( $this, 'metadata_error_fix' ), 10, 2 );
 		}
 
 		/**
@@ -101,7 +102,8 @@ if ( ! class_exists( 'safe_svg' ) ) {
 
 			if ( $file['type'] === 'image/svg+xml' ) {
 				if ( ! $this->sanitize( $file['tmp_name'] ) ) {
-					$file['error'] = __( "Sorry, this file couldn't be sanitized so for security reasons wasn't uploaded", 'safe-svg' );
+					$file['error'] = __( "Sorry, this file couldn't be sanitized so for security reasons wasn't uploaded",
+						'safe-svg' );
 				}
 			}
 
@@ -164,9 +166,9 @@ if ( ! class_exists( 'safe_svg' ) ) {
 		/**
 		 * Filters the attachment data prepared for JavaScript to add the sizes array to the response
 		 *
-		 * @param array      $response   Array of prepared attachment data.
+		 * @param array $response Array of prepared attachment data.
 		 * @param int|object $attachment Attachment ID or object.
-		 * @param array      $meta       Array of attachment meta data.
+		 * @param array $meta Array of attachment meta data.
 		 *
 		 * @return array
 		 */
@@ -202,11 +204,11 @@ if ( ! class_exists( 'safe_svg' ) ) {
 		 * Filters the image src result.
 		 * Here we're gonna spoof the image size and set it to 100 width and height
 		 *
-		 * @param array|false  $image         Either array with src, width & height, icon src, or false.
-		 * @param int          $attachment_id Image attachment ID.
-		 * @param string|array $size          Size of image. Image size or array of width and height values
+		 * @param array|false $image Either array with src, width & height, icon src, or false.
+		 * @param int $attachment_id Image attachment ID.
+		 * @param string|array $size Size of image. Image size or array of width and height values
 		 *                                    (in that order). Default 'thumbnail'.
-		 * @param bool         $icon          Whether the image should be treated as an icon. Default false.
+		 * @param bool $icon Whether the image should be treated as an icon. Default false.
 		 *
 		 * @return array
 		 */
@@ -222,9 +224,9 @@ if ( ! class_exists( 'safe_svg' ) ) {
 		/**
 		 * If the featured image is an SVG we wrap it in an SVG class so we can apply our CSS fix.
 		 *
-		 * @param string $content      Admin post thumbnail HTML markup.
-		 * @param int    $post_id      Post ID.
-		 * @param int    $thumbnail_id Thumbnail ID.
+		 * @param string $content Admin post thumbnail HTML markup.
+		 * @param int $post_id Post ID.
+		 * @param int $thumbnail_id Thumbnail ID.
 		 *
 		 * @return string
 		 */
@@ -248,12 +250,12 @@ if ( ! class_exists( 'safe_svg' ) ) {
 		/**
 		 * Override the default height and width string on an SVG
 		 *
-		 * @param string       $html  HTML content for the image.
-		 * @param int          $id    Attachment ID.
-		 * @param string       $alt   Alternate text.
-		 * @param string       $title Attachment title.
-		 * @param string       $align Part of the class name for aligning the image.
-		 * @param string|array $size  Size of image. Image size or array of width and height values (in that order).
+		 * @param string $html HTML content for the image.
+		 * @param int $id Attachment ID.
+		 * @param string $alt Alternate text.
+		 * @param string $title Attachment title.
+		 * @param string $align Part of the class name for aligning the image.
+		 * @param string|array $size Size of image. Image size or array of width and height values (in that order).
 		 *                            Default 'medium'.
 		 *
 		 * @return mixed
@@ -272,14 +274,14 @@ if ( ! class_exists( 'safe_svg' ) ) {
 		/**
 		 * Skip regenerating SVGs
 		 *
-		 * @param int    $attachment_id Attachment Id to process.
-		 * @param string $file          Filepath of the Attached image.
+		 * @param int $attachment_id Attachment Id to process.
+		 * @param string $file Filepath of the Attached image.
 		 *
 		 * @return mixed Metadata for attachment.
 		 */
 		function skip_svg_regeneration( $metadata, $attachment_id ) {
 			if ( 'image/svg+xml' === get_post_mime_type( $attachment_id ) ) {
-				return new WP_Error( 'skip_svg_generate', __( 'Skipping SVG file.', 'safe-svg' ) );
+//				return new WP_Error( 'skip_svg_generate', __( 'Skipping SVG file.', 'safe-svg' ) );
 			}
 
 			return $metadata;
@@ -298,6 +300,24 @@ if ( ! class_exists( 'safe_svg' ) ) {
 			);
 
 			return array_merge( $links, $mylinks );
+		}
+
+		/**
+		 * Filters the attachment meta data.
+		 *
+		 * @param array|bool $data Array of meta data for the given attachment, or false
+		 *                            if the object does not exist.
+		 * @param int $post_id Attachment ID.
+		 */
+		function metadata_error_fix( $data, $post_id ) {
+
+			// If it's a WP_Error regenerate metadata and save it
+			if ( is_wp_error( $data ) ) {
+				$data = wp_generate_attachment_metadata( $post_id, get_attached_file( $post_id ) );
+				wp_update_attachment_metadata( $post_id, $data );
+			}
+
+			return $data;
 		}
 
 	}
