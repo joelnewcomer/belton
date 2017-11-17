@@ -180,6 +180,11 @@ add_filter('upload_mimes', 'unset_tiff', 1, 1);
 // This gives you full control of proportions
 function drum_image($id,$small,$medium,$large) {
 	$image_alt = get_post_meta($id, '_wp_attachment_image_alt');
+	$message = '<pre>';
+	$message .= print_r($image_alt,true);
+	$message .= '</pre>';
+	$headers = 'From: <info@website.com>' . "\r\n";
+	wp_mail( 'joel@drumcreative.com', 'Debug Info', $message, $headers );
 	$image_url = wp_get_attachment_url( $id );
 	$image_small = wpthumb( $image_url, 'width=' . $small['width'] . '&height=' . $small['height'] . '&crop=1');
 	if ($image_small == null) { $image_small = $image_url; }
