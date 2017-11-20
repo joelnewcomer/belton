@@ -49,6 +49,9 @@ section.container > .featured-image {
 	img {
 		width: 100%;
 	}
+	picture {
+		position: relative;
+	}
 	.gradient-overlay {
 		position: absolute;
 		top: 0;

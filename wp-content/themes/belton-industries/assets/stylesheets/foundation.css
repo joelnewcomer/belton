@@ -4144,6 +4144,8 @@ section.container > .featured-image {
   background: #1365C3; }
   section.container > .featured-image img {
     width: 100%; }
+  section.container > .featured-image picture {
+    position: relative; }
   section.container > .featured-image .gradient-overlay {
     position: absolute;
     top: 0;
