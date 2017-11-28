@@ -4313,7 +4313,7 @@ section.product-search {
     max-width: 596px;
     margin: 0 auto;
     padding: 0 8px; }
-  section.product-search .cat-product {
+  section.product-search .cat-product.active {
     border: 1px solid rgba(193, 196, 199, 0.3); }
 
 .not-finding {
