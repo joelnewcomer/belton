@@ -81,7 +81,7 @@ get_header(); ?>
 			while ( $the_query->have_posts() ) { $the_query->the_post();
 				global $post;
 				$assigned_to = get_post_meta($post->ID, 'assign_to_product', true);
-				if ($this_id == $assigned_to) {
+				if (in_array( $this_id, $assigned_to )) {
 					$data_sheet = get_field('file');
 				}
 			}
