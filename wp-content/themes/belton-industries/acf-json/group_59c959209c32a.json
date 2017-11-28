@@ -85,25 +85,6 @@
             "delay": 0
         },
         {
-            "key": "field_59c959d3967c9",
-            "label": "Product Data Sheet",
-            "name": "product_data_sheet",
-            "type": "file",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "return_format": "url",
-            "library": "all",
-            "min_size": "",
-            "max_size": "",
-            "mime_types": ""
-        },
-        {
             "key": "field_59c959eb967ca",
             "label": "Installation Guideline",
             "name": "installation_guideline",
@@ -224,5 +205,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1510256226
+    "modified": 1511877023
 }

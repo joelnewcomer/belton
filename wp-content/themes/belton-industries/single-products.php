@@ -69,7 +69,27 @@ get_header(); ?>
 			</div> <!-- tag-filters -->
 		</section>		
 		<?php
-		$data_sheet = get_field('product_data_sheet');
+		// Pull Product Data Sheet from Technical Documents
+		$args = array(
+			'posts_per_page' => -1,
+			'post_type' => 'docs',
+		);
+		$this_id = $post->ID;
+		$data_sheet = '';
+		$the_query = new WP_Query( $args );
+		if ( $the_query->have_posts() ) {
+			while ( $the_query->have_posts() ) { $the_query->the_post();
+				global $post;
+				$assigned_to = get_post_meta($post->ID, 'assign_to_product', true);
+				if ($this_id == $assigned_to) {
+					$data_sheet = get_field('file');
+				}
+			}
+			wp_reset_postdata();
+		}
+
+
+		
 		$installation = get_field('installation_guideline');
 		?>
 		<section class="downloads text-center">
