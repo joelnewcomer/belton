@@ -202,12 +202,11 @@ jQuery('.ss-form #product-s').easyAutocomplete(options);
 		jQuery('.cat-product').removeClass('active');
 		jQuery('.sub-cats').addClass('active');
 		jQuery('.' + catID).addClass('active');
-		alert(jQuery.trim( jQuery('.' + catID).html() ).length);
-		
-		;
-		
-		if( jQuery.trim( jQuery('.' + catID).html() ).length ) {
-			alert('no sub-categories');
+		// If there are no sub-categories, then show all products in this category
+		if( !jQuery.trim( jQuery('.' + catID).html() ).length ) {
+			jQuery('.cat-product').removeClass('active');
+			jQuery('#products-' + catID + ' .cat-product' ).addClass('active');
+			jQuery('html, body').animate({ scrollTop: jQuery('.sub-cats').offset().top - 70}, 500);
 		}
 		jQuery('#products-' + catID).addClass('active');
 		jQuery('html, body').animate({ scrollTop: jQuery('.sub-cats').offset().top - 70}, 500);
