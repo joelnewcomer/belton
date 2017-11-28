@@ -202,8 +202,11 @@ jQuery('.ss-form #product-s').easyAutocomplete(options);
 		jQuery('.cat-product').removeClass('active');
 		jQuery('.sub-cats').addClass('active');
 		jQuery('.' + catID).addClass('active');
-		alert(jQuery('.' + catID).is(':empty'));
-		if( jQuery('.' + catID).is(':empty') ) {
+		alert(jQuery.trim( jQuery('.' + catID).html() ).length);
+		
+		;
+		
+		if( jQuery.trim( jQuery('.' + catID).html() ).length ) {
 			alert('no sub-categories');
 		}
 		jQuery('#products-' + catID).addClass('active');
