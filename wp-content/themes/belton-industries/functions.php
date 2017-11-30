@@ -95,7 +95,7 @@ register_taxonomy('attributes',array (
   0 => 'products',
 ),array( 'hierarchical' => true, 'label' => 'Performance Attributes','show_ui' => true,'query_var' => true,'rewrite' => array('slug' => ''),'singular_label' => 'Attribute') );
 
-register_post_type('docs', array(	'menu_icon' => 'dashicons-admin-page','label' => 'Technical Documents','description' => '','public' => true,'show_ui' => true,'show_in_menu' => true,'capability_type' => 'post','hierarchical' => true,'rewrite' => array('slug' => ''),'query_var' => true,'exclude_from_search' => false,'supports' => array('title','revisions',),'taxonomies' => array('guide_cats','attributes',),'labels' => array (
+/* register_post_type('docs', array(	'menu_icon' => 'dashicons-admin-page','label' => 'Technical Documents','description' => '','public' => true,'show_ui' => true,'show_in_menu' => true,'capability_type' => 'post','hierarchical' => true,'rewrite' => array('slug' => ''),'query_var' => true,'exclude_from_search' => false,'supports' => array('title','revisions',),'taxonomies' => array('guide_cats','attributes',),'labels' => array (
   'name' => 'Technical Documents',
   'singular_name' => 'Document',
   'menu_name' => 'Technical Documents',
@@ -111,3 +111,4 @@ register_post_type('docs', array(	'menu_icon' => 'dashicons-admin-page','label' 
   'not_found_in_trash' => 'No Technical Documents Found in Trash',
   'parent' => 'Parent Document',
 ),) );
+*/
