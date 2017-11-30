@@ -97,7 +97,7 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "url",
+            "return_format": "array",
             "library": "all",
             "min_size": "",
             "max_size": "",
@@ -205,5 +205,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1512066855
+    "modified": 1512067926
 }
