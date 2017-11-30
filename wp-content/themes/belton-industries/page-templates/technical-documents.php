@@ -49,7 +49,7 @@ get_header(); ?>
 			<?php
 			$args = array(
 				'posts_per_page' => -1,
-				'post_type' => 'docs',
+				'post_type' => 'products',
 			);
 			$the_query = new WP_Query( $args ); ?>
 			
@@ -68,10 +68,20 @@ get_header(); ?>
 					foreach ($cats as $cat) {
 						$classes .= ' cat-' . $cat->term_id;
 					}
+					$file = get_field('product_data_sheet');
+					$title = $file['title'];
+					if ($title == '') {
+						$title = $file['filename'];
+					}
+					$date_modified = date(get_option( 'date_format' ),strtotime($file['modified']));
 					?>
-					<a href="<?php echo get_field('file'); ?>" class="tech-doc sr <?php echo $classes; ?>">
-						<?php get_template_part('assets/images/doc', 'icon.svg'); ?><h3><?php the_title(); ?></h3>
-						<div class="doc-date"><?php echo get_the_date(); ?></div>
+					<?php if ($file != '') : ?>
+					<a href="<?php echo $file['url']; ?>" class="tech-doc sr <?php echo $classes; ?>">
+						<!-- <pre>
+						<?php print_r($file); ?>
+						</pre> -->
+						<?php get_template_part('assets/images/doc', 'icon.svg'); ?><h3><?php echo $file['title']; ?></h3>
+						<div class="doc-date"><?php echo $date_modified; ?></div>
 						<div class="tags">
 							<?php
 							$counter = 1;
@@ -85,6 +95,7 @@ get_header(); ?>
 							?>
 						</div> <!-- tags -->
 					</a> <!-- cat-product -->
+					<?php endif; ?>
 				<?php }
 				wp_reset_postdata();
 			}
