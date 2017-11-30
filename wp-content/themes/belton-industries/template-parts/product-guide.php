@@ -339,7 +339,6 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 					var activeTags = new Array();
 					jQuery( ".cat-products.active .cat-product.active" ).each(function( index ) {
 						var allClasses = jQuery(this).attr('class'); 
-						// alert(allClasses);
 						var classArray = allClasses.split(" "); 
 						// Loop through all classes, remove anything that isn't a tag and remove 'tag-' so all that remains is tag ID's
 						for (var i = 0; i < classArray.length; i++) {
