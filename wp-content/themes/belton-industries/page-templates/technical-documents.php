@@ -69,10 +69,6 @@ get_header(); ?>
 						$classes .= ' cat-' . $cat->term_id;
 					}
 					$file = get_field('product_data_sheet');
-					$title = $file['title'];
-					if ($title == '') {
-						$title = $file['filename'];
-					}
 					$date_modified = date(get_option( 'date_format' ),strtotime($file['modified']));
 					?>
 					<?php if ($file != '') : ?>
@@ -80,7 +76,6 @@ get_header(); ?>
 						<!-- <pre>
 						<?php print_r($file); ?>
 						</pre> -->
-						<h2>Product: <?php the_title(); ?></h2>
 						<?php get_template_part('assets/images/doc', 'icon.svg'); ?><h3><?php echo $file['title']; ?></h3>
 						<div class="doc-date"><?php echo $date_modified; ?></div>
 						<div class="tags">
