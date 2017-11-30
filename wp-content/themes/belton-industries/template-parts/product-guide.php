@@ -234,6 +234,8 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 		
 		<script>
 		jQuery( window ).load(function() {
+			// Reset all checkboxes on load
+			jQuery('input:checkbox').removeAttr('checked');
 			jQuery('.cat-match').matchHeight({ byRow: false });
 		});	
 		</script>		
