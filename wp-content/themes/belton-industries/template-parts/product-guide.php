@@ -311,38 +311,11 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 							jQuery(this).addClass('active');
 						}
 					});
-				});
-				// Get tags (filters) for active products and hide other filters
-				var activeTags = new Array();
-				jQuery( ".cat-product.active" ).each(function( index ) {
-					var allClasses = jQuery(this).attr('class'); 
-					var classArray = allClasses.split(" "); 
-					// Loop through all classes, remove anything that isn't a tag and remove 'tag-' so all that remains is tag ID's
-					for (var i = 0; i < classArray.length; i++) {
-						currentClass = classArray[i];
-						// If this isn't a tag, then remove this from array
-						if (currentClass.indexOf('tag') == -1) {
-							classArray.splice(i, 1);
-						// Otherwise strip it down to the ID and push into activeTags array
-						} else {
-							tagID = currentClass.replace("tag-", "");
-							activeTags.push(tagID);
-						}
-					}
-				});
-				// Loop through tags and hide ones that aren't on active products
-				jQuery( ".cat-products.active .filter" ).each(function( index ) {
-					var filterID = jQuery(this).data('filter');
-					if (!jQuery.inArray( filterID, activeTags)) {
-						jQuery(this).hide();
-					} else {
-						jQuery(this).show();
-					}
-				});
-				
+				});				
 			});
 			// Continue to products function
 			jQuery(".subcat-cont").on( "click", function(e) {
+				jQuery( ".cat-products span.filter" ).hide();
 				e.preventDefault();
 				var catID = jQuery(this).data( "cat-id" );
 				jQuery('.sub-cat').fadeOut("fast", function() {
@@ -360,6 +333,38 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 				});
 				setTimeout(function(){
 					jQuery.fn.matchHeight._update();
+
+
+					// Get tags (filters) for active products and hide filters that aren't on active products
+					var activeTags = new Array();
+					jQuery( ".cat-products.active .cat-product.active" ).each(function( index ) {
+						var allClasses = jQuery(this).attr('class'); 
+						// alert(allClasses);
+						var classArray = allClasses.split(" "); 
+						// Loop through all classes, remove anything that isn't a tag and remove 'tag-' so all that remains is tag ID's
+						for (var i = 0; i < classArray.length; i++) {
+							currentClass = classArray[i];
+							// If this isn't a tag, then remove this from array
+							if (currentClass.indexOf('tag') == -1) {
+								classArray.splice(i, 1);
+							// Otherwise strip it down to the ID and push into activeTags array
+							} else {
+								tagID = currentClass.replace("tag-", "");
+								activeTags.push(tagID);
+							}
+						}
+					});
+					// Loop through tags and hide ones that aren't on active products
+					jQuery( ".cat-products.active span.filter" ).each(function( index ) {
+						var filterID = jQuery(this).data('filter');
+						if (jQuery.inArray( filterID.toString(), activeTags) >  -1) {
+							jQuery(this).fadeIn();
+						} else {
+							jQuery(this).hide();
+						}
+					});
+					
+					
 				}, 1000);
 				jQuery('.cat-icons').css('background-image', 'none');
 			});
