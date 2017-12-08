@@ -24,6 +24,7 @@ get_header(); ?>
 						<input type="hidden" id="selectedValue">
 						<label class="sr-only" for="product-s">Search</label>
 						<input type="text" value="" name="s" id="product-s" placeholder="<?php esc_attr_e( 'Search...', 'foundationpress' ); ?>">
+						<p class="text-center">Enter product name or number.</p>
 					</form>
 				</div> <!-- smart-search -->
 			</div> <!-- shadow-container-inner -->
