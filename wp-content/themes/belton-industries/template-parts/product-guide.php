@@ -12,7 +12,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 			<div class="steps">
 				<div class="step step-1 active sr">
 					<h3><span class="number">1</span><span class="checkmark"><?php get_template_part('assets/images/checkmark.svg'); ?></span><span class="market">Select Your</span> Market</h3><div class="edit-step" data-edit="step-1">Edit</div>
-					<p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+					<!-- <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p> -->
 				</div>
 				
 				<!-- MOBILE STEP 1 -->
@@ -37,7 +37,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 				<!-- STEP 2 -->
 				<div class="step step-2">
 					<h3><span class="number">2</span><span class="checkmark"><?php get_template_part('assets/images/checkmark.svg'); ?></span>Select Your Applications</h3><div class="edit-step" data-edit="step-2">Edit</div>
-					<p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+					<!-- <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p> -->
 					<div class="subcats-selected"></div>
 				</div>
 				<!-- STEP 2 -->

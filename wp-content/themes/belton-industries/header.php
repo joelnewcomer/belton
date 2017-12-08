@@ -79,7 +79,7 @@
 				<?php get_template_part('template-parts/header-icon'); ?>
 			</div> <!-- top-bar-left -->
 			<div class="top-bar-right text-right">
-				<a id="products-icon" class="transition hide-for-small" href="<?php echo get_site_url(); ?>/product-search"><?php get_template_part('assets/images/products', 'icon.svg'); ?>Products</a>
+				<a id="products-icon" class="transition hide-for-small" href="<?php echo get_site_url(); ?>/product-guide"><?php get_template_part('assets/images/products', 'icon.svg'); ?>Products</a>
 				<div id="menu-icon" class="transition"><?php get_template_part('assets/images/menu', 'icon.svg'); ?><div class="close-menu transition">&times;</div>Menu</div>
 				<?php foundationpress_main_menu(); ?>
 				<script>
