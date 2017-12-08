@@ -85,7 +85,7 @@ register_post_type('products', array(	'menu_icon' => 'dashicons-screenoptions','
 
 register_taxonomy('guide_cats',array (
   0 => 'products',
-),array( 'hierarchical' => true, 'label' => 'Product Guide Categories','show_ui' => true,'query_var' => true,'rewrite' => array('slug' => ''),'singular_label' => 'Category') );
+),array( 'hierarchical' => true, 'label' => 'Categories','show_ui' => true,'query_var' => true,'rewrite' => array('slug' => ''),'singular_label' => 'Category') );
 
 // register_taxonomy('search_cats',array (
 //   0 => 'products',
