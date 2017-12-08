@@ -220,32 +220,23 @@ class WpdiscuzDBManager implements WpDiscuzConstants {
     }
 
     /**
-     * @param type $postId the current post id
-     * @return type int, all comments count for current post
-     */
-    public function getCommentsCount($postId) {
-        $sqlCommentsCount = $this->db->prepare("SELECT count(*) FROM `" . $this->dbprefix . "comments` WHERE `comment_post_ID` = %d AND `comment_approved` = '1';", $postId);
-        return $this->db->get_var($sqlCommentsCount);
-    }
-
-    /**
      * get current post  parent comments by wordpress settings
      */
     public function getPostParentComments($args) {
         $commentParent = $args['is_threaded'] ? 'AND `comment_parent` = 0' : '';
-        $status = $this->getCommentsStatus($args['status']);
+        $condition = $this->getParentCommentsClauses($args);
         $limit = "";
         if (!$this->isMySQL57) {
             $limit = " LIMIT " . ($args['limit'] + 1);
         }
         if ($args['limit'] == 0) {
             $allParentCounts = count($this->getAllParentCommentCount($args['post_id'], $args['is_threaded']));
-            $sqlComments = $this->db->prepare("SELECT `comment_ID` FROM `" . $this->dbprefix . "comments` WHERE `comment_post_ID` = %d AND $status $commentParent ORDER BY `comment_date_gmt` {$args['order']} LIMIT %d OFFSET %d", $args['post_id'], $allParentCounts, $args['offset']);
+            $sqlComments = $this->db->prepare("SELECT `comment_ID` FROM `" . $this->dbprefix . "comments` WHERE `comment_post_ID` = %d  $condition $commentParent ORDER BY `comment_date_gmt` {$args['order']} LIMIT %d OFFSET %d", $args['post_id'], $allParentCounts, $args['offset']);
         } else if ($args['last_parent_id']) {
             $operator = ($args['order'] == 'asc') ? '>' : '<';
-            $sqlComments = $this->db->prepare("SELECT `comment_ID` FROM `" . $this->dbprefix . "comments` WHERE `comment_post_ID` = %d AND $status $commentParent AND `comment_ID` $operator %d ORDER BY `comment_date_gmt` {$args['order']}, comment_ID {$args['order']} $limit", $args['post_id'], $args['last_parent_id']);
+            $sqlComments = $this->db->prepare("SELECT `comment_ID` FROM `" . $this->dbprefix . "comments` WHERE `comment_post_ID` = %d  $condition $commentParent AND `comment_ID` $operator %d ORDER BY `comment_date_gmt` {$args['order']}, comment_ID {$args['order']} $limit", $args['post_id'], $args['last_parent_id']);
         } else {
-            $sqlComments = $this->db->prepare("SELECT `comment_ID` FROM `" . $this->dbprefix . "comments` WHERE `comment_post_ID` = %d AND $status $commentParent ORDER BY `comment_date_gmt` {$args['order']}, comment_ID {$args['order']} $limit", $args['post_id']);
+            $sqlComments = $this->db->prepare("SELECT `comment_ID` FROM `" . $this->dbprefix . "comments` WHERE `comment_post_ID` = %d  $condition $commentParent ORDER BY `comment_date_gmt` {$args['order']}, comment_ID {$args['order']} $limit", $args['post_id']);
         }
         $data = $this->db->get_col($sqlComments);
         if (isset($args['limit']) && $args['limit'] != 0) {
@@ -282,12 +273,12 @@ class WpdiscuzDBManager implements WpDiscuzConstants {
      */
     public function getPostVotedCommentIds($args) {
         $commentParent = $args['is_threaded'] ? 'AND `c`.`comment_parent` = 0' : '';
-        $status = $this->getCommentsStatus($args['status'], '`c`.');
+        $condition = $this->getParentCommentsClauses($args, '`c`.');
         if ($args['limit']) {
-            $sqlPostVotedCommentIds = $this->db->prepare("SELECT `c`.`comment_ID` FROM `" . $this->dbprefix . "comments` AS `c` LEFT JOIN `" . $this->dbprefix . "commentmeta` AS `cm` ON `c`.`comment_ID` = `cm`.`comment_id` AND `cm`.`meta_key` = '" . self::META_KEY_VOTES . "'  WHERE  `c`.`comment_post_ID` = %d AND $status $commentParent ORDER BY (`cm`.`meta_value`+0) desc, `c`.`comment_date_gmt` {$args['date_order']} LIMIT %d OFFSET %d", $args['post_id'], $args['limit'] + 1, $args['offset']);
+            $sqlPostVotedCommentIds = $this->db->prepare("SELECT `c`.`comment_ID` FROM `" . $this->dbprefix . "comments` AS `c` LEFT JOIN `" . $this->dbprefix . "commentmeta` AS `cm` ON `c`.`comment_ID` = `cm`.`comment_id` AND `cm`.`meta_key` = '" . self::META_KEY_VOTES . "'  WHERE  `c`.`comment_post_ID` = %d  $condition $commentParent ORDER BY (`cm`.`meta_value`+0) desc, `c`.`comment_date_gmt` {$args['date_order']} LIMIT %d OFFSET %d", $args['post_id'], $args['limit'] + 1, $args['offset']);
         } else {
             $allParentCounts = count($this->getAllParentCommentCount($args['post_id'], $args['is_threaded']));
-            $sqlPostVotedCommentIds = $this->db->prepare("SELECT `c`.`comment_ID` FROM `" . $this->dbprefix . "comments` AS `c` LEFT JOIN `" . $this->dbprefix . "commentmeta` AS `cm` ON `c`.`comment_ID` = `cm`.`comment_id` AND `cm`.`meta_key` = '" . self::META_KEY_VOTES . "'  WHERE  `c`.`comment_post_ID` = %d AND $status $commentParent ORDER BY (`cm`.`meta_value`+0) desc, `c`.`comment_date_gmt` {$args['date_order']} LIMIT %d OFFSET %d", $args['post_id'], $allParentCounts, $args['offset']);
+            $sqlPostVotedCommentIds = $this->db->prepare("SELECT `c`.`comment_ID` FROM `" . $this->dbprefix . "comments` AS `c` LEFT JOIN `" . $this->dbprefix . "commentmeta` AS `cm` ON `c`.`comment_ID` = `cm`.`comment_id` AND `cm`.`meta_key` = '" . self::META_KEY_VOTES . "'  WHERE  `c`.`comment_post_ID` = %d  $condition $commentParent ORDER BY (`cm`.`meta_value`+0) desc, `c`.`comment_date_gmt` {$args['date_order']} LIMIT %d OFFSET %d", $args['post_id'], $allParentCounts, $args['offset']);
         }
         $data = $this->db->get_col($sqlPostVotedCommentIds);
         if (isset($args['limit']) && $args['limit'] != 0 && count($data) > $args['limit']) {
@@ -295,22 +286,6 @@ class WpdiscuzDBManager implements WpDiscuzConstants {
             $this->isShowLoadMore = true;
         }
         return $data;
-    }
-
-    /**
-     * @return type array of comment ids
-     */
-    public function getVotedCommentIds() {
-        $sqlVotedCommentIds = "SELECT `c`.`comment_ID` FROM `" . $this->dbprefix . "comments` AS `c` INNER JOIN `" . $this->dbprefix . "commentmeta` AS `cm` ON `c`.`comment_ID` = `cm`.`comment_id` WHERE `cm`.`meta_key` = '" . self::META_KEY_VOTES . "' AND `c`.`comment_approved` = '1' AND `c`.`comment_parent` = 0;";
-        return $this->db->get_col($sqlVotedCommentIds);
-    }
-
-    /**
-     * get all comments - currently unused
-     */
-    public function getAllComments($limit, $offset) {
-        $sql_comments = $this->db->prepare("SELECT `comment_ID` FROM `" . $this->dbprefix . "comments` LIMIT %d OFFSET %d", $limit, $offset);
-        return $this->db->get_col($sql_comments);
     }
 
     public function getAllParentCommentCount($postId = 0, $isThreaded = 1) {
@@ -329,52 +304,6 @@ class WpdiscuzDBManager implements WpDiscuzConstants {
     public function getCommentsByParentId($commentId) {
         $sql_comments = $this->db->prepare("SELECT `comment_ID` FROM `" . $this->dbprefix . "comments` WHERE `comment_parent` = %d AND `comment_approved` = '1';", $commentId);
         return $this->db->get_col($sql_comments);
-    }
-
-    /**
-     * checks if curret comment already is in meta
-     * return comment id if true false otherwise
-     */
-    public function isCommentInMeta($commentId) {
-        $query = $this->db->prepare("SELECT `comment_id` FROM `" . $this->dbprefix . "commentmeta` WHERE `meta_key` LIKE %s AND `comment_id` = %d;", self::META_KEY_CHILDREN, $commentId);
-        return $this->db->query($query);
-    }
-
-    /**
-     * get meta rows containing comment id
-     */
-    public function getRowsContainingCommentId($commentId, $parentId = 0) {
-        if ($parentId) {
-            $query = $this->db->prepare("SELECT `comment_id`, `meta_value` FROM `" . $this->dbprefix . "commentmeta` WHERE `meta_value` REGEXP '(,|^)%d,' AND `comment_id` = %d;", $commentId, $parentId);
-        } else {
-            $query = $this->db->prepare("SELECT `comment_id`, `meta_value` FROM `" . $this->dbprefix . "commentmeta` WHERE `meta_value` REGEXP '(,|^)%d,';", $commentId);
-        }
-        $rows = $this->db->get_results($query, ARRAY_A);
-        return $rows;
-    }
-
-    /**
-     * get count by parent comment id
-     */
-    public function getCommentsCountByParentId($comment_id) {
-        $sql_comments = $this->db->prepare("SELECT COUNT(`comment_ID`) FROM `" . $this->dbprefix . "comments` WHERE  `comment_approved` = '1' AND `comment_parent` = %d", $comment_id);
-        return $this->db->get_var($sql_comments);
-    }
-
-    public function getCommentMeta($commentId, $metaKey) {
-        $sql_meta = $this->db->prepare("SELECT `comment_id`,`meta_value` FROM `" . $this->dbprefix . "commentmeta` WHERE  `comment_id` = %d AND `meta_key` = %s", $commentId, $metaKey);
-        return $this->db->get_row($sql_meta);
-    }
-
-    public function addTrees($trees) {
-        $sql = "INSERT INTO `" . $this->dbprefix . "commentmeta`VALUES";
-        foreach ($trees as $tKey => $tVal) {
-            $tree = implode(',', $tVal);
-            $tree .= $tree ? ',' : '';
-            $sql .= "(NULL, $tKey, '" . self::META_KEY_CHILDREN . "', '" . $tree . "'),";
-        }
-        $sql = trim($sql, ',');
-        $this->db->query($sql);
     }
 
     public function addEmailNotification($subsriptionId, $postId, $email, $subscriptionType, $confirm = 0) {
@@ -494,36 +423,29 @@ class WpdiscuzDBManager implements WpDiscuzConstants {
         return $postsAuthors;
     }
 
-    public function getOptimizedCommentIds($postId) {
-        $sql = $this->db->prepare("SELECT `cm`.`comment_id` FROM `" . $this->dbprefix . "commentmeta` AS `cm` INNER JOIN `" . $this->dbprefix . "comments` AS `c` ON `c`.`comment_ID` = `cm`.`comment_id` WHERE `c`.`comment_post_ID` = %d AND `c`.`comment_approved` = '1' AND `cm`.`meta_key` = '" . self::META_KEY_CHILDREN . "' AND `cm`.`meta_value` != '';", $postId);
-        return $this->db->get_col($sql);
-    }
-
-    public function getIdsInMeta($commentIds) {
-        if (!$commentIds) {
-            return array();
-        }
-        $this->db->query("SET SESSION group_concat_max_len = 1000000;");
-        $sql = "SELECT GROUP_CONCAT(TRIM(BOTH ',' FROM `meta_value`)) FROM `" . $this->dbprefix . "commentmeta` WHERE `meta_key` = '" . self::META_KEY_CHILDREN . "' AND comment_id IN ($commentIds)";
-        return $this->db->get_col($sql);
-    }
-
     public function removeVotes() {
         $sqlTruncate = "TRUNCATE `" . $this->dbprefix . "wc_users_voted`;";
         $sqlDelete = "DELETE FROM `" . $this->dbprefix . "commentmeta` WHERE `meta_key` = '" . self::META_KEY_VOTES . "';";
         return $this->db->query($sqlTruncate) && $this->db->query($sqlDelete);
     }
 
-    private function getCommentsStatus($status, $alias = '') {
-        $s = '';
+    private function getParentCommentsClauses($args, $alias = '') {
+        $s = ' AND ';
+        $status = $args['status'];
         if ($status == 'all') {
-            $s = "($alias`comment_approved` = '0' OR $alias`comment_approved` = '1')";
+            $s .= "($alias`comment_approved` = '0' OR $alias`comment_approved` = '1')";
         } else if ($status == 'hold') {
-            $s = "($alias`comment_approved` = '0')";
+            $s .= "($alias`comment_approved` = '0')";
         } else {
-            $s = "$alias`comment_approved` = '1'";
+            $condition = ' ';
+            if (isset($args['include_unapproved']) && is_int($args['include_unapproved'][0])) {
+                $condition .= " OR ($alias`comment_approved` = '0' AND $alias`user_id` = {$args['include_unapproved'][0] })";
+            } elseif (isset($args['include_unapproved']) && $args['include_unapproved'][0]) {
+                $condition .= " OR ($alias`comment_approved` = '0' AND $alias`comment_author_email` = '{$args['include_unapproved'][0]}')";
+            }
+            $s .= "($alias`comment_approved` = '1' $condition )";
         }
-        return $s;
+        return apply_filters('wpdiscuz_parent_comments_clauses',$s);
     }
 
     public function getVotes($commentId) {

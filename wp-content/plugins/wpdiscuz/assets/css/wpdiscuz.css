@@ -1,4 +1,3 @@
-
 #wpcomm *{box-sizing:border-box}
 #wpcomm span{display:inline}
 #wpcomm .clearfix{clear:both;}
@@ -44,7 +43,10 @@
 #wpcomm .wc-comment-label{color:#fff; width:100%; padding:0px 0px 2px 0px;font-size:12px;margin:8px auto;text-align:center;display:table;line-height:16px}
 #wpcomm .wc-comment-label span{ display:inline-block; padding:2px 0px 1px 0px; font-size:12px;}
 #wpcomm .wc-comment-date{font-size:12px;color:#999;text-align:left;white-space:nowrap;line-height:23px}
-#wpcomm .wc-comment-date i{ padding-right:5px; }
+#wpcomm .wc-comment-date i{padding-right:5px; }
+#wpcomm .wpdiscuz-children {display:inline-block; padding-left:5px; }
+#wpcomm .wc-toggle i.fa-chevron-down{display:inline-block; padding-left:5px;}
+#wpcomm .wc-toggle i.fa-chevron-up{display:inline-block; padding-left:5px;}
 
 #wpcomm .wc-comment-footer{font-size:12px;font-weight:normal;color:#999;border-bottom: 1px solid #ddd; padding:5px 10px 10px 10px; margin-top:7px; margin-bottom:15px;min-height:28px; text-align:left}
 #wpcomm .wc-reply .wc-comment-footer{padding-bottom:10px;}
@@ -374,10 +376,8 @@
     #wpcomm .wc-comment-footer .wc-footer-right{ float:none; display:block; padding:5px 5px 2px 5px; text-align:left;}
     #wpcomm .wc-comment-footer .wc-footer-right .wc-comment-date{ margin-left:0px;}
     #wpcomm .wc-comment-footer .wc-footer-left span{ margin-bottom:7px; }
-    .wpdiscuz-post-rating-wrap.wpd-custom-field > [class ^= wpdiscuz-post-rating-wrap-custom_field]{
-        flex-basis: 50%;
-        margin-bottom: 10px;
-    }
+    .wpdiscuz-post-rating-wrap.wpd-custom-field > [class ^= wpdiscuz-post-rating-wrap-custom_field]{flex-basis: 50%;margin-bottom: 10px;}
+	#wpcomm .wc-toggle .wpdiscuz-children-button-text, #wpcomm .wc-toggle .wcsep{ display:none;}
 }
 @media screen and (max-width:420px){
     #wpcomm .wpdiscuz-sort-buttons,#wpcomm .wpdiscuz-sort-button{font-size:11px!important}

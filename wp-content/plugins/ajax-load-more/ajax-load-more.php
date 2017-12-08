@@ -7,15 +7,15 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com
-Version: 3.3.0.1
+Version: 3.3.1
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
 
-define('ALM_VERSION', '3.3.0.1');
-define('ALM_RELEASE', 'November 22, 2017');
+define('ALM_VERSION', '3.3.1');
+define('ALM_RELEASE', 'December 7, 2017');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -147,6 +147,7 @@ if( !class_exists('AjaxLoadMore') ):
    		define('ALM_ADMIN_URL', plugins_url('admin/', __FILE__));
    		define('ALM_NAME', '_ajax_load_more');
    		define('ALM_TITLE', 'Ajax Load More');
+   		define('ALM_SLUG', 'ajax-load-more');
 
          if (!defined('ALM_CACHE_ITEM_NAME')) define('ALM_CACHE_ITEM_NAME', '4878');
          if (!defined('ALM_CTA_ITEM_NAME')) define('ALM_CTA_ITEM_NAME', '14456');
@@ -260,16 +261,16 @@ if( !class_exists('AjaxLoadMore') ):
 			$dependencies = apply_filters( 'alm_js_dependencies', array('jquery') );
 
 
-   		// Load Core JS
+   		// Core ALM JS
    		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more.min.js', __FILE__ ), $dependencies,  ALM_VERSION, true );
 
-   		// Load Progress Bar JS
+   		// Progress Bar JS
    		wp_register_script( 'ajax-load-more-progress', plugins_url( '/core/src/js/vendor/pace/pace.min.js', __FILE__ ), 'ajax-load-more',  ALM_VERSION, true );
 
    		// Load Core CSS
-   		if(!isset($options['_alm_disable_css']) || $options['_alm_disable_css'] != '1'){
-         	$file = plugins_url('/core/dist/css/ajax-load-more.min.css', __FILE__ );
-            ALM_ENQUEUE::alm_enqueue_css('ajax-load-more', $file);
+   		if( !alm_do_inline_css('_alm_inline_css') && !alm_css_disabled('_alm_disable_css')){ // Not inline or disabled
+	         $file = plugins_url('/core/dist/css/'. ALM_SLUG .'.min.css', __FILE__ );
+	         ALM_ENQUEUE::alm_enqueue_css(ALM_SLUG, $file);
    		}
 
    		// Prevent loading of unnessasry posts - move user to top of page
@@ -809,7 +810,7 @@ if( !class_exists('AjaxLoadMore') ):
    	         if(!empty($cache_id) && has_action('alm_cache_installed') && $do_create_cache){
       	         if($previous_post){
          	         // Previous Post Cache
-   	               apply_filters('alm_previous_post_cache_file', $cache_id, $previous_post_slug, $data);
+   	               apply_filters('alm_previous_post_cache_file', $cache_id, $previous_post_id, $data);
       	         }else{
          	         // Standard Cache
    	               apply_filters('alm_cache_file', $cache_id, $page, $seo_start_page, $data, $preloaded);

@@ -12,6 +12,9 @@
 #wpcomm .wc-comment-author{float:right;text-align:right; padding:6px 15px 2px 0px;}
 #wpcomm .wc-comment-date{text-align:right;}
 #wpcomm .wc-comment-date i{ padding-left:5px; }
+#wpcomm .wpdiscuz-children {padding-right:5px; }
+#wpcomm .wc-toggle i.fa-chevron-down{padding-right:5px;}
+#wpcomm .wc-toggle i.fa-chevron-up{padding-right:5px;}
 
 #wpcomm .wc-comment-footer{padding:5px 10px 10px 10px; text-align:right}
 #wpcomm .wc-comment-footer .wc-vote-result.wc-vote-result-like{border-left:none; margin-right:1px;}

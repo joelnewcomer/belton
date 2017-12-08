@@ -580,6 +580,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       alm.previous_post_scroll = alm.content.attr('data-previous-post-scroll');
       alm.previous_post_scroll_speed = alm.content.attr('data-previous-post-scroll-speed');
       alm.previous_post_scroll_top = alm.content.attr('data-previous-post-scrolltop');
+      alm.previous_post_controls = alm.content.attr('data-previous-post-controls');
       /* End Previous Post */
 
       /* Offset */
@@ -713,7 +714,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                   cache_page = alm.cache_path + alm.cache_id + '/page' + '-' + nextpage_cache_page + '.html';
                } else if (alm.previous_post) {
                   // Previous Post
-                  cache_page = alm.cache_path + alm.cache_id + '/' + alm.previous_post_slug + '.html';
+                  cache_page = alm.cache_path + alm.cache_id + '/' + alm.previous_post_id + '.html';
                } else {
                   // Standard ALM URL request
                   cache_page = alm.cache_path + alm.cache_id + '/page-' + (alm.page + 1) + '.html';
@@ -880,7 +881,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                   }
                },
                success: function success(results) {
-                  var data,
+                  var data = '',
                       html = results.html,
                       meta = results.meta,
                       postcount = meta.postcount,

@@ -3,8 +3,8 @@ Contributors: dcooney, connekthq
 Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, ajax load posts, woocommerce, ajax load more
 Requires at least: 3.6
-Tested up to: 4.9
-Stable tag: 3.3.0.1
+Tested up to: 4.9.1
+Stable tag: 3.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -368,6 +368,18 @@ How to install Ajax Load More.
 
 
 == Changelog ==
+
+= 3.3.1 - December 7, 2017 =
+
+### Notice
+This Ajax Load More release contains fundamental changes to the way ALM loads CSS. After update, if you run into issues visit the Ajax Load More settings screen and deselect the `Load CSS Inline` option.
+
+* NEW - Updated the default loading of Ajax Load More CSS. CSS Will now be inlined to improve site overall performance. A new setting has been added to allow for disabling of this inline CSS update.
+* NEW - New filters added for hooking the post ID, slug and canonical URL.
+* FIX - Updated shortcode builder JS to remove unwanted references to the Users add-on.
+* FIX - Fixed bug with searching and the Preloaded add-on.
+* FIX - Fixed for REST API returning null results do to unset data variable.
+* Update - Updated Previous Post cache to reference the post ID vs post slug. This fixes an issue with special characters in post URLs causing 404 errors.
 
 
 = 3.3.0.1 - November 22, 2017 =

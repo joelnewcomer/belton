@@ -67,13 +67,21 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
     public $isGuestCanVote;
 
     /**
+     * Type - Checkbox
+     * Available Values - Checked/Unchecked
+     * Description - Load only parent comments
+     * Default Value - Checked
+     */
+    public $isLoadOnlyParentComments;
+
+    /**
      * Type - Radio Button
-     * Available Values - 0 Default (Load More) / 1 Load Rest Of Comments / 2 Lazy Load comments on scrolling
+     * Available Values - 0 Default (Load More) / 1 Load Rest Of Comments / 2 Lazy Load comments on scrolling / 3 Load all comments
      * Description - Comment list load type
      * Default Value - Disabled
      */
     public $commentListLoadType;
-    
+
     /**
      * Type - Checkbox
      * Available Values - Checked/Unchecked
@@ -292,7 +300,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
      * Default Value - after
      */
     public $displayRatingOnPost;
-    
+
     /**
      * Type - Checkbox
      * Available Values - Checked/Unchecked
@@ -555,6 +563,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
         $this->commentEditableTime = isset($options['wc_comment_editable_time']) ? $options['wc_comment_editable_time'] : 900;
         $this->redirectPage = isset($options['wpdiscuz_redirect_page']) ? $options['wpdiscuz_redirect_page'] : 0;
         $this->isGuestCanVote = isset($options['wc_is_guest_can_vote']) ? $options['wc_is_guest_can_vote'] : 0;
+        $this->isLoadOnlyParentComments = isset($options['isLoadOnlyParentComments']) ? $options['isLoadOnlyParentComments'] : 0;
         $this->commentListLoadType = isset($options['commentListLoadType']) ? $options['commentListLoadType'] : 0;
         $this->lazyLoadOnPageLoad = isset($options['lazyLoadOnPageLoad']) ? $options['lazyLoadOnPageLoad'] : 0;
         $this->votingButtonsShowHide = isset($options['wc_voting_buttons_show_hide']) ? $options['wc_voting_buttons_show_hide'] : 0;
@@ -712,6 +721,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
             'wc_form_subscription_submit' => __('&rsaquo;', 'wpdiscuz'),
             'wc_comment_approved_email_subject' => __('Comment was approved', 'wpdiscuz'),
             'wc_comment_approved_email_message' => __('Hi, <br/> Your comment was approved.', 'wpdiscuz'),
+            'wc_roles_cannot_comment_message' => __('Comments are closed.', 'wpdiscuz'),
         );
     }
 
@@ -725,6 +735,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
             'wc_comment_editable_time' => $this->commentEditableTime,
             'wpdiscuz_redirect_page' => $this->redirectPage,
             'wc_is_guest_can_vote' => $this->isGuestCanVote,
+            'isLoadOnlyParentComments' => $this->isLoadOnlyParentComments,
             'commentListLoadType' => $this->commentListLoadType,
             'lazyLoadOnPageLoad' => $this->lazyLoadOnPageLoad,
             'wc_voting_buttons_show_hide' => $this->votingButtonsShowHide,
@@ -797,6 +808,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
             'wpdiscuz_redirect_page' => '0',
             'wc_is_guest_can_vote' => '1',
             'commentsLoadType' => '0',
+            'isLoadOnlyParentComments' => '0',
             'commentListLoadType' => '0',
             'lazyLoadOnPageLoad' => '0',
             'wc_voting_buttons_show_hide' => '0',
@@ -925,6 +937,7 @@ class WpdiscuzOptionsSerialized implements WpDiscuzConstants {
         $js_options['isGoodbyeCaptchaActive'] = (boolean) $this->isGoodbyeCaptchaActive;
         $js_options['facebookAppID'] = $this->facebookAppID;
         $js_options['cookiehash'] = COOKIEHASH;
+        $js_options['isLoadOnlyParentComments'] = $this->isLoadOnlyParentComments;
 
         return $js_options;
     }

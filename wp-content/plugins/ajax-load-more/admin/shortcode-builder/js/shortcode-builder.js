@@ -477,7 +477,7 @@ jQuery(document).ready(function($) {
       if(users === undefined){
          users = false;
       }
-      if(users !== 'false' && users != undefined){
+      if(users !== false && users !== 'false' && users != undefined){
 			var users_role = $('#alm-users select#users-role').val();
 			var users_include = $('#alm-users input#users-include').val();
 			var users_exclude = $('#alm-users input#users-exclude').val();

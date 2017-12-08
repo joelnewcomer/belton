@@ -143,7 +143,7 @@ if (!post_password_required($post->ID)) {
             <?php
             $isPostmaticActive = !class_exists('Prompt_Comment_Form_Handling') || (class_exists('Prompt_Comment_Form_Handling') && !$wpdiscuz->optionsSerialized->usePostmaticForCommentNotification);
             if ($form->isShowSubscriptionBar() && $isPostmaticActive) {               
-                $wpdiscuz->userSubscriptionData = $wpdiscuz->dbManager->hasSubscription($post->ID, $currentUser->user_email);
+                $wpdiscuz->subscriptionData = $wpdiscuz->dbManager->hasSubscription($post->ID, $currentUser->user_email);
                 $subscriptionType = null;
                 if ($wpdiscuz->subscriptionData) {
                     $isConfirmed = $wpdiscuz->subscriptionData['confirm'];

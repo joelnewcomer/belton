@@ -993,6 +993,14 @@ function alm_admin_init(){
 		'alm_general_settings'
 	);
 
+	add_settings_field(  // Inline CSS
+		'_alm_inline_css',
+		__('Load CSS Inline', 'ajax-load-more' ),
+		'alm_inline_css_callback',
+		'ajax-load-more',
+		'alm_general_settings'
+	);
+
 	add_settings_field(  // Button classes
 		'_alm_btn_classname',
 		__('Button Classes', 'ajax-load-more' ),
@@ -1355,6 +1363,26 @@ function alm_btn_color_callback() {
 
 
 /*
+*  alm_inline_css_callback
+*  Load CSS Inline vs the head
+*
+*  @since 3.3.1
+*/
+function alm_inline_css_callback(){
+	$options = get_option( 'alm_settings' );
+	if(!isset($options['_alm_inline_css']))
+	   $options['_alm_inline_css'] = '1';
+
+	$html =  '<input type="hidden" name="alm_settings[_alm_inline_css]" value="0" />';
+	$html .= '<input type="checkbox" name="alm_settings[_alm_inline_css]" id="alm_inline_css" value="1"'. (($options['_alm_inline_css']) ? ' checked="checked"' : '') .' />';
+	$html .= '<label for="alm_inline_css">'.__('Improve site performance by loading Ajax Load More CSS inline', 'ajax-load-more').'.</label>';
+
+	echo $html;
+}
+
+
+
+/*
 *  alm_btn_class_callback
 *  Add classes to the Ajax Load More button
 *
@@ -1377,16 +1405,16 @@ function alm_btn_class_callback(){
 		// Check if Disable CSS  === true
 		if(jQuery('input#alm_disable_css_input').is(":checked")){
 	      jQuery('select#alm_settings_btn_color').parent().parent().hide(); // Hide button color
-         //jQuery('input.btn-classes').parent().parent().hide(); // Hide Button Classes
+	      jQuery('input#alm_inline_css').parent().parent().hide(); // Hide inline css
     	}
     	jQuery('input#alm_disable_css_input').change(function() {
     		var el = jQuery(this);
 	      if(el.is(":checked")) {
 	      	el.parent().parent('tr').next('tr').hide(); // Hide button color
-	      	//el.parent().parent('tr').next('tr').next('tr').hide(); // Hide Button Classes
+	      	el.parent().parent('tr').next('tr').next('tr').hide(); // Hide inline css
 	      }else{
 	      	el.parent().parent('tr').next('tr').show(); // show button color
-	      	//el.parent().parent('tr').next('tr').next('tr').show(); // show Button Classes
+	      	el.parent().parent('tr').next('tr').next('tr').show(); // show inline css
 	      }
 	   });
 

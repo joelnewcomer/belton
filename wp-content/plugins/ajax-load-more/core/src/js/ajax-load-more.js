@@ -300,6 +300,7 @@
       alm.previous_post_scroll = alm.content.attr('data-previous-post-scroll');
       alm.previous_post_scroll_speed = alm.content.attr('data-previous-post-scroll-speed');
       alm.previous_post_scroll_top = alm.content.attr('data-previous-post-scrolltop');
+      alm.previous_post_controls = alm.content.attr('data-previous-post-controls');
       /* End Previous Post */
 
       /* Offset */
@@ -437,7 +438,7 @@
 
                else if(alm.previous_post){
                   // Previous Post
-                  cache_page = alm.cache_path + alm.cache_id + '/' + alm.previous_post_slug +'.html';
+                  cache_page = alm.cache_path + alm.cache_id + '/' + alm.previous_post_id +'.html';
                }
 
                else {
@@ -610,7 +611,7 @@
                   }
                },
                success: function (results) {
-                  var data,
+                  var data = '',
                   	 html = results.html,
                   	 meta = results.meta,
                   	 postcount = meta.postcount,

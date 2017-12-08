@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     <table class="wp-list-table widefat plugins"  style="margin-top:10px; border:none;">
         <tbody>
             <tr valign="top">
-                <th scope="row"><label for="wc_subscribed_to"><?php _e("You\'re subscribed to", 'wpdiscuz'); ?></label></th>
+                <th scope="row"><label for="wc_subscribed_to"><?php _e('You\'re subscribed to', 'wpdiscuz'); ?></label></th>
                 <td colspan="3"><input type="text" value="<?php echo $this->optionsSerialized->phrases['wc_subscribed_to']; ?>" name="wc_subscribed_to" id="wc_subscribed_to" /></td>
             </tr>
             <tr valign="top">
@@ -117,6 +117,10 @@ if (!defined('ABSPATH')) {
             <tr valign="top">
                 <th scope="row"><label for="wc_msg_required_fields"><?php _e('Please fill out required fields', 'wpdiscuz'); ?></label></th>
                 <td colspan="3"><input type="text" value="<?php echo isset($this->optionsSerialized->phrases['wc_msg_required_fields']) ? $this->optionsSerialized->phrases['wc_msg_required_fields'] : __('Please fill out required fields', 'wpdisucz'); ?>" name="wc_msg_required_fields" id="wc_msg_required_fields" /></td>
+            </tr>
+            <tr valign="top">
+                <th scope="row"><label for="wc_msg_required_fields"><?php _e('Message if commenting disabled by user role', 'wpdiscuz'); ?></label></th>
+                <td colspan="3"><input type="text" value="<?php echo isset($this->optionsSerialized->phrases['wc_roles_cannot_comment_message']) ? $this->optionsSerialized->phrases['wc_roles_cannot_comment_message'] : __('Comments are closed', 'wpdisucz'); ?>" name="wc_roles_cannot_comment_message" id="wc_roles_cannot_comment_message" /></td>
             </tr>
         </tbody>
     </table>

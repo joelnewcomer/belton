@@ -3110,18 +3110,18 @@ p.cache-stats {
 .ajax-load-more .form-table input[type=radio] + label {
   background: #fff url("../../img/bkg-chkbox_off.png") no-repeat left 1px;
   height: auto;
-  min-height: 22px;
+  min-height: 23px;
   width: 100%;
   display: inline-block;
   padding: 1px 0 0 30px;
   margin: 0 0 5px;
   font-size: 14px;
-  line-height: 1.42;
+  line-height: 1.5;
   cursor: pointer !important; }
 
 .shortcode-builder input[type=radio] + label,
 .ajax-load-more .form-table input[type=radio] + label {
-  background: #fff url("../../img/bkg-radio_off.png") no-repeat left 1px; }
+  background: #fff url("../../img/bkg-radio_off.png") no-repeat left 2px; }
 
 .shortcode-builder input[type=checkbox]:hover + label,
 .ajax-load-more .form-table input[type=checkbox]:hover + label {

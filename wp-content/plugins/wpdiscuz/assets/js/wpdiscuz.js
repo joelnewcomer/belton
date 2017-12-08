@@ -27,8 +27,8 @@ jQuery(document).ready(function ($) {
     var wpdGoogleRecaptchaValid = true;
     var wpdiscuzReplyButton = '';
     var wpdiscuzCookiehash = wpdiscuzAjaxObj.wpdiscuz_options.cookiehash;
+    var isLoadOnlyParentComments = wpdiscuzAjaxObj.wpdiscuz_options.isLoadOnlyParentComments;
     loginButtonsClone();
-    displayShowHideReplies();
 
     if (!wpdiscuzAjaxObj.wpdiscuz_options.wordpressIsPaginate) {
         var wpdiscuzLastVisitKey = wpdiscuzAjaxObj.wpdiscuz_options.lastVisitKey;
@@ -108,14 +108,28 @@ jQuery(document).ready(function ($) {
 
     $(document).delegate('.wc-toggle', 'click', function () {
         var uniqueID = getUniqueID($(this), 0);
-        var toggleSpan = $(this);
-        $('#wc-comm-' + uniqueID + '> .wc-reply').slideToggle(700, function () {
-            if ($(this).is(':hidden')) {
-                toggleSpan.html('<i class="fa fa-chevron-down" aria-hidden="true"  title="' + wpdiscuzAjaxObj.wpdiscuz_options.wc_show_replies_text + '"></i>');
-            } else {
-                toggleSpan.html('<i class="fa fa-chevron-up" aria-hidden="true"  title="' + wpdiscuzAjaxObj.wpdiscuz_options.wc_hide_replies_text + '"></i>');
+        var toggle = $(this);
+        var icon = $('.fa', toggle);
+        if (icon.hasClass('wpdiscuz-show-replies') && isLoadOnlyParentComments) {
+            wpdiscuzShowReplies(uniqueID);
+        } else {
+            $('#wc-comm-' + uniqueID + '> .wc-reply').slideToggle(700, function () {
+                if ($(this).is(':hidden')) {
+                    icon.removeClass('fa-chevron-up');
+                    icon.addClass('fa-chevron-down');
+                    icon.attr('title', wpdiscuzAjaxObj.wpdiscuz_options.wc_show_replies_text);
+                } else {
+                    icon.removeClass('fa-chevron-down');
+                    icon.addClass('fa-chevron-up');
+                    icon.attr('title', wpdiscuzAjaxObj.wpdiscuz_options.wc_hide_replies_text);
+                }
+            });
+            $('.wpdiscuz-children', toggle).toggleClass('wpdiscuz-hidden');
+            if ($('.wpdiscuz-children-count', toggle).length) {
+                var replies = $('#wc-comm-' + uniqueID + ' .wc-reply');
+                $('.wpdiscuz-children-count', toggle).html(replies.length);
             }
-        });
+        }
     });
 
     $(document).delegate('.wc-new-loaded-comment', 'mouseenter', function () {
@@ -307,7 +321,6 @@ jQuery(document).ready(function ($) {
                         addCookie(wcForm, obj);
                         wcForm.get(0).reset();
                         setCookieInForm();
-                        displayShowHideReplies();
                         var currTArea = $('.wc_comment', wcForm);
                         currTArea.css('height', '72px');
                         setTextareaCharCount(currTArea, commentTextMaxLength);
@@ -590,7 +603,6 @@ jQuery(document).ready(function ($) {
                 $('.wpdiscuz_single').remove();
                 isRun = false;
                 loadLastCommentId = obj.loadLastCommentId;
-                displayShowHideReplies();
             } catch (e) {
                 console.log(e);
             }
@@ -714,7 +726,6 @@ jQuery(document).ready(function ($) {
                 } catch (e) {
                     console.log(e);
                 }
-                displayShowHideReplies();
                 $('.wpdiscuz-loading-bar').hide();
             });
         }
@@ -814,7 +825,6 @@ jQuery(document).ready(function ($) {
                 commentObject = message[i];
                 addCommentToTree(commentObject.comment_parent, commentObject.comment_html);
             }
-            displayShowHideReplies();
         }
     }
 
@@ -998,28 +1008,10 @@ jQuery(document).ready(function ($) {
 
     function displayShowHideReplies() {
         $('#wcThreadWrapper .wc-comment').each(function (i) {
-            if ($('> .wc-reply', this).length) {
-                $('> .wc-comment-right .wc-comment-footer .wc-toggle', this).removeClass('wpdiscuz-hidden');
+            if ($('> .wc-reply', this).length || $(this).hasClass('wpdiscuz-root-comment')) {
+                var toggle = $('> .wc-comment-right .wc-comment-footer .wc-toggle', this);
+                toggle.removeClass('wpdiscuz-hidden');
             }
-        });
-    }
-
-    /**
-     * @param {type} action the action key 
-     * @param {type} data the request properties
-     * @returns {jqXHR}
-     */
-    function getAjaxObj(data) {
-        if (data.action !== 'liveUpdate') {
-            $('.wpdiscuz-loading-bar').show();
-        }
-        data.append('postId', wpdiscuzPostId);
-        return $.ajax({
-            type: 'POST',
-            url: wpdiscuzAjaxObj.url,
-            data: data,
-            contentType: false,
-            processData: false,
         });
     }
 
@@ -1132,4 +1124,45 @@ jQuery(document).ready(function ($) {
         }
         $(this).toggleClass('wpdiscuz-spoiler-closed');
     });
+
+    function wpdiscuzShowReplies(uniqueId) {
+        var commentId = getCommentID(uniqueId);
+        var data = new FormData();
+        data.append('action', 'wpdiscuzShowReplies');
+        data.append('commentId', commentId);
+        var ajax = getAjaxObj(data);
+        ajax.done(function (response) {
+            try {
+                var resp = $.parseJSON(response);
+                if (resp.code == 1) {
+                    $('#wc-comm-' + uniqueId).replaceWith(resp.data);
+                    $('#wc-comm-' + uniqueId + ' .wc-toggle .fa').removeClass('fa-chevron-down').addClass('fa-chevron-up').removeClass('wpdiscuz-show-replies');
+                } else {
+                    console.log('Unknown error occured');
+                }
+            } catch (e) {
+                console.log(e);
+            }
+            $('.wpdiscuz-loading-bar').hide();
+        });
+    }
+
+    /**
+     * @param {type} action the action key 
+     * @param {type} data the request properties
+     * @returns {jqXHR}
+     */
+    function getAjaxObj(data) {
+        if (data.action !== 'liveUpdate') {
+            $('.wpdiscuz-loading-bar').show();
+        }
+        data.append('postId', wpdiscuzPostId);
+        return $.ajax({
+            type: 'POST',
+            url: wpdiscuzAjaxObj.url,
+            data: data,
+            contentType: false,
+            processData: false,
+        });
+    }
 });

@@ -122,6 +122,15 @@ if (!defined('ABSPATH')) {
             </tr>
             <tr valign="top">
                 <th scope="row">
+                	<label for="isLoadOnlyParentComments"><?php _e('Display only parent comments and <u>view replies &or;</u> button', 'wpdiscuz'); ?></label>
+                	 <p style="font-size:13px; color:#999999; width:80%; padding-left:0px; margin-left:0px;">
+                     <?php _e('If this option is enabled only parent comment will be displayed. This increases page load speed and keeps pages light. If visitor wants to read replies he/she just need to click on [view replies (12)] button located on all parent comments which have replies.', 'wpdiscuz'); ?>
+                     </p>
+                </th>
+                <td><input type="checkbox" <?php checked($this->optionsSerialized->isLoadOnlyParentComments == 1) ?> value="1" name="isLoadOnlyParentComments" id="isLoadOnlyParentComments" /></td>
+            </tr>
+            <tr valign="top">
+                <th scope="row">
                     <?php _e('Comments loading/pagination type', 'wpdiscuz'); ?>
                     <p style="font-size:13px; color:#999999; width:80%; padding-left:0px; margin-left:0px;">
                         <?php _e('You can manage the number of comments for [Load more] option in Settings > Discussion page, using "Break comments into pages with [X] top level comments per page" option. To show the default Wordpress comment pagination you should enable the checkbox on bigining of the same option.', 'wpdiscuz'); ?>
@@ -137,11 +146,15 @@ if (!defined('ABSPATH')) {
                         <label title="<?php _e('[Load rest of all comments] Button', 'wpdiscuz') ?>">
                             <input type="radio" value="1" <?php checked('1' == $commentListLoadType); ?> name="commentListLoadType" id="commentListLoadRest" class="commentListLoadType" /> 
                             <span><?php _e('[Load rest of all comments] Button', 'wpdiscuz') ?></span>
-                        </label><br>    
+                        </label><br>
+                        <label title="<?php _e('Load all comments', 'wpdiscuz') ?>">
+                            <input type="radio" value="3" <?php checked('3' == $commentListLoadType); ?> name="commentListLoadType" id="commentListLoadAll" class="commentListLoadType" /> 
+                            <span><?php _e('Load all comments', 'wpdiscuz') ?></span>
+                        </label> &nbsp;<br/>
                         <label title="<?php _e('Lazy load comments on scrolling', 'wpdiscuz') ?>">
                             <input type="radio" value="2" <?php checked('2' == $commentListLoadType); ?> name="commentListLoadType" id="commentListLoadLazy" class="commentListLoadType commentListLoadLazy" /> 
                             <span><?php _e('Lazy load comments on scrolling', 'wpdiscuz') ?></span>
-                        </label> &nbsp;<br/>          
+                        </label> &nbsp;<br/>
                     </fieldset>
                 </td>
             </tr>

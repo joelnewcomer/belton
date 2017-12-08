@@ -36,10 +36,10 @@ if( !class_exists('ALM_SHORTCODE') ):
    		self::$counter++;
 
    		// Define page slug
-   		$slug = alm_get_page_slug($post);
+   		$slug = apply_filters('alm_page_slug', alm_get_page_slug($post));
 
-   		// Define Post ID
-   		$post_id = alm_get_page_id($post);
+   		// Define post ID
+   		$post_id = apply_filters('alm_page_id', alm_get_page_id($post));
 
    		// Custom CSS for Layouts - Only run this once.
    		if(has_action('alm_layouts_custom_css')){
@@ -154,7 +154,13 @@ if( !class_exists('ALM_SHORTCODE') ):
 
 
 			// Start Enqueue Scripts
-
+   		
+   		
+   		// Inline CSS
+   		if( !is_admin() && alm_do_inline_css('_alm_inline_css') && !alm_css_disabled('_alm_disable_css') && self::$counter === 1 ){
+		   	$file = ALM_PATH . '/core/dist/css/'. ALM_SLUG .'.min.css'; // Core Ajax Load More
+	         echo ALM_ENQUEUE::alm_inline_css(ALM_SLUG, $file, ALM_URL);
+   		}
 
 			// Masonry
          if($transition === 'masonry'){
@@ -179,6 +185,14 @@ if( !class_exists('ALM_SHORTCODE') ):
    		// Paging
    		if(has_action('alm_paging_installed') && $paging === 'true'){
       		wp_enqueue_script( 'ajax-load-more-paging' );
+      		
+      		// Inline paging CSS      		
+      		if( !is_admin() && alm_do_inline_css('_alm_inline_css') && !alm_css_disabled('_alm_paging_disable_css') && self::$counter === 1 ){
+	      		if(defined('ALM_PAGING_PATH') && defined('ALM_PAGING_URL')){
+	      			$file = ALM_PAGING_PATH.'/core/css/ajax-load-more-paging.min.css';
+						echo ALM_ENQUEUE::alm_inline_css('ajax-load-more-paging', $file, ALM_PAGING_URL);
+		         }
+	      	}
          }
 
          // Previous Post
@@ -325,7 +339,8 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   	 */
          $ajaxloadmore .= apply_filters('alm_before_container', '');
 
-         $canonicalURL = alm_get_canonical_url(); // Build Canonical URL
+         // Build Canonical URL
+         $canonicalURL = apply_filters('alm_canonical_url', alm_get_canonical_url());
 
 			// Generate ALM ID
          $div_id = (self::$counter > 1) ? 'ajax-load-more-'.self::$counter : 'ajax-load-more';
@@ -455,7 +470,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	         		'author'             => $author,
 	         		'post__in'           => $post__in,
 	         		'post__not_in'       => $post__not_in,
-	         		'search'             => $search,
+	         		's'             		=> $search,
 	               'custom_args'        => $custom_args,
 	         		'post_status'        => $post_status,
 	         		'order'              => $order,
@@ -495,6 +510,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 		         }
 		         
 		         elseif($users){ // Users
+			         
 			         if(has_action('alm_users_preloaded') && $users){		         
 							
 							// Encrypt User Role
@@ -590,6 +606,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 
 
 	      			$alm_preload_query = new WP_Query($args);
+	      			
 	      			$alm_total_posts = $alm_preload_query->found_posts - $offset;
 	               $output = '';
 	               $noscript = '';
@@ -973,7 +990,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    	         $btn_href = '';
    	         if($seo === 'true'){
       	         $btn_element = 'a'; // Convert to link for SEO
-      	         $btn_href = 'href="'.$canonicalURL.'"';
+      	         $btn_href = ' href="'.$canonicalURL.'"';
    	         }
    	         
    	         

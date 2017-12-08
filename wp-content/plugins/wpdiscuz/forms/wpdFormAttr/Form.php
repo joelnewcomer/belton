@@ -20,6 +20,7 @@ class Form {
     private $fieldsBeforeSave = array();
     private $ratings;
     private $ratingsExists = false;
+    public $isUserCanComment = true;
 
     public function __construct($options, $formID = 0) {
         $this->defaultsFieldsNames = array(
@@ -336,6 +337,7 @@ class Form {
     private function validateGeneralOptions($options) {
         $validData = array(
             'lang' => get_locale(),
+            'roles_cannot_comment' => array(),
             'guest_can_comment' => 1,
             'show_subscription_bar' => 1,
             'header_text' => '',
@@ -343,6 +345,10 @@ class Form {
             'postid' => '',
             'postidsArray' => array()
         );
+        if (isset($options['roles_cannot_comment'])) {
+            $validData['roles_cannot_comment'] = array_map('trim', $options['roles_cannot_comment']);
+        }
+
         if (isset($options['guest_can_comment'])) {
             $validData['guest_can_comment'] = intval($options['guest_can_comment']);
         }
@@ -473,7 +479,7 @@ class Form {
                 <div class="wc-secondary-forms-social-content"></div>
             <?php } ?>
             <?php
-            if ($this->isUserCanComment($currentUser->ID, $message)) {
+            if ($this->isUserCanComment($currentUser, $message)) {
                 ?>
                 <form class="wc_comm_form <?php echo!$isMain ? 'wc-secondary-form-wrapper' : 'wc_main_comm_form'; ?>" method="post"  enctype="multipart/form-data">
                     <div class="wc-field-comment">
@@ -495,8 +501,8 @@ class Form {
                                 <?php } ?>
                                 <?php if (defined('WPDISCUZ_BOTTOM_TOOLBAR')): ?>
                                     <div class="wpdiscuz-textarea-foot">
-                                        <?php do_action('wpdiscuz_button', $uniqueId, $currentUser); ?>
-                                        <div class="wpdiscuz-button-actions"><?php do_action('wpdiscuz_button_actions', $uniqueId, $currentUser); ?></div>
+                                        <?php do_action('wpdiscuz_button', $uniqueId, $currentUser,$this); ?>
+                                        <div class="wpdiscuz-button-actions"><?php do_action('wpdiscuz_button_actions', $uniqueId, $currentUser,$this); ?></div>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -597,6 +603,27 @@ class Form {
                         </tr>                        
                         <tr>
                             <th>
+                                <?php _e('Disable commenting for roles', 'wpdiscuz'); ?>
+                            </th>
+                            <td>
+                                <?php
+                                $blogRoles = get_editable_roles();
+                                $rolesCannotComment = isset($this->generalOptions['roles_cannot_comment']) ? $this->generalOptions['roles_cannot_comment'] : array();
+                                foreach ($blogRoles as $role => $info) {
+                                    if ($role != 'administrator') {
+                                        ?>
+                                        <div style="float:left; display:inline-block; padding:3px 5px 3px 7px; min-width:25%;">
+                                            <input type="checkbox" <?php checked(in_array($role, $rolesCannotComment) == true); ?> value="<?php echo $role; ?>" name="<?php echo wpdFormConst::WPDISCUZ_META_FORMS_GENERAL_OPTIONS; ?>[roles_cannot_comment][]" id="wpd-<?php echo $role; ?>" style="margin:0px; vertical-align: middle;" />
+                                            <label for="wpd-<?php echo $role; ?>" style="white-space:nowrap; font-size:13px;"><?php echo $info['name']; ?></label>
+                                        </div>
+                                        <?php
+                                    }
+                                }
+                                ?> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
                                 <?php _e('Allow guests to comment', 'wpdiscuz'); ?>
                             </th>
                             <td>
@@ -693,13 +720,20 @@ class Form {
         <?php
     }
 
-    private function isUserCanComment($isUserLoggedIn, &$message) {
+    private function isUserCanComment($currentUser, &$message) {
         global $post;
         $user_can_comment = TRUE;
-        if (!$this->generalOptions['guest_can_comment']) {
-            if (!$isUserLoggedIn) {
-                $user_can_comment = FALSE;
+        if ($currentUser && $currentUser->roles && is_array($currentUser->roles)) {
+            $this->generalOptions['roles_cannot_comment'] = isset($this->generalOptions['roles_cannot_comment']) ? $this->generalOptions['roles_cannot_comment'] : array();
+            foreach ($currentUser->roles as $role) {
+                if (in_array($role, $this->generalOptions['roles_cannot_comment'])) {
+                    $user_can_comment = false;
+                    $message = $this->wpdOptions->phrases['wc_roles_cannot_comment_message'];
+                    break;
+                }
             }
+        } else {
+            $user_can_comment = $this->generalOptions['guest_can_comment'];
         }
         if (class_exists('WooCommerce') && get_post_type($post->ID) == 'product') {
             if (get_option('woocommerce_review_rating_verification_required') === 'no' || wc_customer_bought_product('', get_current_user_id(), $post->ID)) {
@@ -709,6 +743,7 @@ class Form {
                 $message = '<p class="woocommerce-verification-required">' . __('Only logged in customers who have purchased this product may leave a review.', 'woocommerce') . '</p>';
             }
         }
+        $this->isUserCanComment = $user_can_comment;
         return $user_can_comment;
     }
 

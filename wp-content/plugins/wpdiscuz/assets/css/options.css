@@ -2,6 +2,7 @@
 .wpdiscuz-share-buttons {display: inline-block; width: 18px; height: 18px;}
 .wc-form input.wc_share_button {display: none;}
 .wc-form input[type="text"].regular-text{ width:160px; }
+.wc-form select{min-width: 140px;}
 .wc-form .wpdiscuz-option-title {vertical-align: middle;}
 .wc-form .wc-hidden {display: none;}
 .wc-form .resp-tabs-container.integrationsChild {margin-bottom: 5px;}

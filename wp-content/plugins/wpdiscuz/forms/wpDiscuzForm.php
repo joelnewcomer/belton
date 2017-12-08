@@ -27,7 +27,7 @@ class wpDiscuzForm implements wpdFormConst {
         add_action('admin_enqueue_scripts', array(&$this, 'customFormAdminScripts'), 245);
         add_action('manage_wpdiscuz_form_posts_custom_column', array(&$this, 'displayContentTypesOnList'), 10, 2);
         add_filter('manage_wpdiscuz_form_posts_columns', array(&$this, 'addContentTypeColumn'));
-        add_action('edit_form_after_title', array(&$this, 'renderFormeGeneralSettings'));
+        add_action('edit_form_after_title', array(&$this, 'renderFormGeneralSettings'));
         add_action('wp_ajax_wpdiscuzCustomFields', array(&$this, 'wpdiscuzFieldsDialogContent'));
         add_action('wp_ajax_adminFieldForm', array(&$this, 'adminFieldForm'));
         add_action('transition_comment_status', array(&$this, 'changeCommentStatus'), 10, 3);
@@ -192,7 +192,7 @@ class wpDiscuzForm implements wpdFormConst {
         }
     }
 
-    public function renderFormeGeneralSettings($post) {
+    public function renderFormGeneralSettings($post) {
         global $current_screen;
         if ($current_screen->id == self::WPDISCUZ_FORMS_CONTENT_TYPE) {
             $this->form->setFormID($post->ID);
@@ -381,6 +381,7 @@ class wpDiscuzForm implements wpdFormConst {
     private function getDefaultFormGeneralOptions($version, $lang, $wpdGeneralOptions, $phrases, &$postTypes) {
         $generalOptions = array(
             'lang' => $lang,
+            'roles_cannot_comment' => array(),
             'guest_can_comment' => get_option('comment_registration') ? 0 : 1,
             'show_subscription_bar' => 1,
             'header_text' => __('Leave a Reply', 'wpdiscuz'),
