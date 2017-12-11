@@ -181,7 +181,7 @@ jQuery('.select-app').on('change', function(e) {
 		jQuery('.tech-doc').fadeOut();
 		// If no application is selected then get selected market and show all products in its subcategories
 		jQuery('.tech-doc').promise().done(function() {
-			var children = jQuery('#cat-select').children('option:selected').data('children');
+			var children = jQuery('#cat-select').children('option:selected').data('children').toString();
     		var childrenArray = children.split(" ");
 			for (var i = 0; i < childrenArray.length; i++) {
     			jQuery('.cat-' + childrenArray[i]).css('display', 'inline-block').hide().fadeIn( "fast", function() {
