@@ -320,7 +320,7 @@ function html_tag_schema() {
         $type = 'ProfilePage';
     }
     // Contact form page ID
-    elseif( is_page(1) ) {
+    elseif( is_page(8) ) {
         $type = 'ContactPage';
     }
     // Is search results page

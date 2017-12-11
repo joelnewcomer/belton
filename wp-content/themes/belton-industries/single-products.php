@@ -17,11 +17,7 @@ get_header(); ?>
 					<span typeof="v:Breadcrumb">
 						<a href="<?php echo get_site_url(); ?>" rel="v:url" property="v:title">Home</a>  <span class="bc-divider"></span>
 						<span rel="v:child" typeof="v:Breadcrumb">
-							<?php if ($_GET["ref"] == 'guide') : ?>
-								<a href="<?php echo get_site_url(); ?>/product-guide" rel="v:url" property="v:title">Product Guide</a>  <span class="bc-divider"></span> 	
-							<?php else : ?>
-								<a href="<?php echo get_site_url(); ?>/product-search" rel="v:url" property="v:title">Product Search</a>  <span class="bc-divider"></span> 
-							<?php endif; ?>
+							<a href="<?php echo get_site_url(); ?>/product-guide" rel="v:url" property="v:title">Product Guide</a>  <span class="bc-divider"></span> 	
 							<span class="breadcrumb_last"><?php the_title(); ?></span>	
 						</span>
 					</span>
