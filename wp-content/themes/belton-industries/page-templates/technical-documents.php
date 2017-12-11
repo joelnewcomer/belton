@@ -150,7 +150,7 @@ jQuery('#cat-select').on('change', function() {
 	var catID = this.value;
 	if (catID != "") {
 		// Display products that are in children of this category
-		var children = jQuery(this).children('option:selected').data('children');
+		var children = jQuery(this).children('option:selected').data('children').toString();
 		jQuery(this).addClass('active');
 		if (children != '') {
 	    	var childrenArray = children.split(" ");
