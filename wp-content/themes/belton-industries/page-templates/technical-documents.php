@@ -161,12 +161,12 @@ jQuery('#cat-select').on('change', function() {
 		jQuery(this).removeClass('active');
 	}
 	jQuery(".select-app").promise().done(function() {
-    	jQuery('select#cat-' + catID).css('display', 'inline-block').hide().fadeIn( "fast", function() {
-			resetResults();
-  		});
+    	jQuery('select#cat-' + catID).css('display', 'inline-block').hide().fadeIn( "fast" );
 	});
 	jQuery('.tech-doc').promise().done(function() {
-		resetResults();
+		jQuery(".select-app").promise().done(function() {
+			resetResults();
+		});
 	});
 });
 
