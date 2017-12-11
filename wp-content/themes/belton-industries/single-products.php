@@ -68,33 +68,10 @@ get_header(); ?>
 			?>
 			</div> <!-- tag-filters -->
 		</section>		
-		<?php
-		// Pull Product Data Sheet from Technical Documents
-		$args = array(
-			'posts_per_page' => -1,
-			'post_type' => 'docs',
-		);
-		$this_id = $post->ID;
-		$data_sheet = '';
-		$the_query = new WP_Query( $args );
-		if ( $the_query->have_posts() ) {
-			while ( $the_query->have_posts() ) { $the_query->the_post();
-				global $post;
-				$assigned_to = get_post_meta($post->ID, 'assign_to_product', true);
-				if (in_array( $this_id, $assigned_to )) {
-					$data_sheet = get_field('file');
-				}
-			}
-			wp_reset_postdata();
-		}
-
-
-		
-		$installation = get_field('installation_guideline');
-		?>
+		<?php $installation = get_field('installation_guideline'); ?>
 		<section class="downloads text-center">
 			<?php if ($data_sheet != ""): ?>
-				<div class="button icon arrow blue"><a href="<?php echo $data_sheet; ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Product Data Sheet<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+				<div class="button icon arrow blue"><a href="<?php echo $installation; ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Product Data Sheet<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 			<?php endif; ?>
 			<?php if ($installation != ""): ?>
 				<div class="button icon arrow blue"><a href="<?php echo $installation; ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Installation Guideline<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
