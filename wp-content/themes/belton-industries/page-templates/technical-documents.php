@@ -152,15 +152,13 @@ jQuery('#cat-select').on('change', function() {
 	var children = jQuery(this).children('option:selected').data('children');
 	if (catID != "") {
 		jQuery(this).addClass('active');
-		jQuery('.tech-doc').promise().done(function() {
-    		var childrenArray = children.split(" ");
-    		for (var i = 0; i < childrenArray; i++) {
-    			jQuery('.cat-' + childrenArray[i]).css('display', 'inline-block').hide().fadeIn( "fast", function() {
-					resetResults();
-  				});
-			}
-  			resetResults();
-		});
+    	var childrenArray = children.split(" ");
+    	for (var i = 0; i < childrenArray.length; i++) {
+    		jQuery('.cat-' + childrenArray[i]).css('display', 'inline-block').hide().fadeIn( "fast", function() {
+				resetResults();
+  			});
+		}
+  		resetResults();
 	} else {
 		jQuery('.tech-doc').fadeIn();	
 		jQuery(this).removeClass('active');
