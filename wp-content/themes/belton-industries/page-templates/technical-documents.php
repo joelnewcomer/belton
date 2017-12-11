@@ -50,6 +50,7 @@ get_header(); ?>
 			$args = array(
 				'posts_per_page' => -1,
 				'post_type' => 'products',
+				'no_found_rows' => true
 			);
 			$the_query = new WP_Query( $args ); ?>
 			
