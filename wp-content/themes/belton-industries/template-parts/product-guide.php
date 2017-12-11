@@ -334,9 +334,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 					jQuery('.subcats-selected').append(subcatSel + '<br />');
 				});
 				setTimeout(function(){
-					jQuery.fn.matchHeight._update();
-
-
+					
 					// Get tags (filters) for active products and hide filters that aren't on active products
 					var activeTags = new Array();
 					jQuery( ".cat-products.active .cat-product.active" ).each(function( index ) {
@@ -364,7 +362,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 							jQuery(this).hide();
 						}
 					});
-					
+					jQuery.fn.matchHeight._update();
 					
 				}, 1000);
 				jQuery('.cat-icons').css('background-image', 'none');
