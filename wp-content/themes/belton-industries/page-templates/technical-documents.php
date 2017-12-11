@@ -80,7 +80,7 @@ get_header(); ?>
 					$date_modified = date(get_option( 'date_format' ),strtotime($file['modified']));
 					?>
 					<?php if ($file != '') : ?>
-					<a href="<?php echo $file['url']; ?>" class="tech-doc sr <?php echo $classes; ?>">
+					<a href="<?php echo $file['url']; ?>" class="tech-doc <?php echo $classes; ?>">
 						<!-- <pre>
 						<?php print_r($file); ?>
 						</pre> -->
