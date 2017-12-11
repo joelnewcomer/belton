@@ -28,8 +28,15 @@ get_header(); ?>
 						$terms = get_terms('guide_cats', array ( 'parent' => 0, 'hide_empty' => false  ));	
 						echo "<select name='cat-select' id='cat-select'>";
 						echo "<option value=''>Market</option>";
-						foreach ($terms as $term) { 
-						    echo '<option value="' . $term->term_id . '">' . $term->name . '</option>'; 
+						foreach ($terms as $term) {
+							$value = $term->term_id;
+							$children = '';
+							$child_terms = get_terms('guide_cats', array ( 'parent' => $term->term_id, 'hide_empty' => false  ));
+							foreach ($child_terms as $child_term) {
+								$children .= ' ' . $child_term->term_id;
+							}
+							$children = trim($children);
+						    echo '<option value="' . $term->term_id . '" data-children="' . $children . '">' . $term->name . '</option>'; 
 						}
 						echo "</select>";
 						foreach ($terms as $term) {
@@ -55,7 +62,7 @@ get_header(); ?>
 			$the_query = new WP_Query( $args ); ?>
 			
 			<div class="doc-results text-center">
-				<span class="count"><?php echo $the_query->post_count; ?></span> Result<span class="plural"><?php if ($the_query->post_count != 1) { echo 's'; } ?></span>
+				<span class="count"></span> Result<span class="plural"></span>
 			</div>
 
 			<div class="tech-docs">
@@ -97,6 +104,11 @@ get_header(); ?>
 				wp_reset_postdata();
 			}
 			?>
+			<script>
+				jQuery( document ).ready(function() {
+					resetResults();
+				});
+			</script>
 		</div> <!-- tech-docs -->
 
 			</div> <!-- shadow-container-inner -->
@@ -129,18 +141,30 @@ function resetFilters() {
 
 // Markets
 jQuery('#cat-select').on('change', function() {
-	jQuery('#doc-s').val('');
-	var catID = this.value;
-	if (catID != "") {
-		jQuery(this).addClass('active');
-	} else {
-		jQuery(this).removeClass('active');
-	}
+	// Reset Documents
+	jQuery('.tech-doc').fadeOut();	
+	jQuery('.select-app').fadeOut();
 	// Reset Applications
 	jQuery('.select-app').prop('selectedIndex',0);
-	// Reset Documents
-	jQuery('.tech-doc').fadeIn();	
-	jQuery('.select-app').fadeOut();
+	jQuery('#doc-s').val('');
+	var catID = this.value;
+	// Display products that are in children of this category
+	var children = jQuery(this).children('option:selected').data('children');
+	if (catID != "") {
+		jQuery(this).addClass('active');
+		jQuery('.tech-doc').promise().done(function() {
+    		var childrenArray = children.split(" ");
+    		for (var i = 0; i < childrenArray; i++) {
+    			jQuery('.cat-' + childrenArray[i]).css('display', 'inline-block').hide().fadeIn( "fast", function() {
+					resetResults();
+  				});
+			}
+  			resetResults();
+		});
+	} else {
+		jQuery('.tech-doc').fadeIn();	
+		jQuery(this).removeClass('active');
+	}
 	jQuery(".select-app").promise().done(function() {
     	jQuery('select#cat-' + catID).css('display', 'inline-block').hide().fadeIn( "fast", function() {
 			resetResults();
@@ -152,7 +176,7 @@ jQuery('#cat-select').on('change', function() {
 // Applications
 jQuery('.select-app').on('change', function(e) {
 	jQuery('#doc-s').val('');
-	var catID = this.value;	
+	var catID = this.value;
 	if (catID == '') {
 		jQuery('.tech-doc').fadeIn();
 		jQuery(this).removeClass('active');
