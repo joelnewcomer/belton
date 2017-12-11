@@ -154,11 +154,8 @@ jQuery('#cat-select').on('change', function() {
 		jQuery(this).addClass('active');
     	var childrenArray = children.split(" ");
     	for (var i = 0; i < childrenArray.length; i++) {
-    		jQuery('.cat-' + childrenArray[i]).css('display', 'inline-block').hide().fadeIn( "fast", function() {
-				resetResults();
-  			});
+    		jQuery('.cat-' + childrenArray[i]).css('display', 'inline-block').hide().fadeIn( "fast" );
 		}
-  		resetResults();
 	} else {
 		jQuery('.tech-doc').fadeIn();	
 		jQuery(this).removeClass('active');
@@ -168,7 +165,9 @@ jQuery('#cat-select').on('change', function() {
 			resetResults();
   		});
 	});
-	resetResults();
+	jQuery('.tech-doc').promise().done(function() {
+		resetResults();
+	});
 });
 
 // Applications
