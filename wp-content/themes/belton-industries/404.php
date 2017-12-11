@@ -19,14 +19,10 @@ get_header(); ?>
 				<div class="error">
 					<p class="bottom"><?php _e( 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.', 'foundationpress' ); ?></p>
 				</div>
-				<p><?php _e( 'Please try the following:', 'foundationpress' ); ?></p>
-				<div class="ul-bullets">
-					<ul>
-						<li><?php _e( 'Check your spelling', 'foundationpress' ); ?></li>
-						<li><?php printf( __( 'Return to the <a href="%s">home page</a>', 'foundationpress' ), home_url() ); ?></li>
-						<li><?php _e( 'Click the <a href="javascript:history.back()">Back</a> button', 'foundationpress' ); ?></li>
-					</ul>
-				</div>
+				<p><?php _e( 'Please try the following:', 'foundationpress' ); ?><br />
+						<p><?php _e( 'Check your spelling', 'foundationpress' ); ?><br />
+						<?php printf( __( 'Return to the <a href="%s">home page</a>', 'foundationpress' ), home_url() ); ?><br />
+						<?php _e( 'Click the <a href="javascript:history.back()">Back</a> button', 'foundationpress' ); ?></p>
 			</div>
 		</article>
 
