@@ -362,7 +362,9 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 							jQuery(this).hide();
 						}
 					});
-					jQuery.fn.matchHeight._update();
+					setTimeout(function(){
+						jQuery.fn.matchHeight._update();
+					}, 1000);
 					
 				}, 1000);
 				jQuery('.cat-icons').css('background-image', 'none');
