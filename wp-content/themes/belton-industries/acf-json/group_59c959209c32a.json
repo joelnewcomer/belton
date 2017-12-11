@@ -104,6 +104,25 @@
             "mime_types": ""
         },
         {
+            "key": "field_5a2ec8dc16c1e",
+            "label": "Installation Guide",
+            "name": "installation_guide",
+            "type": "file",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "url",
+            "library": "all",
+            "min_size": "",
+            "max_size": "",
+            "mime_types": ""
+        },
+        {
             "key": "field_5a04ae35d1598",
             "label": "Contact",
             "name": "contact",
@@ -205,5 +224,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1512067926
+    "modified": 1513015796
 }
