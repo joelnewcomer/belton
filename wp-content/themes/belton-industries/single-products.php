@@ -70,6 +70,7 @@ get_header(); ?>
 		</section>		
 		<?php
 		$data_sheet = get_field('product_data_sheet');
+		$data_sheet = $data_sheet['url'];
 		$installation =  get_field('installation_guideline');	
 		?>
 		<section class="downloads text-center">
