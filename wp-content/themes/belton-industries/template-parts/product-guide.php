@@ -333,6 +333,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 					subcatSel = jQuery(this).next('label').text();
 					jQuery('.subcats-selected').append(subcatSel + '<br />');
 				});
+				jQuery.fn.matchHeight._update();
 				setTimeout(function(){
 					jQuery.fn.matchHeight._update();
 					
