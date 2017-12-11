@@ -152,9 +152,11 @@ jQuery('#cat-select').on('change', function() {
 		// Display products that are in children of this category
 		var children = jQuery(this).children('option:selected').data('children');
 		jQuery(this).addClass('active');
-    	var childrenArray = children.split(" ");
-    	for (var i = 0; i < childrenArray.length; i++) {
-    		jQuery('.cat-' + childrenArray[i]).css('display', 'inline-block').hide().fadeIn( "fast" );
+		if (children != '') {
+	    	var childrenArray = children.split(" ");
+			for (var i = 0; i < childrenArray.length; i++) {
+    			jQuery('.cat-' + childrenArray[i]).css('display', 'inline-block').hide().fadeIn( "fast" );
+			}
 		}
 	} else {
 		jQuery('.tech-doc').fadeIn();	
