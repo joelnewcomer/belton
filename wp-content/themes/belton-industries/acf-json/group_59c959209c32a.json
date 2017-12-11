@@ -105,8 +105,8 @@
         },
         {
             "key": "field_5a2ec8dc16c1e",
-            "label": "Installation Guide",
-            "name": "installation_guide",
+            "label": "Installation Guideline",
+            "name": "installation_guideline",
             "type": "file",
             "instructions": "",
             "required": 0,
@@ -224,5 +224,5 @@
     ],
     "active": 1,
     "description": "",
-    "modified": 1513015796
+    "modified": 1513016687
 }
