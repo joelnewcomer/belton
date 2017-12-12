@@ -68,14 +68,16 @@ get_header(); ?>
 		$data_sheet = get_field('product_data_sheet');
 		$data_sheet = $data_sheet['url'];
 		$installation =  get_field('installation_guideline');
-		echo $installation;
+		if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+			$installation = wp_get_attachment_url( $installation );
+		}
 		?>
 		<section class="downloads text-center">
 			<?php if ($data_sheet != ""): ?>
 				<div class="button icon arrow blue"><a href="<?php echo $data_sheet; ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Product Data Sheet<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 			<?php endif; ?>
 			<?php if ($installation != ""): ?>
-				<div class="button icon arrow blue"><a href="<?php echo wp_get_attachment_url( $installation ); ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Installation Guideline<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
+				<div class="button icon arrow blue"><a href="<?php echo $installation; ?>" target="_blank"><?php get_template_part('assets/images/doc', 'icon.svg'); ?>Download Installation Guideline<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 			<?php endif; ?>
 		</section>
 		<?php get_template_part('template-parts/not','finding'); ?>
