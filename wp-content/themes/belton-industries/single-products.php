@@ -68,7 +68,7 @@ get_header(); ?>
 		$data_sheet = get_field('product_data_sheet');
 		$data_sheet = $data_sheet['url'];
 		$installation =  get_field('installation_guideline');
-		if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+		if (filter_var($installation, FILTER_VALIDATE_URL) === FALSE) {
 			$installation = wp_get_attachment_url( $installation );
 		}
 		?>
