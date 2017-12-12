@@ -67,7 +67,8 @@ get_header(); ?>
 		<?php
 		$data_sheet = get_field('product_data_sheet');
 		$data_sheet = $data_sheet['url'];
-		$installation =  get_field('installation_guideline');	
+		$installation =  get_field('installation_guideline');
+		echo $installation;
 		?>
 		<section class="downloads text-center">
 			<?php if ($data_sheet != ""): ?>
