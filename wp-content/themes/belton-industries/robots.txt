@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /wp-content/uploads/
+Disallow: /wp-content/plugins/
+Disallow: /wp-admin/
+Disallow: /readme.html
+Disallow: /refer/
+Allow: /*.js*
+Allow: /*.css*
+
+Sitemap: http://beltonindustries.com/sitemap_index.xml
