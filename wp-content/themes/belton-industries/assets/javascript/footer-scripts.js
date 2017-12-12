@@ -129,7 +129,7 @@ jQuery(document).ready(function($){var offset=300,offset_opacity=1200,scroll_top
 /**
 * Initialize jQuery Plugins
 **/
-jQuery( document ).ready(function() {
+jQuery( window ).load(function() {
 	jQuery('.gfield input').each(function() {
 		if (jQuery(this).attr( "placeholder" ) != undefined) {
 			jQuery(this).floatlabel();
