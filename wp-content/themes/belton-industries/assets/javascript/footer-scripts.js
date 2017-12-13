@@ -121,6 +121,12 @@ URL: https://msurguy.github.io/background-blur/
 !function(e){function n(){var n=window.innerHeight,t=document.compatMode;return!t&&e.support.boxModel||(n="CSS1Compat"==t?document.documentElement.clientHeight:document.body.clientHeight),n}e(window).scroll(function(){var t=n(),o=document.documentElement.scrollTop?document.documentElement.scrollTop:document.body.scrollTop,i=[];e.each(e.cache,function(){this.events&&this.events.inview&&i.push(this.handle.elem)}),i.length&&e(i).each(function(){var n=e(this),i=n.offset().top,c=n.height(),d=n.data("inview")||!1;o>i+c||o+t<i?d&&(n.data("inview",!1),n.trigger("inview",[!1])):o<i+c&&(d||(n.data("inview",!0),n.trigger("inview",[!0])))})}),e(function(){e(window).scroll()})}(jQuery);
 
 /**
+ * aload - v1.2.2
+ * https://github.com/pazguille/aload
+ */
+function aload(t){"use strict";var e="data-aload";return t=t||window.document.querySelectorAll("["+e+"]"),void 0===t.length&&(t=[t]),[].forEach.call(t,function(t){t["LINK"!==t.tagName?"src":"href"]=t.getAttribute(e),t.removeAttribute(e)}),t}
+
+/**
  * Back To Top - CodyHouse
  * http://codyhouse.co/gem/back-to-top/
  */
@@ -174,7 +180,7 @@ jQuery( document ).ready(function() {
 	}
 });
 
-/* jQuery.holdReady( true );
-setTimeout(function() {
-	jQuery.holdReady( false );
-}, 2000); */
+// Onload
+window.onload = function () {
+  aload();
+};
