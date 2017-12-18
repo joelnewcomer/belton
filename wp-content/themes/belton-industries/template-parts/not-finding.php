@@ -49,6 +49,14 @@
 						<?php echo $phone; ?><br />
 						<a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a>
 					</p>
+					<?php if (is_page_template( 'page-templates/product-guide.php' )) : ?>
+						<p class="side-rule">
+							<span>Steve Westfall</span><br />
+							800.845.8753<br />
+							<a href="mailto:swestfall@beltonindustries.com">swestfall@beltonindustries.com</a>
+						</p>							
+					<?php endif; ?>
+					</p>
 				</div>
 			</div>
 		</div> <!-- not-finding -->
