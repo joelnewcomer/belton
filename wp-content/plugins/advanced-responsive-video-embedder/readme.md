@@ -4,6 +4,7 @@ Donate link: https://www.paypal.me/nico23
 Tags: YouTube, Vimeo, lazyload, thumbnail, video, responsive, embeds, video-embedder, iframe, lightweight, simplicity, shortcodes
 Requires at least: 4.4.0
 Tested up to: 4.9.2
+Requires PHP: 5.3
 Stable tag: trunk
 License: GPL-3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -111,7 +112,7 @@ This plugin is financed by the awesome buyers of the [Pro Addon](https://nextgen
 ### [Pro Addon](https://nextgenthemes.com/plugins/arve-pro/) ###
 
 *   **Disable links in embeds (killer feature!)**<br>
-    For example: Clicking on a title in a YouTube embed will not open a new popup/tab/window. **Prevent video hosts to lead your visitors away from your site!** Note this also breaks sharing functionality and is not possible when the provider requires flash. Try it on [this page](https://nextgenthemes.com/plugins/advanced-responsive-video-embedder-pro/). Right click on links still works.
+    For example: Clicking on a title in a YouTube embed will not open a new popup/tab/window. **Prevent video hosts to lead your visitors away from your site!** Note this also breaks sharing functionality and is not possible when the provider requires flash. Try it on [this page](https://nextgenthemes.com/plugins/arve-pro/). Right click on links still works.
 *   **Lazyload mode**<br>
     Make your site load **faster** by loading only a image instead of the entire video player on pageload.  
 *   **Lazyload -> Lightbox**<br>
@@ -198,7 +199,30 @@ This plugins embed is considered as 'custom player' by YouTube so you have to pa
 * [ARVE Pro addon changelog](https://nextgenthemes.com/plugins/advanced-responsive-video-embedder-pro/changelog/)
 * [ARVE AMP addon changelog](https://nextgenthemes.com/plugins/arve-amp/)
 
+### 2018-01-09 - 8.7.7 ###
+
+* New: `duration` shortcode attribute and dialog entry.
+* Fixed: Corrected some dead links inside the plugin.
+* Improved: Added `muted`, `controls` and `loop` to shortcode UI dialog for HTML5 videos.
+* Improved: Removed video file extension check so any file can be used `[arve mp4="http://example.com/some-file" webm="http://example.com/some-other-file" /]`. Useful for example to embed files hosted on IPFS that do have a cryptic hash instead of a human readable filename.
+
+### 2017-12-20 - 8.7.6 ###
+
+* Fix license activation now working correctly.
+* Corrected link in readme.
+
+### 2017-12-19 - 8.7.5 ###
+
+* Maybe fix license activation in some rare cases.
+
+### 2017-12-17 - 8.7.4 ###
+
+* Fix: Removed URL validation because it fails with some weird URLs.
+
 ### 2017-12-13 - 8.7.3 ###
+
+* Updated EDD Plugin Updater class.
+* Fixed some links in the readme.
 
 ### 2017-08-16 - 8.7.2 ###
 
