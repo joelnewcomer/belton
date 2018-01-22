@@ -3412,10 +3412,13 @@ section.container > .row > section {
   position: relative; }
 
 section.features {
-  background: url(../images/features-bg.jpg) center center no-repeat;
+  background: #1162a5;
   -webkit-background-size: cover !important;
           background-size: cover !important;
   padding: 46px 40px 22px 40px; }
+  @media only screen and (min-width: 64.063em) {
+    section.features {
+      background: url(../images/features-bg-resized.jpg) center center no-repeat; } }
   @media only screen and (max-width: 40.063em) {
     section.features {
       padding: 28px 10px 20px 10px; } }
