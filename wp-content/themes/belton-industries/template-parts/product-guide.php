@@ -15,6 +15,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 					<!-- <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p> -->
 				</div>
 				
+				<?php if ( wp_is_mobile() ) : ?>
 				<!-- MOBILE STEP 1 -->
 				<div class="show-for-small cat-icons mobile-step transition">
 					<?php
@@ -32,6 +33,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 					    }
 					} ?>			
 				</div> <!-- MOBILE STEP 1 -->
+				<?php endif; ?>
 
 
 				<!-- STEP 2 -->
@@ -42,7 +44,8 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 				</div>
 				<!-- STEP 2 -->
 
-				
+
+				<?php if ( wp_is_mobile() ) : ?>
 				<!-- MOBILE STEP 2 -->
 				<div class="show-for-small cat-icons mobile-step">
 					<?php
@@ -62,17 +65,20 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 						<?php }
 					} ?>
 				</div>						
-				<!-- MOBILE STEP 2 -->				
+				<!-- MOBILE STEP 2 -->
+				<?php endif; ?>		
 
 				
 				
 				<div class="step step-3">
 					<h3><span class="number">3</span>View Our Solutions</h3>
+					<?php if ( !wp_is_mobile() ) : ?> 
 					<div class="hide-for-small">
 						<h4>Not finding the perfect solution?</h4>
 						<p>We also provide flexible custom solutions for both small and large applications.</p>
 						<div class="button green arrow small"><a href="<?php echo get_field('contact_page'); ?>">Let us design it for you <?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 					</div>
+					<?php endif; ?>
 				</div>
 			</div> <!-- steps --> 	
 		</div>
@@ -85,12 +91,15 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 			        $custom_id =  'guide_cats_' . $term->term_id;
 			        $icon_url = get_field('icon', $custom_id);
 			        $bg_url = get_field('bg_image', $custom_id);
-			        echo '<a href="#" data-cat-id="' . $term->term_id . '" data-bg-url="' . $bg_url . '" class="cat-icon transition hide-for-small">';
-			        echo file_get_contents( $icon_url );
-			        echo '<div class="cat-name">' . $term->name . '</div>';
-			        echo '</a>'; ?>
+			        if ( !wp_is_mobile() ) { 
+			        	echo '<a href="#" data-cat-id="' . $term->term_id . '" data-bg-url="' . $bg_url . '" class="cat-icon transition hide-for-small">';
+			        	echo file_get_contents( $icon_url );
+			        	echo '<div class="cat-name">' . $term->name . '</div>';
+			        	echo '</a>';
+			        } ?>
 
 			        <!-- STEP 2 - Subcategory Checkboxes -->
+			        <?php if ( !wp_is_mobile() ) : ?>
 			        <div class="<?php echo $term->term_id; ?> sub-cat transition hide-for-small">
 				        <form class="subcat-checkboxes">
 					        <?php $subcats = get_terms('guide_cats', array ( 'parent' => $term->term_id, 'hide_empty' => false  )); ?>
@@ -102,6 +111,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 				        </form>
 						<div class="button green arrow small"><a class="subcat-cont disabled" href="#" data-cat-id="products-<?php echo $term->term_id; ?>">Continue<?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 					</div> <!-- sub-cat -->
+					<?php endif; ?>
 
 					<!-- STEP 3 - Products/Filters -->
 					<div class="cat-products" id="products-<?php echo $term->term_id; ?>">
@@ -227,13 +237,15 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 			</div> <!-- no-matches -->
 		</div> <!-- cat-icons -->
 		
+		<?php if ( wp_is_mobile() ) : ?>
 		<div class="show-for-small steps">
 			<div class="step step-3">
 				<h4>Not finding the perfect solution?</h4>
 				<p>We also provide flexible custom solutions for both small and large applications.</p>
 				<div class="button green arrow small"><a href="<?php echo get_field('contact_page'); ?>">Let us design it for you <?php get_template_part('assets/images/right', 'arrow.svg'); ?></a></div>
 			</div>
-		</div>			
+		</div>
+		<?php endif; ?>
 			
 		
 		<script>
