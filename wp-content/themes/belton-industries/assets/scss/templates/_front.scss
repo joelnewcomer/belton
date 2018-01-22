@@ -271,9 +271,10 @@ section.management {
 			top: 0;
 		}
 		background-size: cover !important;
-		background-position: center center;
+		background-position: center #7f7f7f;
 		@media only screen and (max-width: 40.063em) {
-			height: 255px;	
+			height: 255px;
+			background-size: 450px 255px !important;
 		}
 	}
 	.manage-right {

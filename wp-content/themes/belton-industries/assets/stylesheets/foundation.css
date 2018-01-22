@@ -3373,7 +3373,7 @@ section.history {
 section.management .manage-left {
   -webkit-background-size: cover !important;
           background-size: cover !important;
-  background-position: center center; }
+  background-position: center #7f7f7f; }
   @media only screen and (min-width: 40.063em) {
     section.management .manage-left {
       position: absolute;
@@ -3382,7 +3382,9 @@ section.management .manage-left {
       top: 0; } }
   @media only screen and (max-width: 40.063em) {
     section.management .manage-left {
-      height: 255px; } }
+      height: 255px;
+      -webkit-background-size: 450px 255px !important;
+              background-size: 450px 255px !important; } }
 
 section.management .manage-right {
   padding: 50px 85px 40px 40px; }
