@@ -175,9 +175,9 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 									if ($featured_id != null) {
 										$img_src = wp_get_attachment_image_src($featured_id, 'width=157&height=85&crop=1' );
 										// $img = wp_get_attachment_image( $featured_id, 'width=157&height=85&crop=1' );
-										$img = '<img data-aload="' .$img_src[0] . '" alt="' . get_the_title() . '">';
+										$img = '<img width="157" height"85" data-aload="' .$img_src[0] . '" alt="' . get_the_title() . '">';
 									} else {
-										$img = '<img data-aload="' . get_template_directory_uri() . '/assets/images/no-image.png" alt="No Photo">';
+										$img = '<img width="157" height"85" data-aload="' . get_template_directory_uri() . '/assets/images/no-image.png" alt="No Photo">';
 									}
 									?>
 									<?php echo $img; ?>
