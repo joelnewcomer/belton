@@ -3,8 +3,8 @@ Contributors: drumcreative
 Donate link: http://example.com/
 Tags: web maintenance, tutorial videos, contact information, advertisements
 Requires at least: 4.0
-Tested up to: 4.8.2
-Stable tag: 1.4.5
+Tested up to: 4.9.4
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,6 +29,24 @@ At Drum Creative we manage a lot of clients website. This plugin is an easy was 
 At Drum Creative we manage a lot of clients website. This plugin is an easy was to show clients how many hour of maintenance, where their website is hosted, and show who their account manager is. We also have a section where we can show tutorial videos that apply directly to the specific client. Last we can promote different services that we provide.
 
 == Changelog ==
+= 1.6.0 =
+* v1.6.0 - fixed the WP-Rest API to show account managers
+
+= 1.5.4 =
+* v1.5.4 - move code inside of the acf options if statement
+
+= 1.5.3 =
+* v1.5.3 - made changes to group_58f7a4dff04c7.json so it would sync with the hade coded fields
+
+= 1.5.2 =
+* v1.5.2 - made the dashboard plugin dependent on Advanced Custom Fields Pro plugin
+
+= 1.5.1 =
+* v1.5.1 - changed the if statement for videos to make it backwards compatible for vimeo
+
+= 1.5.0 =
+* v1.5.0 - changed the if statement
+
 = 1.4.5 =
 * v1.4.5 - adding str_replace() to search for share and replace with embed for loom videos
 
