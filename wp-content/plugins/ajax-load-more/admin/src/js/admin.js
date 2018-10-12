@@ -3,6 +3,9 @@ var _alm = _alm || {};
 jQuery(document).ready(function($) {
 	"use strict";
 	
+	_alm.options = {
+		speed: 200
+	};
 
 
    /*
@@ -86,8 +89,21 @@ jQuery(document).ready(function($) {
    	}, 500);
    	
    });
-
-
+   
+   
+   
+   /*
+   *  Download Repeater Template
+   *  Trigger the download of a repeater template from the admin
+   *
+   *  @since 3.6
+   */
+   
+   $('.download-repeater').on('click', function(e){
+	   let el = this;
+	   el.closest('form').submit();	   
+   });
+   
 
 
 	/*
@@ -199,32 +215,65 @@ jQuery(document).ready(function($) {
    *  @since 2.0.0
    */
 
-	$(document).on('click', 'h3.heading', function(){
+	$(document).on('click', 'h2.shortcode-title', function(){
 		var el = $(this);
-		if($(el).hasClass('open')){
-			$(el).next('.expand-wrap').slideDown(100, 'alm_easeInOutQuad', function(){
-				$(el).removeClass('open');
+		var parent = el.closest('.shortcode-parameter-wrap');
+		if(el.hasClass('open')){
+			el.next('.section-wrap').slideDown(_alm.options.speed, 'alm_easeInOutQuad', function(){
+				el.removeClass('open');
+				parent.removeClass('closed'); 
 			});
 		}else{
-			$(el).next('.expand-wrap').slideUp(100, 'alm_easeInOutQuad', function(){
-				$(el).addClass('open');
+			el.next('.section-wrap').slideUp(_alm.options.speed, 'alm_easeInOutQuad', function(){
+				el.addClass('open');
+				parent.addClass('closed');
 			});
 		}
 	});
+	
+	$(document).on('click', 'h3.heading', function(){
+		var el = $(this);
+		if($(el).hasClass('open')){
+			$(el).next('.expand-wrap').slideDown(_alm.options.speed, 'alm_easeInOutQuad', function(){
+				$(el).removeClass('open');
+			});
+		}else{
+			$(el).next('.expand-wrap').slideUp(_alm.options.speed, 'alm_easeInOutQuad', function(){
+				$(el).addClass('open');
+			});
+		}
+	}); 
 
 	$(document).on('click', '.toggle-all', function(){
       var el = $(this),
       	 type = el.data('id');
-		if($(el).hasClass('closed')){
-		   $(el).removeClass('closed');
-         $('h3.heading').removeClass('open');
-			$('.expand-wrap').slideDown(100, 'alm_easeInOutQuad');
+		if(el.hasClass('closed')){
+		   el.removeClass('closed');
+		   
+		   $('h2.shortcode-title').closest('.shortcode-parameter-wrap').removeClass('closed');
+         $('h3.heading, h2.shortcode-title').removeClass('open');
+			$('.section-wrap').slideDown(_alm.options.speed, 'alm_easeInOutQuad');			
+			$('.expand-wrap').slideDown(_alm.options.speed, 'alm_easeInOutQuad');
+			
 		}else{
-		   $(el).addClass('closed');
-         $('h3.heading').addClass('open');
-			$('.expand-wrap').slideUp(100, 'alm_easeInOutQuad');
+		   el.addClass('closed');
+		   
+		   $('h2.shortcode-title').closest('.shortcode-parameter-wrap').addClass('closed');
+         $('h3.heading, h2.shortcode-title').addClass('open');
+			$('.section-wrap').slideUp(_alm.options.speed, 'alm_easeInOutQuad');
+			$('.expand-wrap').slideUp(_alm.options.speed, 'alm_easeInOutQuad');
 		}
    });
+   
+   
+   // Trigger click events on enter/return
+	$('h3.heading, h2.shortcode-title').keypress(function (e) {
+	var key = e.which;
+		if(key == 13){  // the enter key code
+			$(this).click();
+			return false;  
+		}
+	});   
 
 
    /*
@@ -272,8 +321,6 @@ jQuery(document).ready(function($) {
 
 	   		success: function(data) {
 
-		   		//console.log(data);
-
 		   		if(data.msg){
 			   		$('.license-btn-wrap', parent).append('<div class="msg">'+data.msg+'</div>');
 		   		}
@@ -304,14 +351,12 @@ jQuery(document).ready(function($) {
 	   		}
 	   	});
    	}
-
    });
 
 
 
    /*
    *  Get layout value Ajax
-   *
    *  @since 2.8.7
    */
    $(document).on('click', '.alm-layout-selection li a.layout', function(e){
@@ -378,10 +423,9 @@ jQuery(document).ready(function($) {
 
    /*
    *  Dismiss Sharing (Transient)
-   *
    *  @since 2.8.7
    */
-   $(document).on('click', '#alm_dismiss_sharing', function(e){
+   $(document).on('click', '.alm-notification--dismiss', function(e){
       e.preventDefault();
       var el = $(this),
           container = el.parent('.group');
@@ -408,7 +452,6 @@ jQuery(document).ready(function($) {
 
    /*
    *  Scroll to setting section
-   *
    *  @since 2.7.3
    */
 
@@ -423,57 +466,6 @@ jQuery(document).ready(function($) {
 			}, 500);
 		}
 	});
-
-
-
-   /*
-   *  equalheight()
-   *
-   *  @since 2.7.3
-   */
-
-   function equalheight(container){
-
-      var currentTallest = 0,
-          currentRowStart = 0,
-          rowDivs = [],
-          $el,
-          topPosition = 0;
-          
-       $(container).each(function() {
-         $el = $(this);
-         $($el).height('auto');
-         topPosition = $el.position().top;
-
-         if (currentRowStart != topPosition) {
-           for (var currentDiv = 0 ; currentDiv < rowDivs.length ; currentDiv++) {
-             rowDivs[currentDiv].height(currentTallest);
-           }
-           rowDivs.length = 0; // empty the array
-           currentRowStart = topPosition;
-           currentTallest = $el.height();
-           rowDivs.push($el);
-         } else {
-           rowDivs.push($el);
-           currentTallest = (currentTallest < $el.height()) ? ($el.height()) : (currentTallest);
-        }
-         for (var currentDivs = 0 ; currentDivs < rowDivs.length ; currentDivs++) {
-           rowDivs[currentDivs].height(currentTallest);
-         }
-       });
-   }
-   if($('#alm-add-ons').length){
-      var addOnColumns = $('#alm-add-ons .group .expand-wrap');
-      $(window).load(function() {
-         //equalheight(addOnColumns);
-      });
-      $(window).resize(function() {
-         setTimeout(function(){
-            //equalheight(addOnColumns);
-         }, 500);
-      });
-   }
-
 
 
 });

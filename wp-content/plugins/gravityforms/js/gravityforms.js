@@ -735,6 +735,37 @@ function gformPasswordStrength(password1, password2) {
 
 }
 
+//----------------------------
+//------ CHECKBOX FIELD ------
+//----------------------------
+
+function gformToggleCheckboxes( toggleCheckbox ) {
+
+	var $toggle      = jQuery( toggleCheckbox ).parent(),
+	    $toggleLabel = $toggle.find( 'label' );
+	    $checkboxes  = $toggle.parent().find( 'li:not( .gchoice_select_all )' );
+
+	// Set checkboxes state.
+	$checkboxes.each( function() {
+
+		// Set checkbox checked state.
+		jQuery( 'input[type="checkbox"]', this ).prop( 'checked', toggleCheckbox.checked ).trigger( 'change' );
+
+		// Execute onclick event.
+		if ( typeof jQuery( 'input[type="checkbox"]', this )[0].onclick === 'function' ) {
+			jQuery( 'input[type="checkbox"]', this )[0].onclick();
+		}
+
+	} );
+
+	// Change toggle label.
+	if ( toggleCheckbox.checked ) {
+		$toggleLabel.html( $toggleLabel.data( 'label-deselect' ) );
+	} else {
+		$toggleLabel.html( $toggleLabel.data( 'label-select' ) );
+	}
+
+}
 
 
 //----------------------------
@@ -781,7 +812,7 @@ function gformDeleteListItem( deleteButton, max ) {
 
     gformToggleIcons( $container, max );
     gformAdjustClasses( $container );
- 
+
     gform.doAction( 'gform_list_post_item_delete', $container );
 
 }
@@ -1356,33 +1387,33 @@ function gformValidateFileSize( field, max_file_size ) {
 	} else {
 		validation_element = jQuery( field ).siblings( '.validation_message' );
 	}
-	
-	
+
+
 	// If file API is not supported within browser, return.
 	if ( ! window.FileReader || ! window.File || ! window.FileList || ! window.Blob ) {
 		return;
 	}
-	
+
 	// Get selected file.
 	var file = field.files[0];
-	
+
 	// If selected file is larger than maximum file size, set validation message and unset file selection.
 	if ( file && file.size > max_file_size ) {
 
 		// Set validation message.
 		validation_element.text( file.name + " - " + gform_gravityforms.strings.file_exceeds_limit );
-		
+
 		// Unset file selection.
 		var input = jQuery( field );
 		input.replaceWith( input.val( '' ).clone( true ) );
 
 	} else {
-		
+
 		// Reset validation message.
 		validation_element.text( '' );
-		
+
 	}
-	
+
 }
 
 //----------------------------------------
@@ -1476,6 +1507,10 @@ function gformValidateFileSize( field, max_file_size ) {
 
         uploader.init();
 
+		uploader.bind('BeforeUpload', function(up, file){
+			up.settings.multipart_params.original_filename = file.name;
+		});
+
         uploader.bind('FilesAdded', function(up, files) {
             var max = parseInt(up.settings.gf_vars.max_files),
                 fieldID = up.settings.multipart_params.field_id,
@@ -1516,6 +1551,8 @@ function gformValidateFileSize( field, max_file_size ) {
 
                 $('#' + up.settings.filelist).prepend(status);
                 totalCount++;
+
+
 
             });
 
@@ -1570,7 +1607,20 @@ function gformValidateFileSize( field, max_file_size ) {
             up.refresh(); // Reposition Flash
         });
 
+		uploader.bind('ChunkUploaded', function(up, file, result) {
+			var response = $.secureEvalJSON(result.response);
+			if(response.status == "error"){
+				up.removeFile(file);
+				addMessage(up.settings.gf_vars.message_id, file.name + " - " + response.error.message);
+				$('#' + file.id ).html('');
+			}
+		});
+
         uploader.bind('FileUploaded', function(up, file, result) {
+			if( ! up.getFile(file.id) ) {
+				// The file has been removed from the queue.
+				return;
+			}
             var response = $.secureEvalJSON(result.response);
             if(response.status == "error"){
                 addMessage(up.settings.gf_vars.message_id, file.name + " - " + response.error.message);
@@ -1595,11 +1645,9 @@ function gformValidateFileSize( field, max_file_size ) {
 
             $( '#' + file.id ).html( html );
 
-            var fieldID = up.settings.multipart_params["field_id"];
-
             if(file.percent == 100){
                 if(response.status && response.status == 'ok'){
-                    addFile(fieldID, response.data);
+                    addFile(fieldId, response.data);
                 }  else {
                     addMessage(up.settings.gf_vars.message_id, strings.unknown_error + ': ' + file.name);
                 }
@@ -1712,7 +1760,6 @@ function gformAddSpinner(formId, spinnerUrl) {
 
 }
 
-
 //----------------------------------------
 //------ EVENT FUNCTIONS -----------------
 //----------------------------------------
@@ -1792,6 +1839,42 @@ function gformExtractInputIndex( inputId ) {
     var inputIndex = parseInt( inputId.toString().split( '.' )[1] );
     return ! inputIndex ? false : inputIndex;
 }
+
+jQuery( document ).on( 'submit.gravityforms', '.gform_wrapper form', function( event ) {
+
+	var formWrapper = jQuery( this ).closest( '.gform_wrapper' ),
+		formID = formWrapper.attr( 'id' ).split( '_' )[ 2 ],
+		hasPages = formWrapper.find( '.gform_page' ).length > 0,
+		sourcePage = formWrapper.find( 'input[name^="gform_source_page_number_"]' ).val(),
+		targetPage = formWrapper.find( 'input[name^="gform_target_page_number_"]' ).val(),
+		isSubmit = targetPage === '0',
+		isNextSubmit = ! isSubmit && ( targetPage > sourcePage ),
+		isSave = jQuery( '#gform_save_' + formID ).val() === '1',
+		submitButton;
+
+	// Get the next or submit button.
+	if ( hasPages ) {
+		// Get the visible page.
+		var visiblePage = formWrapper.find( '.gform_page:visible' ),
+			buttonType = isNextSubmit ? 'next' : 'submit';
+
+		submitButton = visiblePage.find( '.gform_page_footer [id^="gform_' + buttonType + '_button_"]' );
+	} else {
+		submitButton = formWrapper.find( '#gform_submit_button_' + formID );
+	}
+
+	var isButtonHidden = ! submitButton.is(':visible'),
+		abortSubmission = ! isSave && ( isSubmit || isNextSubmit ) && isButtonHidden;
+
+	// If we are not saving or returning to an earlier page and the next/submit button is hidden abort the submission.
+	if ( abortSubmission ) {
+		window[ 'gf_submitting_' + formID ] = false;
+		formWrapper.find( '.gform_ajax_spinner' ).remove();
+		event.preventDefault();
+	}
+
+} );
+
 
 
 //----------------------------------------

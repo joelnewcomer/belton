@@ -1,6 +1,6 @@
 <?php if(has_action('alm_filters_installed')){ ?>
 <div class="row input filters add-on" id="alm-filters">
-   <h3 class="heading"><?php _e('Filters', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('Filters', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
 		 	<p><?php _e('Enable filters with this Ajax Load More instance.', 'ajax-load-more'); ?></p>

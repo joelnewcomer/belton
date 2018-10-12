@@ -68,6 +68,8 @@ This plugin is financed by sales of the [Pro Addon](https://nextgenthemes.com/pl
 
 ### [Pro Addon](https://nextgenthemes.com/plugins/arve-pro/) ###
 
+Limited time price experiment: **44% off** first year with discount code `wporg`
+
 *   **Disable links in embeds (killer feature!)**<br>
     For example: Clicking on a title in a YouTube embed will not open a new popup/tab/window. **Prevent video hosts to lead your visitors away from your site!** Note this also breaks sharing functionality and is not possible when the provider requires flash. Try it on [this page](https://nextgenthemes.com/plugins/arve-pro/). Right click on links still works.
 *   **Lazyload mode**<br>
@@ -155,6 +157,36 @@ This plugins embed is considered as 'custom player' by YouTube so you have to pa
 
 * [ARVE Pro addon changelog](https://nextgenthemes.com/plugins/arve-pro/changelog/)
 * [ARVE AMP addon changelog](https://nextgenthemes.com/plugins/arve-amp/)
+
+### 2018-08-18 - 8.9.8 ###
+
+* Updated EDD Plugin update class, this may fix some people having trouble auto updating ARVE Pro
+* Fix: Licensing page no longer shows plugins wrongly as not installed.
+
+### 2018-07-22 - 8.9.6 ###
+
+* New: Option to enable or disable youtube-nocookie.com embeds. It a privacy enhanced feature but it has at least one bug when setting highlighted video boxes they will open the wrong url so in case you need them you have to disable this.
+
+### 2018-06-07 - 8.9.5 ###
+
+* Fixed: When pasting embed codes into the Shortcode UI dialog the `src=` will be extracted even when no quotes are used.
+* Improved: Use youtube-nocookie.com domain again it is GPRP/Privacy friendly. Note the name is confusing as it sets cookies, but only when the user plays the video rather then just when loading the iframe. So its not "no cookies". But you can mention this into your cookie notices when dealing with GPRP.
+
+### 2018-06-02 - 8.9.4 ###
+
+* Improved: Try to make autoplay in Chrome possible again. See [New Chrome Autoplay behavior](https://developers.google.com/web/updates/2017/09/autoplay-policy-changes). At the point of writing its not clear if the new iframe attribute makes them just autoplay no matter what. Please report your experiences.
+
+### 2018-04-29 - 8.9.3 ###
+
+* Improved: Make overwrite of shortcode possible. Used in new [Random Video Addon](https://nextgenthemes.com/plugins/arve-random-video/)
+
+### 2018-04-18 - 8.9.2 ###
+
+* Fix possible "not a string" errors.
+
+### 2018-04-12 - 8.9.1 ###
+
+* New: Option to always load assets. Needed when dealing with AJAX and other special cases.
 
 ### 2018-03-16 - 8.9.0 ###
 

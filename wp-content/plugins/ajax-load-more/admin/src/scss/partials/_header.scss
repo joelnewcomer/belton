@@ -3,12 +3,16 @@
 	padding: $gutter $gutter $gutter/2;
 	background: #f7f7f7;
 	border-bottom: 1px solid #e1e1e1;
+	position: relative;
+	z-index: 1;
+	box-shadow: 0 1px 12px 2px rgba(0, 0, 0, 0.045);
 	h1{
 		padding: 0 0 0 58px;
 		min-height: 48px;
 		padding-top: 0;
 		background: url('../../img/alm-logo-48x48.png') no-repeat 0 0;
 		background: url('../../img/alm-logo-48x48.svg') no-repeat 0 0;
+		font-size: 22px;
 		em{
 	   	display: block;
 	   	position: relative;

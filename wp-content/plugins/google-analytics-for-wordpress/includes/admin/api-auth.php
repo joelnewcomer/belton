@@ -35,6 +35,9 @@ final class MonsterInsights_API_Auth {
 
 		add_action( 'admin_init',          							 array( $this, 'authenticate_listener' ) );
 		add_action( 'admin_init',          							 array( $this, 'reauthenticate_listener' ) );
+
+		add_action( 'wp_ajax_nopriv_monsterinsights_is_installed',    array( $this, 'is_installed' ) );
+		add_action( 'wp_ajax_nopriv_monsterinsights_rauthenticate',   array( $this, 'authenticate' ) );
 	}
 
 	public function get_tt(){
@@ -46,7 +49,7 @@ final class MonsterInsights_API_Auth {
 		}
 		return $tt;
 	}
-	
+
 	public function rotate_tt(){
 		$tt = $this->generate_tt();
 		is_network_admin() ? update_site_option( 'monsterinsights_network_tt', $tt ) : update_option( 'monsterinsights_site_tt', $tt );
@@ -59,6 +62,15 @@ final class MonsterInsights_API_Auth {
 	public function validate_tt( $passed_tt = '' ) {
 		$tt = $this->get_tt();
 		return hash_equals( $tt, $passed_tt );
+	}
+
+	public function is_installed() {
+		wp_send_json_success(
+			array(
+				'version'   => MONSTERINSIGHTS_VERSION,
+				'pro'   	=> monsterinsights_is_pro_version(),
+			)
+		);
 	}
 
 	public function maybe_authenticate(){
@@ -88,10 +100,15 @@ final class MonsterInsights_API_Auth {
 			wp_send_json_error( array(	'message' => __( "Cannot network authenticate. Please re-authenticate on the network settings panel.", 'google-analytics-for-wordpress' ) ) );
 		}
 
+		$sitei = $this->get_sitei();
+		//update_network_option(  get_current_network_id(), 'monsterinsights_network_sitei', $sitei );
+
 		$siteurl = add_query_arg( array(
 			'tt'        => $this->get_tt(),
-			'sitei'     => $this->get_sitei(),
+			'sitei'     => $sitei,
 			'miversion' => MONSTERINSIGHTS_VERSION,
+			'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+			'network'   => is_network_admin() ? 'network' : 'site',
 			'siteurl'   => is_network_admin() ? network_admin_url() : site_url(),
 			'return'    => is_network_admin() ? network_admin_url( 'admin.php?page=monsterinsights_network' ) : admin_url( 'admin.php?page=monsterinsights_settings' ),
 		 ), $this->get_route( 'https://' . monsterinsights_get_api_url() . 'auth/new/{type}' ) );
@@ -105,13 +122,93 @@ final class MonsterInsights_API_Auth {
 		wp_send_json_success( array( 'redirect' => $siteurl ) );
 	}
 
+	public function authenticate() {
+		// Check for missing params
+		$reqd_args = array( 'key', 'token', 'ua', 'miview', 'a', 'w', 'p', 'tt', 'network' );
+		foreach ( $reqd_args as $arg ) {
+			if ( empty( $_REQUEST[$arg] ) ) {
+				wp_send_json_error(
+					array(
+						'error'   => 'authenticate_missing_arg',
+						'message' => 'Authenticate missing parameter: ' . $arg,
+						'version'   => MONSTERINSIGHTS_VERSION,
+						'pro'   	=> monsterinsights_is_pro_version(),
+					)
+				);
+			}
+		}
+
+		if ( ! $this->validate_tt( $_REQUEST['tt'] ) ) {
+			wp_send_json_error(
+				array(
+					'error'   => 'authenticate_invalid_tt',
+					'message' => 'Invalid TT sent',
+					'version'   => MONSTERINSIGHTS_VERSION,
+					'pro'   	=> monsterinsights_is_pro_version(),
+				)
+			);
+		}
+
+		// Invalid UA code
+		$ua = monsterinsights_is_valid_ua( $_REQUEST['ua'] );
+		if ( empty( $ua ) ) {
+			wp_send_json_error(
+				array(
+					'error'   => 'authenticate_invalid_ua',
+					'message' => 'Invalid UA code sent',
+					'version'   => MONSTERINSIGHTS_VERSION,
+					'pro'   	=> monsterinsights_is_pro_version(),
+				)
+			);
+		}
+
+		$profile = array( 
+			'key'      => sanitize_text_field( $_REQUEST['key'] ),
+			'token'    => sanitize_text_field( $_REQUEST['token'] ),
+			'ua'       => monsterinsights_is_valid_ua( $_REQUEST['ua'] ),
+			'viewname' => sanitize_text_field( $_REQUEST['miview'] ),
+			'a'        => sanitize_text_field( $_REQUEST['a'] ),
+			'w'        => sanitize_text_field( $_REQUEST['w'] ),
+			'p'        => sanitize_text_field( $_REQUEST['p'] ),
+			'siteurl'  => site_url(),
+			'neturl'   => network_admin_url(),
+		);
+
+		$worked = $this->verify_auth( $profile );
+		if ( ! $worked ) {
+			wp_send_json_error(
+				array(
+					'error'     => 'authenticate_auth_verification_failed',
+					'message'   => 'Authenticate verification failed',
+					'version'   => MONSTERINSIGHTS_VERSION,
+					'pro'   	=> monsterinsights_is_pro_version(),
+				)
+			);
+		}
+
+		// Rotate tt
+		$this->rotate_tt();
+
+		// Save Profile
+		$is_network = $_REQUEST['network'] === 'network';
+		if ( $is_network ) {
+			MonsterInsights()->auth->set_network_analytics_profile( $profile );
+		} else {
+			MonsterInsights()->auth->set_analytics_profile( $profile );
+		}
+
+		// Clear cache
+		$where = $is_network ? 'network' : 'site';
+		MonsterInsights()->reporting->delete_aggregate_data( $where );
+
+		wp_send_json_success();
+	}
 
 	public function authenticate_listener(){
 		// Make sure it's for us
 		if ( empty( $_REQUEST['mi-oauth-action'] ) || $_REQUEST['mi-oauth-action'] !== 'auth' ) {
 			return;
 		}
-
 
 		// User can authenticate
 		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
@@ -149,6 +246,8 @@ final class MonsterInsights_API_Auth {
 			'a'        => sanitize_text_field( $_REQUEST['a'] ), // AccountID
 			'w'        => sanitize_text_field( $_REQUEST['w'] ), // PropertyID
 			'p'        => sanitize_text_field( $_REQUEST['p'] ), // View ID
+			'siteurl'  => site_url(),
+			'neturl'   => network_admin_url(),
 		);
 
 		$worked = $this->verify_auth( $profile );
@@ -206,6 +305,8 @@ final class MonsterInsights_API_Auth {
 			'tt'        => $this->get_tt(),
 			'sitei'     => $this->get_sitei(),
 			'miversion' => MONSTERINSIGHTS_VERSION,
+			'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+			'network'   => is_network_admin() ? 'network' : 'site',
 			'siteurl'   => is_network_admin() ? network_admin_url() : site_url(),
 			'key'       => MonsterInsights()->auth->get_key(),
 			'token'     => MonsterInsights()->auth->get_token(),
@@ -269,6 +370,8 @@ final class MonsterInsights_API_Auth {
 			'a'        => sanitize_text_field( $_REQUEST['a'] ),
 			'w'        => sanitize_text_field( $_REQUEST['w'] ),
 			'p'        => sanitize_text_field( $_REQUEST['p'] ),
+			'siteurl'  => site_url(),
+			'neturl'   => network_admin_url(),
 		);
 
 		// Rotate tt
@@ -394,6 +497,21 @@ final class MonsterInsights_API_Auth {
 			return false;
 		}
 
+		// If we have a new siteurl enabled option and the profile site doesn't match the current site, deactivate anyways
+		if ( is_network_admin() ) {
+			$siteurl = network_admin_url();
+			if ( ! empty( $creds['neturl' ] ) && $creds['neturl'] !== $siteurl ) {
+				MonsterInsights()->auth->delete_network_analytics_profile( true );
+				return true;
+			}
+		} else {
+			$siteurl = site_url();
+			if ( ! empty( $creds['siteurl' ] ) && $creds['siteurl'] !== $siteurl ) {
+				MonsterInsights()->auth->delete_analytics_profile( true );
+				return true;
+			}
+		}
+
 		$api   = new MonsterInsights_API_Request( $this->get_route( 'auth/delete/{type}/' ), array( 'network' => $this->is_network_admin(), 'tt' => $this->get_tt(), 'key' => $creds['key'], 'token' => $creds['token'] ) );
 		$ret   = $api->request();
 
@@ -425,6 +543,11 @@ final class MonsterInsights_API_Auth {
 	}
 
 	public function get_sitei() {
+		// $sitei = get_network_option(  get_current_network_id(), 'monsterinsights_network_sitei', false );
+		// if ( ! empty( $sitei ) && strlen( $sitei ) >= 1 ) {
+		// 	return $sitei;
+		// }
+
 		$auth_key        = defined( 'AUTH_KEY' )        ? AUTH_KEY 		  : '';
 		$secure_auth_key = defined( 'SECURE_AUTH_KEY' ) ? SECURE_AUTH_KEY : '';
 		$logged_in_key   = defined( 'LOGGED_IN_KEY' )   ? LOGGED_IN_KEY   : '';

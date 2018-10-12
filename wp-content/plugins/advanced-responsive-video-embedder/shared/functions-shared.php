@@ -3,18 +3,20 @@
 function arve_get_options_defaults( $section ) {
 
 	$options['main'] = array(
-		'align_maxwidth'      => 400,
-		'align'               => 'none',
-		'autoplay'            => false,
-		'mode'                => 'normal',
-		'promote_link'        => false,
-		'video_maxwidth'      => '',
-		'wp_image_cache_time' => 18000,
-		'last_settings_tab'   => '',
-		'wp_video_override'   => true,
-		'controlslist'        => 'nodownload',
-		'vimeo_api_token'     => '',
-		'iframe_flash'        => true,
+		'align_maxwidth'        => 400,
+		'align'                 => 'none',
+		'always_enqueue_assets' => false,
+		'autoplay'              => false,
+		'mode'                  => 'normal',
+		'promote_link'          => false,
+		'video_maxwidth'        => '',
+		'wp_image_cache_time'   => 18000,
+		'last_settings_tab'     => '',
+		'wp_video_override'     => true,
+		'controlslist'          => 'nodownload',
+		'vimeo_api_token'       => '',
+		'iframe_flash'          => true,
+		'youtube_nocookie'      => true,
 	);
 
 	$properties = arve_get_host_properties();
@@ -90,7 +92,7 @@ function arve_get_settings_definitions() {
 		$current_mode_name = $options['mode'];
 	}
 
-	return array(
+	$definitions = array(
 		array(
 			'hide_from_settings' => true,
 			'attr'  => 'url',
@@ -358,13 +360,45 @@ function arve_get_settings_definitions() {
 			),
 		),
 		array(
+			'hide_from_sc' => true,
+			'attr'               => 'always_enqueue_assets',
+			'label'              => esc_html__( 'Assent loading', ARVE_SLUG ),
+			'type'               => 'select',
+			'options'            => array(
+				'no'              => esc_html__( 'When ARVE video is detected', ARVE_SLUG ),
+				'yes'             => esc_html__( 'Always', ARVE_SLUG ),
+			),
+			'description'        => sprintf(
+				__( 'Usually ARVE will loads its scripts and styles only on pages what need them. In case your content is loaded via AJAX or the styles are not loaded for another reason you may have to enable this option', ARVE_SLUG ),
+				'https://nextgenthemes.com/plugins/arve-pro/#support-table'
+			),
+		),
+		array(
+			'hide_from_sc' => true,
+			'attr'               => 'youtube_nocookie',
+			'label'              => esc_html__( 'Use youtube-nocookie.com url?', ARVE_SLUG ),
+			'type'               => 'select',
+			'options'            => array(
+				'yes'             => esc_html__( 'Yes', ARVE_SLUG ),
+				'no'              => esc_html__( 'No', ARVE_SLUG ),
+			),
+			'description'        => esc_html__( 'Privacy enhanced mode, will NOT disable cookies but only sets them when a user starts to play a video. There is currently a youtube bug that opens highlighed video boxes with a wrong -nocookie.com url so you need to disble this if you need those.' ),
+		),
+		array(
 			'hide_from_sc'       => true,
 			'attr'               => 'vimeo_api_token',
 			'label'              => esc_html__( 'Video API Token', ARVE_SLUG ),
 			'type'               => 'text',
-			'description'        => esc_html__( 'Leave blank for now.', ARVE_SLUG ),
+			'description'        => sprintf(
+				__( 'Needed for <a href="%s">Random Video Addon</a>.', ARVE_SLUG ),
+				'https://nextgenthemes.local/plugins/arve-random-video/'
+			),
 		),
 	);
+
+	$definitions = apply_filters( 'arve_settings_definitions', $definitions );
+
+	return $definitions;
 }
 
 	/**
@@ -631,7 +665,8 @@ function arve_get_host_properties() {
 			'tests' => array(
 				array(
 					'url' => 'https://www.kickstarter.com/projects/obsidian/project-eternity?ref=discovery',
-					'id'  =>                                      'obsidian/project-eternity' ),
+					'id'  =>                                      'obsidian/project-eternity'
+				),
 				array(
 					'url' => 'https://www.kickstarter.com/projects/trinandtonic/friendship-postcards?ref=category_featured',
 					'id'  =>                                      'trinandtonic/friendship-postcards'
@@ -674,8 +709,8 @@ function arve_get_host_properties() {
 			'url'            => true,
 			'auto_thumbnail' => false,
 			'tests' => array(
-				array( 'url' => 'http://www.klagemauer.tv/9106', 'id' =>  9106 ),
-				array( 'url' => 'http://www.kla.tv/9122',        'id' =>  9122 ),
+				array( 'url' => 'http://www.klagemauer.tv/9106', 'id' => 9106 ),
+				array( 'url' => 'http://www.kla.tv/9122', 'id' => 9122 ),
 			),
 		),
 		'metacafe' => array(
@@ -703,7 +738,7 @@ function arve_get_host_properties() {
 			'auto_thumbnail' => true,
 			'tests' => array(
 				array( 'url' => 'http://mpora.com/videos/AAdphry14rkn', 'id' => 'AAdphry14rkn' ),
-				array( 'url' => 'http://mpora.de/videos/AAdpxhiv6pqd',  'id' => 'AAdpxhiv6pqd' ),
+				array( 'url' => 'http://mpora.de/videos/AAdpxhiv6pqd', 'id' => 'AAdpxhiv6pqd' ),
 			)
 		),
 		'myspace' => array(

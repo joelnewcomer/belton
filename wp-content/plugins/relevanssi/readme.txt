@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.7
+Stable tag: 4.1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,7 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * Highlight search terms in the documents when user clicks through search results.
 * Search comments, tags, categories and custom fields.
 * Multisite friendly.
+* bbPress support.
 
 = Advanced features =
 * Adjust the weighting for titles, tags and comments.
@@ -43,7 +44,7 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * Disable indexing of post content and post titles with a simple filter hook.
 
 = Premium features (only in Relevanssi Premium) =
-* Indexing PDF content.
+* Indexing attachment content (PDF, Office, Open Office).
 * Improved spelling correction in "Did you mean?" suggestions.
 * Searching across multiple sites in the same multisite installation.
 * Search and index user profiles.
@@ -129,35 +130,59 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
-= 4.0.7 =
-* Recent post bonus is now applied to searches.
-* Exact term setting can now be disabled.
-* Users of Members plugin would have drafts appear in search results. This is now fixed.
+= 4.1.0.1 =
+* Actually working admin search.
 
-= 4.0.6 =
-* Indexing bugs squashed.
-* Missing tag and category weight settings returned.
-* Fusion builder shortcodes are removed from excerpts.
-* MemberPress post control was backwards.
-* User searches page reset buttons fixed.
-* WPML language filter fix.
+= 4.1 =
+* New feature: You can now export the search log as a CSV file.
+* New feature: Admin Search page allows you to perform searches in WP admin using Relevanssi.
+* New filter: `relevanssi_admin_search_capability` can be used to adjust who sees the admin search page.
+* New filter: `relevanssi_entities_inside_pre` and `relevanssi_entities_inside_code` adjust how HTML entities are handled inside `pre` and `code` tags.
+* Numeric meta values (`meta_value_num`) are now sorted as numbers and not strings.
+* Pinned posts have `$post->relevanssi_pinned` set to 1 for debugging purposes, but you can also use this for styling the posts in the search results templates.
+* The Did you mean feature has been toned down a bit, to make the suggestions slightly less weird in some cases.
+* Post parent parameters now accept 0 as a value, making it easier to search for children of any post or posts without a parent.
+* Polylang compatibility has been improved.
+* Phrases with apostrophes inside work better.
+* The `relevanssi_excerpt` filter hook got a second parameter that holds the post ID.
+* Custom field sorting actually works now.
+* WP Search Suggest compatibility added.
 
-= 4.0.5 =
-* Relevanssi code has been reviewed and modified to follow WordPress coding standards. As a result, there have been minor improvements all around the code to make things more robust and secure.
-* Custom field detail is no longer serialized. It's now JSON. If you use custom field detail, rebuild the index and change your code to use json_decode() instead of unserialize().
-* `relevanssi_the_tags()` and `relevanssi_get_the_tags()` now have different set of parameters, more in line with `the_tags()` and `get_the_tags()`.
-* Taxonomy indexing settings were emptied out if you saved another options tab. That is now fixed.
-* Improvements to WPML support; WPML is now less likely to be confused in multisite searches.
-* Updated filter: `relevanssi_search_ok` now gets the WP_Query object as a parameter, which is helpful if you're not using the global $wp_query.
-* ACF Flexible Content field indexing didn't work properly, possibly due to a change in ACF. That should now work better.
+= 4.0.11 =
+* Home page links were getting the highlight parameter even though they shouldn't. This has been fixed.
+* Added support for WP JV Post Reading Groups.
+* Improved handling of HTML entities.
+* Events Made Easy Calendar shortcodes are now removed when building excerpts.
+* `set_time_limit()` was removed from the indexing; it's no longer necessary, and it can break the indexing on sites that don't allow the use of the function.
+* `relevanssi_post_title_before_tokenize` filter was moved a bit so that it's the last thing that runs before tokenizing.
+* Disabled shortcodes are handled better in the indexing: the shortcode names won't be indexed anymore like they were before.
+* Made sure there won't be a warning for non-numeric values when searching.
+* New filter: `relevanssi_clean_excerpt` lets you remove unwanted highlights from excerpts.
+* Highlighting works better with `pre` and `code` tags.
+* New filter: `relevanssi_comment_author_to_index` lets you filter comment author names before indexing.
+* `relevanssi_comment_content_to_index` doesn't include the comment author name anymore.
+
+= 4.0.10.1 =
+* The privacy features caused an error notice with certain Relevanssi configurations, and the plugin required WP 4.9.6.
+
+= 4.0.10 =
+* Privacy: If you log search queries, Relevanssi will suggest some additional content to your privacy policy page.
+* Privacy: Relevanssi now supports the new Privacy Policy and Personal Data tools in WordPress 4.9.6.
+* Saving synonyms with quotes worked, but the synonyms showed up wrong.
+* Relevanssi could in some situations override navigation menu links with links to the user profiles or taxonomy terms found in the search. This update fixes that behaviour.
+* Random order works again; using orderby `rand` didn't work properly. The `rand(seed)` format is also supported now.
+* Fixed quotes and apostrophes in Did you mean suggestions.
 
 == Upgrade notice ==
 
-= 4.0.7 =
-* Small bug fixes.
+= 4.1 =
+* New features and plenty of small fixes.
 
-= 4.0.6 =
-* Indexing bugs fixed and WPML support corrected.
+= 4.0.11 =
+* Several small improvements, new filters and highlighting fixes.
 
-= 4.0.5 =
-* Codebase review, lots of small improvements everywhere.
+= 4.0.10.1 =
+* Privacy feature bug fix.
+
+= 4.0.10 =
+* Privacy update, with some bug fixes.

@@ -2,7 +2,7 @@
 
 // EXAMPLES TO USE ACTIONS AND FILTERS
 // For help about this file, check:
-// http://meowapps.com/media-file-renamer/faq/
+// https://meowapps.com/media-file-renamer/faq/
 
 // HANDLE THE RENAMING
 // $new is the proposed filename by Media File Renamer (without extension)
@@ -31,7 +31,8 @@
 // function url_of_media_was_modified( $post, $orig_image_url, $new_image_url ) {
 //   global $wpdb;
 //   $query = $wpdb->prepare( "UPDATE $wpdb->postmeta SET meta_value = REPLACE(meta_value, '%s', '%s');", $orig_image_url, $new_image_url );
-//   $query_revert = $wpdb->prepare( "UPDATE $wpdb->postmeta SET meta_value = REPLACE(meta_value, '%s', '%s');", $new_image_url, $orig_image_url );
+//   $query_revert = $wpdb->prepare( "UPDATE $wpdb->postmeta 
+//     SET meta_value = REPLACE(meta_value, '%s', '%s');", $new_image_url, $orig_image_url );
 //   $wpdb->query( $query );
 //   $this->log_sql( $query, $query_revert );
 //   $this->log( "Metadata like $orig_image_url were replaced by $new_image_url." );
@@ -43,6 +44,29 @@
 //
 // function filepath_of_media_was_modified( $post, $orig_image_url, $new_image_url ) {
 //   $original_filename = get_post_meta( $post['ID'], '_original_filename', true );
+// }
+// =============================================================================
+
+// RENAME THE IMAGES IN A WOOCOMMERCE PRODUCT GALLERY EVERY TIME THE PRODUCT IS MODIFIED
+// =============================================================================
+// add_action( 'woocommerce_update_product', 'woocommerce_product_was_modified', 10, 1 );
+
+// function woocommerce_product_was_modified( $productId ) {
+//   $wcProduct = new WC_Product( $productId );
+//   $images = array();
+//   if ( ( $mainImageId = intval( $wcProduct->get_image_id() ) ) !== 0 ) {
+//     $images[] = $mainImageId;
+//   }
+//   $galleryImages = $wcProduct->get_gallery_image_ids();
+//   foreach ( $galleryImages as $imageId ) {
+//     $images[] = intval( $imageId );
+//   }
+//   foreach ( $images as $imageId ) {
+//     if ( $imageId != 0 ) {
+//       mfrh_rename( $imageId );
+//     }
+//   }
+//   return true;
 // }
 // =============================================================================
 

@@ -14,7 +14,7 @@ function arve_get_wrapper_id( $a ) {
 	static $wrapper_ids = array();
 	$wrapper_id = null;
 
-	foreach ( array( 'id', 'mp4', 'm4v', 'webm', 'ogv', 'url', 'webtorrent' ) as $att ) {
+	foreach ( array( 'id', 'mp4', 'm4v', 'webm', 'ogv', 'url', 'random_video_url', 'webtorrent' ) as $att ) {
 
 		if ( ! empty( $a[ $att ] ) && is_string( $a[ $att ] ) ) {
 			$wrapper_id = 'arve-' . $a[ $att ];
@@ -95,13 +95,14 @@ function arve_sc_filter_attr( $a ) {
 		}
 
 		$a['iframe_attr'] = array(
+			'allow'           => 'autoplay; fullscreen',
 			'allowfullscreen' => '',
 			'class'           => 'arve-iframe fitvidsignore',
 			'frameborder'     => '0',
 			'name'            => $a['iframe_name'],
+			'sandbox'         => 'allow-scripts allow-same-origin allow-presentation allow-popups',
 			'scrolling'       => 'no',
 			'src'             => $iframe_src,
-			'sandbox'         => 'allow-scripts allow-same-origin allow-presentation allow-popups',
 			'width'           => empty( $a['width'] )  ? false : $a['width'],
 			'height'          => empty( $a['height'] ) ? false : $a['height'],
 		);
@@ -164,12 +165,10 @@ function arve_sc_filter_sanitise( $atts ) {
 
 	foreach ( $atts as $key => $value ) {
 
-		if ( null === $value ) {
-			continue;
-		}
+		$atts[ $key ] = (string) $value;
 
-		if( ! is_string( $value ) ) {
-			$atts[ $key ] = arve_error( sprintf( __( '<code>%s</code> is not a string. Only Strings should be passed to the shortcode function', ARVE_SLUG ), $key ) );
+		if ( '' === $value ) {
+			$atts[ $key ] = null;
 		}
 	}
 
@@ -423,21 +422,21 @@ function arve_sc_filter_build_tracks_html( $atts ) {
 			return $atts;
 		}
 
-		preg_match( '#-(captions|chapters|descriptions|metadata|subtitles)-([a-z]{2}).vtt$#i', $atts[ "track_{$n}" ], $matches );
+		preg_match( '#-(?<type>captions|chapters|descriptions|metadata|subtitles)-(?<lang>[a-z]{2}).vtt$#i', $atts[ "track_{$n}" ], $matches );
 
 		if ( empty( $matches[1] ) ) {
 			$atts[ "track_{$n}" ] = new WP_Error( 'track', __( 'Track kind or language code could not detected from filename', ARVE_SLUG ) );
 			return $atts;
 		}
 
-		$label = empty( $atts[ "track_{$n}_label" ] ) ? arve_get_language_name_from_code( $matches[2] ) : $atts[ "track_{$n}_label" ];
+		$label = empty( $atts[ "track_{$n}_label" ] ) ? arve_get_language_name_from_code( $matches['lang'] ) : $atts[ "track_{$n}_label" ];
 
 		$attr = array(
 			'default' => ( 1 === $n ) ? true : false,
-			'kind'    => $matches[1],
+			'kind'    => $matches['type'],
 			'label'   => $label,
 			'src'     => $atts[ "track_{$n}" ],
-			'srclang' => $matches[2],
+			'srclang' => $matches['lang'],
 		);
 
 		$atts['video_tracks_html'] .= sprintf( '<track%s>', arve_attr( $attr) );

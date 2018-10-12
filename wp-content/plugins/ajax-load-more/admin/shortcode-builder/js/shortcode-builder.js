@@ -47,7 +47,7 @@ jQuery(document).ready(function($) {
 
 
 
-   //
+   // Taxonomy Query
    var total_tax_query = 0,
    	 max_tax_query = 2;
    $('#add-tax-query').on('click', function(e){
@@ -1019,10 +1019,14 @@ jQuery(document).ready(function($) {
 	      $('.masonry-options').slideDown(150, 'alm_easeInOutQuad');
 	      $('.masonry-options-hide').slideUp(150, 'alm_easeInOutQuad');
 			var masonry_selector = $('.transition input#masonry-item').val();
+			var masonry_columnwidth = $('.transition input#masonry-columnwidth').val();
 			var masonry_animation = $('input[name=masonry-animation]:checked').val();
 			var masonry_horizontalorder = $('input[name=masonry-horizontalorder]:checked').val();
 			if(masonry_selector !== ''){
          	output += ' masonry_selector="'+ masonry_selector +'"';
+         }
+			if(masonry_columnwidth !== ''){
+         	output += ' masonry_columnwidth="'+ masonry_columnwidth +'"';
          }
          if(masonry_animation !== '' && masonry_animation !== 'default'){
          	output += ' masonry_animation="'+ masonry_animation +'"';
@@ -1052,10 +1056,6 @@ jQuery(document).ready(function($) {
 	      }
 	         
       }
-      // Speed
-      var transition_speed = $('.transition input[name=transition-speed]').val();
-      if(transition_speed !== '250' && transition !== 'none')
-         output += ' transition_speed="'+ transition_speed +'"';
 
 
       // ---------------------------
@@ -1267,7 +1267,7 @@ jQuery(document).ready(function($) {
 
 	$('.table-of-contents .toc').change(function() {
 	   var pos = $(this).val();
-		if(pos !== 'null'){
+		if(pos !== 'null' && pos !== '#'){
 			$('html,body').animate({
 			   scrollTop: $('#'+pos).offset().top - 46
 			}, 500, 'alm_easeInOutQuad');
