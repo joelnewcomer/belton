@@ -33,7 +33,7 @@ get_header(); ?>
 </section> <!-- product-search -->
 
 <script>
-jQuery(document).ready(function(){
+jQuery(window).load(function(){
 var searchClicked = false;
 var options = {
     data: [
