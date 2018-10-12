@@ -32,7 +32,7 @@ if ( ! function_exists( 'foundationpress_scripts' ) ) :
 		}
 		
 		// register scripts
-		wp_register_script( 'header-scripts', get_template_directory_uri() . '/assets/javascript/header-scripts.js', array(), '1.0.0', false );
+		wp_register_script( 'header-scripts', get_template_directory_uri() . '/assets/javascript/header-scripts.js', array('jquery'), '1.0.0', false );
 		wp_register_script( 'footer-scripts', get_template_directory_uri() . '/assets/javascript/footer-scripts.js', array('jquery'), '1.0.0', true );
 
 		// enqueue scripts
