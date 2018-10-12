@@ -473,9 +473,9 @@ function drum_smart_address($street1,$street2,$city,$state,$zip) {
 }
 
 // Display phone number and convert to a button for mobile
-function drum_smart_phone($phone, $button_text = 'Click to Call', $phone_prefix) {
+function drum_smart_phone($phone, $button_text = 'Click to Call') {
 	$clean_phone = preg_replace("/[^0-9]/","",$phone);
-	$output = '<span class="hide-for-small">' . $phone_prefix . $phone . '</span>';
+	$output = '<span class="hide-for-small">' . $phone . '</span>';
 	$output .= '<span class="button"><a class="show-for-small" href="tel:' . $clean_phone . '">' . $button_text . '</a></span>';
 	return $output;
 }
