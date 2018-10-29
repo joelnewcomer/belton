@@ -451,10 +451,13 @@ function gformCalculateProductPrice(form_id, productFieldId){
 	}
 
     price = price * quantity;
-    price = Math.round(price * 100) / 100;
+
+	price = gformRoundPrice(price) ;
+
 
     return price;
 }
+
 
 function gformGetProductQuantity(formId, productFieldId) {
 
@@ -626,6 +629,14 @@ function gformGetPrice(text){
          return currency.toNumber(val[1]);
 
     return 0;
+}
+
+function gformRoundPrice(price){
+
+	var currency = new Currency(gf_global.gf_currency_config);
+    var roundedPrice = currency.numberFormat( price, currency.currency['decimals'], '.', '' );
+
+    return parseFloat( roundedPrice );
 }
 
 function gformRegisterPriceField(item){
@@ -1845,9 +1856,9 @@ jQuery( document ).on( 'submit.gravityforms', '.gform_wrapper form', function( e
 	var formWrapper = jQuery( this ).closest( '.gform_wrapper' ),
 		formID = formWrapper.attr( 'id' ).split( '_' )[ 2 ],
 		hasPages = formWrapper.find( '.gform_page' ).length > 0,
-		sourcePage = formWrapper.find( 'input[name^="gform_source_page_number_"]' ).val(),
-		targetPage = formWrapper.find( 'input[name^="gform_target_page_number_"]' ).val(),
-		isSubmit = targetPage === '0',
+		sourcePage = parseInt( formWrapper.find( 'input[name^="gform_source_page_number_"]' ).val() ),
+		targetPage = parseInt( formWrapper.find( 'input[name^="gform_target_page_number_"]' ).val() ),
+		isSubmit = targetPage === 0,
 		isNextSubmit = ! isSubmit && ( targetPage > sourcePage ),
 		isSave = jQuery( '#gform_save_' + formID ).val() === '1',
 		submitButton;
