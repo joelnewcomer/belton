@@ -6,6 +6,7 @@
    			<?php echo ALM_TITLE; ?>: <strong><?php _e('Shortcode Builder', 'ajax-load-more'); ?></strong>
             <em><?php _e('Create your own Ajax Load More <a href="http://en.support.wordpress.com/shortcodes/" target="_blank">shortcode</a> by adjusting the values below', 'ajax-load-more'); ?></em>
 			</h1>
+			<?php alm_render_transient_notification(); ?>  
 		</header>
 		
 		<div class="ajax-load-more-inner-wrapper">

@@ -9,6 +9,7 @@
             <?php echo ALM_TITLE; ?>: <strong><?php echo $pg_title; ?></strong>
             <em><?php echo $pg_desc; ?>.</em>
          </h1>
+         <?php alm_render_transient_notification(); ?>  
       </header>
       
       <div class="ajax-load-more-inner-wrapper">
@@ -112,7 +113,7 @@
    			      <div class="loading"></div>
                </div>            
                <?php } ?>          
-            <?php } ?>
+            <?php } unset($addons); ?>
             
             
             <?php   		     
@@ -121,7 +122,7 @@
             ?>
             <div class="spacer"></div>
             <div class="license-no-addons">
-               <p><?php _e('You do not have any Ajax Load More add-ons installed', 'ajax-load-more'); ?>. &raquo; <a href="admin.php?page=ajax-load-more-add-ons"><strong><?php _e('Browse Add-ons', 'ajax-load-more'); ?></strong></a></p>
+               <p><?php _e('You do not have any Ajax Load More add-ons installed', 'ajax-load-more'); ?> | <a href="admin.php?page=ajax-load-more-add-ons"><strong><?php _e('Browse Add-ons', 'ajax-load-more'); ?></strong></a> | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank"><strong><?php _e('Go Pro', 'ajax-load-more'); ?></strong></a></p>
             </div>
             <?php endif; ?>   
    

@@ -5,16 +5,19 @@
 	<div class="wrap main-cnkt-wrap">
 
 		<header class="header-wrap">
-         <h1><?php echo ALM_TITLE; ?> <span><?php echo ALM_VERSION; ?></span>
-         <em><?php _e('A powerful plugin to add infinite scroll functionality to your website.', 'ajax-load-more'); ?></em>
+         <h1>
+            <?php echo ALM_TITLE; ?> <span><?php echo ALM_VERSION; ?></span>
+            <em><?php _e('A powerful plugin to add infinite scroll functionality to your website.', 'ajax-load-more'); ?></em>
          </h1>
+         <?php alm_render_transient_notification(); ?>            
+         
       </header>     
       
       <div class="ajax-load-more-inner-wrapper"> 
 
    	   <div class="cnkt-main">                
             
-   			<?php // include_once( ALM_PATH . 'admin/includes/cta/sharing.php');	?>
+   			<?php //include_once( ALM_PATH . 'admin/includes/cta/sharing.php');	?>
             
    	   	<?php
       	   	if(has_action('alm_cache_settings') || has_action('alm_layouts_installed') || has_action('alm_prev_post_settings')  || has_action('alm_paging_settings') || has_action('alm_seo_settings') || has_action('alm_theme_repeaters_settings')) {

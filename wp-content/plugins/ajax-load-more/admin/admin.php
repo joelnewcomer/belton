@@ -9,7 +9,78 @@ add_action( 'wp_ajax_alm_license_activation', 'alm_license_activation' ); // Act
 add_action( 'alm_get_layouts', 'alm_get_layouts' ); // Add layout selection
 add_action( 'wp_ajax_alm_get_layout', 'alm_get_layout' ); // Get layout
 add_action( 'wp_ajax_alm_dismiss_sharing', 'alm_dismiss_sharing' ); // Dismiss sharing
+add_action( 'wp_ajax_alm_set_transient', 'alm_set_transient' ); // Set transient
 add_filter( 'admin_footer_text', 'alm_filter_admin_footer_text'); // Admin menu text
+
+
+
+
+/*
+*  alm_render_transient_notification
+*  Render a notification in the dashboard
+*
+*  @since 4.0
+*/
+function alm_render_transient_notification(){
+	if(!has_action('alm_pro_installed')){
+		
+      $msg = '🔥 Introducing <strong><a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank">Ajax Load More Pro</a></strong> -  get instant access to all 13 add-ons in a single installation! &nbsp; <strong><a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank" class="button button-primary">Upgrade Now</a></strong>';
+      
+      alm_transient_notification($msg, 'alm_pro_upgrade', 'YEAR_IN_SECONDS', true); 
+   }
+}
+
+
+
+/*
+*  alm_transient_notification
+*  Display a notification on pages with transient
+*
+*  @since 4.0
+*/
+function alm_transient_notification($message = '', $transient = '', $duration = 'YEAR_IN_SECONDS', $dismissible = true, $type = 'info'){
+   if(!empty($transient)){
+      $transient_value = get_transient( $transient );    
+      $dismissible = ($dismissible) ? ' is-dismissible' : '';
+      if(!isset($transient_value) || empty($transient_value) && !empty($message)){           
+      ?>
+         <div class="alm-admin-notice notice-<?php echo $type; ?> notice<?php echo $dismissible; ?> alm-transient" data-transient="<?php echo $transient; ?>" data-duration="<?php echo $duration; ?>"><p><?php echo $message; ?></p></div>         
+      <?php 
+      }
+   }
+}
+
+
+
+/*
+*  alm_set_transient
+*  Set transient via Ajax.
+*
+*  @since 4.0
+*/
+function alm_set_transient(){
+   
+   if (current_user_can( 'edit_theme_options' )){
+
+		$nonce = $_POST["nonce"];
+		$transient = $_POST["transient_name"];
+		$duration = $_POST["duration"];
+		
+		$duration = (!isset($duration)) ? 'YEAR_IN_SECONDS' : $duration; 
+
+		// Check our nonce, if they don't match then bounce!
+		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+			die(__('Error - unable to verify nonce, please try again.', 'ajax-load-more'));
+         
+      if($transient){
+         set_transient( $transient, 'true', constant($duration) );
+         echo __('Transient set successfully', 'ajax-load-more');
+      }
+
+      wp_die();
+   }
+}
+
 
 
 
@@ -57,7 +128,7 @@ function alm_admin_notice_errors() {
    
    if(has_action('alm_pro_installed')){ // Pro 
 	   $addons = alm_get_pro_addon();
-	   $message = __( 'You have an invalid <a href="admin.php?page=ajax-load-more"><b>Ajax Load More Pro</b></a> license key - please visit the <a href="admin.php?page=ajax-load-more-licenses">License</a> section to input your key or <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank">purchase</a> one now.', 'ajax-load-more' );
+	   $message = __( 'You have an invalid or expired <a href="admin.php?page=ajax-load-more"><b>Ajax Load More Pro</b></a> license key - please visit the <a href="admin.php?page=ajax-load-more-licenses">License</a> section to input your key or <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank">purchase</a> one now.', 'ajax-load-more' );
 	   
    } else {
 	   $addons = alm_get_addons();	   
@@ -257,6 +328,7 @@ function alm_admin_vars() { ?>
         'select_authors' => __('Select Author(s)', 'ajax-load-more'),
         'select_cats' => __('Select Categories', 'ajax-load-more'),
         'select_tags' => __('Select Tags', 'ajax-load-more'),
+        'select' => __('Select', 'ajax-load-more'),
         'jump_to_option' => __('Jump to Option', 'ajax-load-more'),
         'jump_to_template' => __('Jump to Template', 'ajax-load-more'),
         'install_now' => __('Are you sure you want to install this Ajax Load More extension?', 'ajax-load-more'),
@@ -462,11 +534,11 @@ function alm_admin_menu() {
       'alm_help_page'
    );	
 	
-	$license_ttl = (has_action('alm_pro_installed')) ? __('License', 'ajax-load-more') : __('Licenses', 'ajax-load-more');
+	$license_title = (has_action('alm_pro_installed')) ? __('License', 'ajax-load-more') : __('Licenses', 'ajax-load-more');
    $alm_licenses_page = add_submenu_page(
       'ajax-load-more',
-      $license_ttl,
-      $license_ttl,
+      $license_title,
+      $license_title,
       'edit_theme_options',
       'ajax-load-more-licenses',
       'alm_licenses_page'
@@ -487,6 +559,15 @@ function alm_admin_menu() {
 	      'edit_theme_options',
 	      'ajax-load-more-pro',
 	      'alm_pro_page'
+	   );
+   } else {
+	   $alm_go_pro_page = add_submenu_page(
+	      'ajax-load-more',
+	      __('Pro', 'ajax-load-more'),
+	      $before_link . '<span class="dashicons dashicons-plus-alt" '.$style_link_icon.'></span> '. __('Go Pro', 'ajax-load-more') . $after_link,
+	      'edit_theme_options',
+	      'ajax-load-more-go-pro',
+	      'alm_go_pro_page'
 	   );
    }
 
@@ -537,7 +618,8 @@ function alm_admin_menu() {
    add_action( 'load-' . $alm_help_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_help_page, 'alm_set_admin_nonce' );
    
-   if(has_action('alm_pro_installed')){ // Pro
+   // Pro
+   if(has_action('alm_pro_installed')){ 
    	add_action( 'load-' . $alm_pro_page, 'alm_load_admin_js' );
       add_action( 'load-' . $alm_pro_page, 'alm_load_pro_admin_js' );
 		add_action( 'load-' . $alm_pro_page, 'alm_set_admin_nonce' );
@@ -545,7 +627,8 @@ function alm_admin_menu() {
    } else {
    	add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
 		add_action( 'load-' . $alm_addons_page, 'alm_set_admin_nonce' );
-		
+	   add_action( 'load-' . $alm_go_pro_page, 'alm_load_admin_js' );
+	   add_action( 'load-' . $alm_go_pro_page, 'alm_set_admin_nonce' ); 		
    }
    add_action( 'load-' . $alm_extensions_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_extensions_page, 'alm_set_admin_nonce' );   
@@ -618,6 +701,19 @@ function alm_add_ons_page(){
 
 function alm_extensions_page(){
    include_once( ALM_PATH . 'admin/views/extensions.php');
+}
+
+
+
+/*
+*  alm_extensions_ons_page
+*  Ajax Load More Add-ons
+*
+*  @since 4.0.0
+*/
+
+function alm_go_pro_page(){
+   include_once( ALM_PATH . 'admin/views/go-pro.php');
 }
 
 
@@ -998,7 +1094,6 @@ function alm_get_tax_terms(){
 */
 function alm_layouts_dismiss(){
    if (current_user_can( 'edit_theme_options' )){
-
 		$nonce = $_POST["nonce"];
 
 		// Check our nonce, if they don't match then bounce!
@@ -1053,6 +1148,10 @@ function alm_filter_admin_footer_text( $text ) {
 	}
 
 	echo '<strong>Ajax Load More</strong> is made with <span style="color: #e25555;">♥</span> by <a href="https://connekthq.com" target="_blank" style="font-weight: 500;">Connekt</a> | <a href="https://wordpress.org/support/plugin/ajax-load-more/reviews/" target="_blank" style="font-weight: 500;">Leave a Review</a> | <a href="https://connekthq.com/plugins/ajax-load-more/support/" target="_blank" style="font-weight: 500;">Get Support</a>';
+	
+	if(!has_action('alm_pro_installed')){
+		echo ' | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank" style="font-weight: 500;">Go Pro</a>';
+	}
 }
 
 

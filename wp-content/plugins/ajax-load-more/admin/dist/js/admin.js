@@ -1321,7 +1321,7 @@ jQuery(document).ready(function ($) {
           setTimeout(function () {
             settingsTarget.classList.remove('--saved');
           }, 2500);
-        }, 1000);
+        }, 500);
       },
 
       // Error
@@ -1339,7 +1339,7 @@ jQuery(document).ready(function ($) {
           setTimeout(function () {
             settingsTarget.classList.remove('--error');
           }, 2500);
-        }, 1000);
+        }, 500);
       }
     });
     return false;
@@ -1681,6 +1681,36 @@ jQuery(document).ready(function ($) {
         container.fadeOut();
       },
       error: function error(xhr, status, _error3) {
+        console.log(status);
+      }
+    });
+  });
+
+  /*
+  *  Set Transient (Transient)
+  *  @since 4.0
+  */
+  $(document).on('click', '.alm-transient button.notice-dismiss', function (e) {
+    e.preventDefault();
+    var el = $(this),
+        container = el.parent('.alm-transient'),
+        transient_name = container.data('transient'),
+        duration = container.data('duration');
+
+    // Get value from Ajax
+    $.ajax({
+      type: 'POST',
+      url: alm_admin_localize.ajax_admin_url,
+      data: {
+        action: 'alm_set_transient',
+        nonce: alm_admin_localize.alm_admin_nonce,
+        transient_name: transient_name,
+        duration: duration
+      },
+      success: function success(data) {
+        container.fadeOut();
+      },
+      error: function error(xhr, status, _error4) {
         console.log(status);
       }
     });

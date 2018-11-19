@@ -46,10 +46,12 @@ if(!class_exists('ALM_QUERY_ARGS')):
    		
    		// Category
    		$category = (isset($a['category'])) ? $a['category'] : '';
+   		$category__and = (isset($a['category__and'])) ? $a['category__and'] : '';   		
    		$category__not_in = (isset($a['category__not_in'])) ? $a['category__not_in'] : '';
    		
    		// Tags
    		$tag = (isset($a['tag'])) ? $a['tag'] : '';
+   		$tag__and = (isset($a['tag__and'])) ? $a['tag__and'] : '';
    		$tag__not_in = (isset($a['tag__not_in'])) ? $a['tag__not_in'] : '';
    		
    		// Taxonomy
@@ -194,6 +196,9 @@ if(!class_exists('ALM_QUERY_ARGS')):
    		if(!empty($category)){
    			$args['category_name'] = $category;
    		}
+   		if(!empty($category__and)){
+   			$args['category__and'] = explode(",", $category__and);
+   		}
          
          // Category Not In
    		if(!empty($category__not_in)){
@@ -204,6 +209,9 @@ if(!class_exists('ALM_QUERY_ARGS')):
          // Tag
    		if(!empty($tag)){
    			$args['tag'] = $tag;
+   		} 	
+   		if(!empty($tag__and)){
+   			$args['tag__and'] = explode(",", $tag__and);
    		} 		 
          
          // Tag Not In

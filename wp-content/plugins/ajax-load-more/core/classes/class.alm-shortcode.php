@@ -110,8 +110,10 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'sticky_posts' => false,
    			'post_format' => '',
    			'category' => '',
+   			'category__and' => '',
    			'category__not_in' => '',
    			'tag' => '',
+   			'tag__and' => '',
    			'tag__not_in' => '',
    			'taxonomy' => '',
    			'taxonomy_terms' => '',
@@ -474,8 +476,10 @@ if( !class_exists('ALM_SHORTCODE') ):
             	'sticky_posts'			=> $sticky_posts,
             	'post_format'        => $post_format,
             	'category'           => $category,
+            	'category__and'      => $category__and,
             	'category__not_in'   => $category__not_in,
             	'tag'                => $tag,
+            	'tag__and'        	=> $tag__and,
             	'tag__not_in'        => $tag__not_in,
             	'taxonomy'           => $taxonomy,
             	'taxonomy_terms'     => $taxonomy_terms,
@@ -704,10 +708,12 @@ if( !class_exists('ALM_SHORTCODE') ):
                
                // Category
                $ajaxloadmore .= (!empty($category)) ? ' data-category="'.$category.'"' : '';
+               $ajaxloadmore .= (!empty($category__and)) ? ' data-category-and="'.$category__and.'"' : '';
                $ajaxloadmore .= (!empty($category__not_in)) ? ' data-category-not-in="'.$category__not_in.'"' : '';
                
                // Tag
                $ajaxloadmore .= (!empty($tag)) ? ' data-tag="'.$tag.'"' : '';
+               $ajaxloadmore .= (!empty($tag__and)) ? ' data-tag-and="'.$tag__and.'"' : '';
                $ajaxloadmore .= (!empty($tag__not_in)) ? ' data-tag-not-in="'.$tag__not_in.'"' : '';
                
                // Taxonomy
@@ -743,7 +749,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   		$ajaxloadmore .= (!empty($custom_args)) ? ' data-custom-args="'.$custom_args.'"' : '';
    	   		
    	   		// Status
-   	   		$ajaxloadmore .= ' data-post-status="'.$post_status.'"';
+   	   		$ajaxloadmore .= (!empty($post_status)) ? ' data-post-status="'.$post_status.'"' : '';
    	   		
    	   		// Order
    	   		$ajaxloadmore .= ' data-order="'.$order.'"';

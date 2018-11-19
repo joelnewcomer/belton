@@ -77,11 +77,17 @@ let almGetAjaxParams = function(alm, action, queryType){
    if(alm.content.attr('data-category')){
       data.category = alm.content.attr('data-category');
    }
+   if(alm.content.attr('data-category-and')){
+      data.category__and = alm.content.attr('data-category-and');
+   }
    if(alm.content.attr('data-category-not-in')){
       data.category__not_in = alm.content.attr('data-category-not-in');
    }
    if(alm.content.attr('data-tag')){
       data.tag = alm.content.attr('data-tag');
+   }
+   if(alm.content.attr('data-tag-and')){
+      data.tag__and = alm.content.attr('data-tag-and');
    }
    if(alm.content.attr('data-tag-not-in')){
       data.tag__not_in = alm.content.attr('data-tag-not-in');

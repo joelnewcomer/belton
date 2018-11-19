@@ -7,14 +7,14 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com
-Version: 3.7.1
+Version: 4.0
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '3.7.1');
-define('ALM_RELEASE', 'October 3, 2018');
+define('ALM_VERSION', '4.0');
+define('ALM_RELEASE', 'November 3, 2018');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -222,7 +222,7 @@ if( !class_exists('AjaxLoadMore') ):
 
 	      // Does $dir exist?
 	      if( !is_dir($dir) ) {
-	      	mkdir($dir, 0755);
+		      wp_mkdir_p($dir);
 
 	      	// Check again after creating it (permission checker)
 		      if( !is_dir($dir) ) {

@@ -88,21 +88,16 @@ let alm_is_filtering = false; // Global Masonry/Filtering var
 	 *  @since 2.6.1
 	 */
 	let almSetFilters = function(speed, data, el){
+		
+		// Update data attributes
 	   $.each(data, function(key, value) {
 	      key = key.replace(/\W+/g, '-').replace(/([a-z\d])([A-Z])/g, '$1-$2'); // Convert camelCase data() object back to dash (-)
 	      $('.alm-listing', el).attr('data-'+key, value);
-	   });
-	   // Regular Filtering
-	   if ($.isFunction($.fn.almFilterComplete)){
-	      $.fn.almFilterComplete();
-	   }
-	   // Filters Add-on
-	   if(typeof almFiltersAddonComplete == "function"){
-	      almFiltersAddonComplete(el);
-	   }
+	   });   
+	   
+		el.fadeIn(speed); // Fade ALM back in
 	   
 	   alm_is_filtering = true;	   
-		el.fadeIn(speed); // Fade ALM back in
 		
 		// re-initiate Ajax Load More
 	   if(data.target){

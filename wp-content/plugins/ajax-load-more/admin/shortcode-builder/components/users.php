@@ -30,8 +30,7 @@
          </div>
          <div class="wrap">
             <div class="inner">
-					<select class="alm_element" id="users-role" name="users-role">
-						<option value="" selected="selected">-- <?php _e('Select Role', 'ajax-load-more'); ?> --</option>
+					<select class="alm_element multiple" id="users-role" name="users-role" multiple="multiple">
 						<option value="all"><?php _e('All Roles', 'ajax-load-more'); ?></option>
 						<?php 
 							if(function_exists('alm_role_encrypt')) :

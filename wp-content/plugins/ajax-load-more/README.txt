@@ -3,8 +3,8 @@ Contributors: dcooney, connekthq
 Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 3.6
-Tested up to: 4.9.8
-Stable tag: 3.7.1
+Tested up to: 5.0
+Stable tag: 4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,8 +75,10 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **sticky_posts** - Preserve sticky post ordering in Ajax listing. Default = false
 *   **post_format** - Query by post format. Default = null
 *   **category** - A comma separated list of categories to include by slug. Default = null
+*   **category__and** - A comma separated list of categories to include by ID. Default = null
 *   **category__not_in** - A comma separated list of categories to exclude by ID. Default = null
 *   **tag** - A comma separated list of tags to include by slug. Default = null
+*   **tag__and** - A comma separated list of tags to include by ID. Default = null
 *   **tag__not_in** - A comma separated list of tags to exclude by ID. Default = null
 *   **taxonomy** - Query by custom taxonomy name. Default = null
 *   **taxonomy_terms** - Comma separated list of custom taxonomy terms(slug). Default = null
@@ -369,11 +371,19 @@ How to install Ajax Load More.
 
 == Changelog ==
 
+= 4.0 - November 5, 2018 =
+* NEW - Introducing [Ajax Load More Pro](https://connekthq.com/plugins/ajax-load-more/pro/)! Access to every Ajax Load More add-on in a single installation.
+* NEW - Adding `category__and` and `tag__and` support for querying categories and tags.
+* UPDATE - Adding fix for permission error on repeater template directory by replacing `mkdir()` with WordPress core function `wp_mkdir_p`.
+* FIX - Fixed issue with Filters onComplete functions triggering before Ajax results were rendered on the screen.
+* FIX - Adding fix for `alm_get_canonical_url` function when getting URLs of child category and tag archives.
+
+
 = 3.7.1 - October 3, 2018 =
 Minor point release that affects Preloaded and Search Engine Optimization add-on users only. This release fixes 2 critical bugs in Ajax Load More 3.7.
 
-* FIX - Fix for Preloaded add-on not parsing multiple Post Types (I'm sorry about that!).
-* FIX - Adding `.alm-reveal` div and `css_classes` to NO_SCRIPT render to keep styling and layouts consistent.
+* FIX - Fix for Preloaded not parsing multiple Post Types (Sorry about that)
+* FIX - Adding `.alm-reveal` div and `css_classes` to NO_SCRIPT render.
 
 
 = 3.7 - September 19, 2018 =

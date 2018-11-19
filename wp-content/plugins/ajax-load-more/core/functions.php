@@ -10,20 +10,23 @@
 
 function alm_get_pro_addon(){
 	$path_prefix = 'ajax-load-more-';
-	$url_prefix = 'https://connekthq.com/plugins/ajax-load-more/pro/';	
+	$url_prefix = 'https://connekthq.com/plugins/ajax-load-more/pro/';
+		
    $addons = array(
       array(
          'name' => __('Ajax Load More Pro', 'ajax-load-more'),
-         'intro' => __('Improve performance with the Ajax Load More caching engine.', 'ajax-load-more'),
-         'desc' => __('The Cache add-on creates static HTML files of Ajax Load More requests then delivers those static files to your visitors.', 'ajax-load-more'),
+         'intro' => __('Get instant access to all premium add-ons in a single installation.', 'ajax-load-more'), 
+         'desc' => __('The Pro bundle is installed as a single product with one license key and contains immediate access all premium add-ons.', 'ajax-load-more'),
          'action' => 'alm_pro_installed',
          'key' => 'alm_pro_license_key',
          'status' => 'alm_pro_license_status',
          'settings_field' => 'alm_pro_license',
-         'img' => 'img/add-ons/pro-add-on.jpg',
+         'img' => 'img/add-ons/pro-bundle-add-on.png',
          'url' => $url_prefix,
          'item_id' => ALM_PRO_ITEM_NAME,
+         'version' => 'ALM_PRO_VERSION',
 	   	'path' => $path_prefix .'pro',
+	   	'slug' => 'pro'
       )
    );
    return $addons;
@@ -54,13 +57,14 @@ function alm_get_addons(){
          'img' => 'img/add-ons/cache-add-on.jpg',
          'url' => $url_prefix .'cache/',
          'item_id' => ALM_CACHE_ITEM_NAME,
+         'version' => 'ALM_CACHE_VERSION',
 	   	'path' => $path_prefix .'cache',
 	   	'slug' => 'cache'
       ),
       array(
          'name' => __('Call to Actions', 'ajax-load-more'),
          'intro' => __('Ajax Load More extension for displaying advertisements and call to actions.', 'ajax-load-more'),
-         'desc' => __('The Call to Actions add-on will provide the ability to inject a custom CTA template within each Ajax Load More loop.', 'ajax-load-more'),
+         'desc' => __('The Call to Actions add-on provides the ability to inject a custom CTA template within each Ajax Load More loop.', 'ajax-load-more'),
          'action' => 'alm_cta_installed',
          'key' => 'alm_cta_license_key',
          'status' => 'alm_cta_license_status',
@@ -68,6 +72,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/cta-add-on.jpg',
          'url' => $url_prefix .'/call-to-actions/',
          'item_id' => ALM_CTA_ITEM_NAME,
+         'version' => 'ALM_CTA_VERSION',
 	   	'path' => $path_prefix .'call-to-actions',
 	   	'slug' => 'call-to-actions'
       ),
@@ -82,6 +87,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/comments-add-on.jpg',
          'url' => $url_prefix .'comments/',
          'item_id' => ALM_COMMENTS_ITEM_NAME,
+         'version' => 'ALM_COMMENTS_VERSION',
 	   	'path' => $path_prefix .'comments',
 	   	'slug' => 'comments'
       ),
@@ -96,6 +102,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/unlimited-add-ons.jpg',
          'url' => $url_prefix .'custom-repeaters/',
          'item_id' => ALM_UNLIMITED_ITEM_NAME,
+         'version' => 'ALM_UNLIMITED_VERSION',
 	   	'path' => $path_prefix .'repeaters-v2',
 	   	'slug' => 'repeaters-v2'
       ),
@@ -110,6 +117,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/filters-add-on.jpg',
          'url' => $url_prefix .'filters/',
          'item_id' => ALM_FILTERS_ITEM_NAME,
+         'version' => 'ALM_FILTERS_VERSION',
 	   	'path' => $path_prefix .'filters',
 	   	'slug' => 'filters'
       ),
@@ -124,13 +132,14 @@ function alm_get_addons(){
          'img' => 'img/add-ons/layouts-add-on.jpg',
          'url' => $url_prefix .'layouts/',
          'item_id' => ALM_LAYOUTS_ITEM_NAME,
+         'version' => 'ALM_LAYOUTS_VERSION',
 	   	'path' => $path_prefix .'layouts',
 	   	'slug' => 'layouts'
       ),
       array(
          'name' => __('Next Page', 'ajax-load-more'),
          'intro' => __('Load and display multipage WordPress content.', 'ajax-load-more'),
-         'desc' => __('The Next Page add-on will provide functionality for infinite scrolling paginated posts and pages.', 'ajax-load-more'),
+         'desc' => __('The Next Page add-on provides functionality for infinite scrolling paginated posts and pages.', 'ajax-load-more'),
          'action' => 'alm_nextpage_installed',
          'key' => 'alm_nextpage_license_key',
          'status' => 'alm_nextpage_license_status',
@@ -138,6 +147,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/next-page-add-on.jpg',
          'url' => $url_prefix .'nextpage/',
          'item_id' => ALM_NEXTPAGE_ITEM_NAME,
+         'version' => 'ALM_NEXTPAGE_VERSION',
 	   	'path' => $path_prefix .'next-page',
 	   	'slug' => 'next-page'
       ),
@@ -152,6 +162,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/paging-add-ons.jpg',
          'url' => $url_prefix .'paging/',
          'item_id' => ALM_PAGING_ITEM_NAME,
+         'version' => 'ALM_PAGING_VERSION',
 	   	'path' => $path_prefix .'paging',
 	   	'slug' => 'paging'
       ),
@@ -166,6 +177,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/preloaded-add-ons.jpg',
          'url' => $url_prefix .'preloaded/',
          'item_id' => ALM_PRELOADED_ITEM_NAME,
+         'version' => 'ALM_PRELOADED_VERSION',
 	   	'path' => $path_prefix .'preloaded',
 	   	'slug' => 'preloaded'
       ),
@@ -180,6 +192,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/prev-post-add-on.jpg',
          'url' => $url_prefix .'previous-post/',
          'item_id' => ALM_PREV_POST_ITEM_NAME,
+         'version' => 'ALM_PREV_POST_VERSION',
 	   	'path' => $path_prefix .'previous-post',
 	   	'slug' => 'previous-post'
       ),
@@ -194,6 +207,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/seo-add-ons.jpg',
          'url' => $url_prefix .'search-engine-optimization/',
          'item_id' => ALM_SEO_ITEM_NAME,
+         'version' => 'ALM_SEO_VERSION',
 	   	'path' => $path_prefix .'seo',
 	   	'slug' => 'seo'
       ),
@@ -208,6 +222,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/theme-repeater-add-on.jpg',
          'url' => $url_prefix .'theme-repeaters/',
          'item_id' => ALM_THEME_REPEATERS_ITEM_NAME,
+         'version' => 'ALM_THEME_REPEATERS_VERSION',
 	   	'path' => $path_prefix .'theme-repeaters',
 	   	'slug' => 'theme-repeaters'
       ),
@@ -222,6 +237,7 @@ function alm_get_addons(){
          'img' => 'img/add-ons/users-add-on.jpg',
          'url' => $url_prefix .'users/',
          'item_id' => ALM_USERS_ITEM_NAME,
+         'version' => 'ALM_USERS_VERSION',
 	   	'path' => $path_prefix .'users',
 	   	'slug' => 'users'
       )
@@ -437,7 +453,7 @@ function alm_get_default_repeater() {
 
 	global $wpdb;
 	$file = null;
-	$template_dir = 'alm_templates';
+	$template_dir = apply_filters( 'alm_template_path', 'alm_templates' );
 
 	// Allow user to load template from theme directory
 	// Since 2.8.5
@@ -770,13 +786,13 @@ function alm_get_canonical_url(){
    }
    // Category
    elseif(is_category()){
-      $cur_cat_id = get_cat_id( single_cat_title('',false) );
-      $canonicalURL = get_category_link($cur_cat_id);
+      $cat_id = get_query_var( 'cat' );
+      $canonicalURL = get_category_link($cat_id);
    }
    // Tag
    elseif(is_tag()){
-      $cur_tag_id = get_query_var('tag_id');
-      $canonicalURL = get_tag_link($cur_tag_id);
+      $tag_id = get_query_var('tag_id');
+      $canonicalURL = get_tag_link($tag_id);
    }
    // Author
    elseif(is_author()){

@@ -1033,6 +1033,16 @@
 					}
             }
             // End ALM Complete
+            
+            
+            // Filters Add-on Complete            
+			   if ($.isFunction($.fn.almFilterComplete)){ // Standard Filtering
+			      $.fn.almFilterComplete();
+			   }		   			   
+			   if(typeof almFiltersAddonComplete == "function"){ // Filters Add-on
+			      almFiltersAddonComplete(el);
+			   }
+				// End Filters Add-on Complete
 
 
             // ALM Done

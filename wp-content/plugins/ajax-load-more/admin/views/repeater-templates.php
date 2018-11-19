@@ -14,6 +14,7 @@
    			<?php echo ALM_TITLE; ?>: <strong><?php _e('Repeater Templates', 'ajax-load-more'); ?></strong>
             <em><?php _e('The library of editable templates for use within your theme', 'ajax-load-more'); ?></em>
          </h1>
+         <?php alm_render_transient_notification(); ?>  
 		</header>
 		
 		<div class="ajax-load-more-inner-wrapper">
