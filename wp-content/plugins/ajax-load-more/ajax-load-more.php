@@ -6,15 +6,15 @@ Description: The ultimate solution to add infinite scroll functionality to your 
 Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
-Author URI: https://connekthq.com
-Version: 4.0
+Author URI: https://connekthq.com 
+Version: 4.1.0
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '4.0');
-define('ALM_RELEASE', 'November 3, 2018');
+define('ALM_VERSION', '4.1.0');
+define('ALM_RELEASE', 'December 6, 2018');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -376,6 +376,7 @@ if( !class_exists('AjaxLoadMore') ):
    				'alm_nonce' => wp_create_nonce( "ajax_load_more_nonce" ),
    				'pluginurl' => ALM_URL,
    				'scrolltop' => $scrolltop,
+   				'display_results' => apply_filters('alm_display_results', __('Showing {num} of {total} results', 'ajax-load-more')),
    				'ajax_object' => array('is_single' => true, 'is_singular' => true )
    			)
    		);

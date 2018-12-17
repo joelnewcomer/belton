@@ -179,6 +179,7 @@ jQuery(document).ready(function($) {
       container_classes = $.trim(container_classes);
       if(container_classes !== '' && $('.alm-instance-options input#container-classes').hasClass('changed'))
          output += ' css_classes="'+container_classes+'"';
+        
 
 
       // ---------------------------
@@ -1182,6 +1183,16 @@ jQuery(document).ready(function($) {
 
       if(button_loading_label !== '')
          output += ' button_loading_label="'+button_loading_label+'"';
+         
+
+      // ---------------------------
+      // - Nested Instances
+      // ---------------------------
+
+      var nested = $('.alm-instance-options input[name=nested]:checked').val();
+      if(nested === 't'){
+         output += ' nested="true"';
+      }
 
 
       output += ']';  //Close shortcode

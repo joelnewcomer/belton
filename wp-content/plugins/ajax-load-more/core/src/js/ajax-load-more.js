@@ -11,14 +11,16 @@
  * Twitter: @KaptonKaos, @ajaxloadmore, @connekthq 
  */
 
-(function ($) { 
-	
+(function($){
+   
    "use strict";   
 
    $.ajaxloadmore = function (el, e) {
 
       // Prevent loading of unnessasry posts - move user to top of page
-      if(alm_localize.scrolltop === 'true'){ $(window).scrollTop(0); }
+      if(alm_localize.scrolltop === 'true'){ 
+         $(window).scrollTop(0); 
+      } 
       
       //Set ALM Variables
       let alm = this;
@@ -30,20 +32,30 @@
       alm.proceed = false;
       alm.disable_ajax = false;
       alm.init = true;
-      alm.loading = true;
+      alm.loading = true; 
       alm.finished = false;
       alm.prefix = 'alm-';
       alm.el = el;
       alm.master_id = alm.el.get(0).id; // the actual ALM div#id
+      
+      // Get localized <script> variables
+      alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
+      alm.localize = window[alm.master_id +'_vars']; // Get localize vars
+      
+      // Main ALM container
       alm.container = el;
       alm.container.addClass('alm-'+e).attr('data-alm-id', e); // Add unique classname and data id
-      alm.content = $('.alm-ajax', alm.container);
-      alm.content_preloaded = $('.alm-preloaded', alm.container);
+      
+      let container = alm.container.get(0); // Get DOM element
+      alm.content = $(container.querySelector('.alm-ajax')); // Get first `.alm-ajax` element as $ obj
+      alm.content_preloaded = $(container.querySelector('.alm-preloaded')); // Get first `.alm-preloaded` element as $ obj
+      
       alm.canonical_url = alm.el.attr('data-canonical-url');
+      alm.nested = alm.el.attr('data-nested');
       alm.is_search = alm.el.attr('data-search');
       alm.slug = alm.el.attr('data-slug');
       alm.post_id = alm.el.attr('data-post-id');
-      alm.id = (alm.el.attr('data-id')) ? alm.el.attr('data-id') : '';
+      alm.id = (alm.el.attr('data-id')) ? alm.el.attr('data-id') : ''; 
 
       alm.repeater = alm.content.attr('data-repeater'); // Repeaters
       alm.theme_repeater = alm.content.attr('data-theme-repeater');
@@ -51,7 +63,7 @@
       alm.post_type = alm.content.attr('data-post-type');
       alm.post_type = alm.post_type.split(",");
       alm.sticky_posts = alm.content.attr('data-sticky-posts');
-      alm.btnWrap = $('.alm-btn-wrap', alm.container);
+      alm.btnWrap = $('> .alm-btn-wrap', alm.container);
       alm.btnWrap.get(0).style.visibility = 'visible';
 		alm.button_label = alm.content.attr('data-button-label');
       alm.button_loading_label = alm.content.attr('data-button-loading-label');
@@ -225,17 +237,11 @@
          
          // Get Preloaded Amount
          alm.preloaded_amount = (alm.preloaded_amount === undefined) ? alm.posts_per_page : alm.preloaded_amount;
-	       
-	      // Get the preloaded localized <script> object to get total_posts
-         let var_master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
-         var_master_id = var_master_id +'_vars'; // This is the localize variable on the screen (ajax_load_more_vars)
- 
-         let preloaded_vars = window[var_master_id]; // Get localize vars
          
          // Disable ALM if total_posts is </= preloaded_amount
-         if(preloaded_vars && preloaded_vars.total_posts){
-	         if (parseInt(preloaded_vars.total_posts) <= parseInt(alm.preloaded_amount)){
-		         alm.preloaded_total_posts = preloaded_vars.total_posts;
+         if(alm.localize && alm.localize.total_posts){
+	         if (parseInt(alm.localize.total_posts) <= parseInt(alm.preloaded_amount)){
+		         alm.preloaded_total_posts = alm.localize.total_posts;
 	            alm.disable_ajax = true;
 	         }
 	      }
@@ -428,13 +434,22 @@
       if(alm.paging){ 
 	      alm.content.parent().addClass('loading'); // add loading class to main container
 		}else{
-			alm.button = $('.alm-load-more-btn', alm.container); // Set button element	 	
-		}
+			alm.button = $('> .alm-btn-wrap .alm-load-more-btn', alm.container); // Set button element	 	
+		}		
+		
+      
+      // Render "Showing x of y results" text.
+      alm.resultsText = document.querySelector('.alm-results-text');
+      if(alm.resultsText){
+	      alm.resultsText.innerHTML = alm_localize.display_results;
+      } else {
+         alm.resultsText = false;
+      }
 
 
 
-      /*  loadPosts()
-       *
+      /**  
+       *  LoadPosts()
        *  The function to get posts via Ajax
        *  @since 2.0.0
        */
@@ -722,20 +737,29 @@
 	         // Standard ALM query results
             html = data.html;
             meta = data.meta;
-            alm.posts = alm.posts + meta.postcount;
+            alm.posts = (alm.paging) ? meta.postcount : alm.posts + meta.postcount; 
 	         total = meta.postcount;
             alm.totalposts = meta.totalposts;                   
             
             if(alm.preloaded === 'true'){
 	            alm.totalposts = alm.totalposts - alm.preloaded_amount;
             }
-         }
+         }         
+         
+         
+         // Set localized vars for totalposts
+         alm.setlocalizedVars('viewing', alm.posts);
+         alm.setlocalizedVars('total_posts', alm.totalposts);
+         
+                  
+         almResultsText(alm); // Set Results Text           
+         
 
-         alm.data = $(html); // data converted to an object
-
-         if(is_cache){ // If cache, get the length of the data object
-	      	total = alm.data.length; 
-	      }
+         // data converted to an object
+         alm.data = $(html);  
+         
+         // If cache, get the length of the data object
+         total = (is_cache) ? alm.data.length : total; 
 
          // First Run
          if (alm.init) {
@@ -821,7 +845,7 @@
             if(!alm.paging){
 
                if(alm.previous_post){ // Previous Post, create container and append data
-               	alm.el = $('<div class="alm-reveal alm-previous-post post-'+alm.previous_post_id+'" '+ loadingStyle +' data-id="'+alm.previous_post_id+'" data-title="'+alm.previous_post_title+'" data-url="'+alm.previous_post_permalink+'" data-page="'+alm.page+'"/>'); 
+               	alm.el = $('<div class="alm-reveal alm-previous-post post-'+alm.previous_post_id+'" '+ loadingStyle +' data-id="'+alm.previous_post_id+'" data-title="'+alm.previous_post_title+'" data-url="'+alm.previous_post_permalink+'" data-page="'+alm.page+'"/>');
                	alm.el.append(alm.data); 
                }  
                
@@ -895,8 +919,7 @@
                         for (var x = 0; x < container_array.length; x++){
                         	//alm.el.prepend(container_array[x]);	 
                         	alm.el.append(container_array[x]);	                       
-	                     }
-                        
+	                     }                        
                         
                         
                         // Set opacity and height of .alm-listing div to allow for fadein.
@@ -1005,10 +1028,12 @@
 
                // Paging
                if(!alm.init){
-                  $('.alm-paging-content', alm.el).html('').append(alm.data).almWaitForImages().done(function(){  // Remove loading class and append data
+                  $('.alm-paging-content', alm.el).html('').append(alm.data).almWaitForImages().done(function(){ // Remove loading class, append data
                      $('.alm-paging-loading', alm.el).fadeOut(alm.speed); // Fade out loader
                      if ($.isFunction($.fn.almOnPagingComplete)){
-                        $.fn.almOnPagingComplete(alm);
+	                     setTimeout(function(){ // Delay for effect		                     
+                        	$.fn.almOnPagingComplete(alm);
+                        }, alm.speed);
                      }
                      alm.container.removeClass('alm-loading');
 		               alm.AjaxLoadMore.triggerAddons(alm);
@@ -1033,16 +1058,6 @@
 					}
             }
             // End ALM Complete
-            
-            
-            // Filters Add-on Complete            
-			   if ($.isFunction($.fn.almFilterComplete)){ // Standard Filtering
-			      $.fn.almFilterComplete();
-			   }		   			   
-			   if(typeof almFiltersAddonComplete == "function"){ // Filters Add-on
-			      almFiltersAddonComplete(el);
-			   }
-				// End Filters Add-on Complete
 
 
             // ALM Done
@@ -1059,16 +1074,26 @@
             // End ALM Done
 
 
-         } else { 
-
-	         // No Results!
-	         if(!alm.paging){
+         } else { // No Results!	         
+	         
+	         if(!alm.paging){ // Add .done class, reset btn text
             	alm.button.delay(alm.speed).removeClass('loading').addClass('done');
             	alm.AjaxLoadMore.resetBtnText();
             }
+            
             alm.AjaxLoadMore.triggerDone(); // ALM Done
 
-         }
+         }  
+                    
+            
+         // Filters Complete            
+		   if ($.isFunction($.fn.almFilterComplete)){ // Standard Filtering
+		      $.fn.almFilterComplete();
+		   }		   			   
+		   if(typeof almFiltersAddonComplete == "function"){ // Filters Add-on
+		      almFiltersAddonComplete(el);
+		   }
+			// End Filters Complete
 
 
          // Destroy After
@@ -1083,8 +1108,7 @@
          }
          // End Destroy After
 
-			alm_is_filtering = false;
-         alm.init = false;
+			alm_is_filtering = alm.init = false;
 
       };
 
@@ -1452,8 +1476,7 @@
 
 
 
-      /*  Transition End 
-		 *
+      /**  
 		 *  Set variables after loading transiton completes
 		 *  @since 3.5 
 		 */
@@ -1467,12 +1490,25 @@
 			   	alm.AjaxLoadMore.resetBtnText();
 			   }
 			}, alm.speed);
+		};		
+		 
+		
+		
+		/**  
+		 *  Set localized variables 
+		 *  @since 4.1 
+		 */
+		alm.setlocalizedVars = function(name, value){		
+			if(alm.localize && name && value){
+				alm.localize[name] = value; // Set ALM localize var
+				window[alm.master_id +'_vars'][name] = value; // Update global window obj vars
+			}
 		};
 
 
 
-      /*  Init Ajax load More
-       *
+      /**  
+	    *  Init Ajax load More
        *  Load posts as user scrolls the page
        *  @since 2.0 
        */
@@ -1482,7 +1518,6 @@
          if(alm.preloaded === 'true' && alm.destroy_after == 1){
 	         alm.AjaxLoadMore.destroyed(); 
 			} 
-
 			
 	      if(!alm.paging && !alm.previous_post){
 	         if(alm.disable_ajax){
@@ -1498,13 +1533,11 @@
 	         }
 	      }
 
-
 			// Previous Post Add-on
 	      if(alm.previous_post){
 	         alm.AjaxLoadMore.getPreviousPost(); // Set next post on load
 	         alm.loading = false;  
-	      }
-	      
+	      }	      
 	      
 	      // Preloaded + SEO && !Paging
 	      if(alm.preloaded === 'true' && alm.seo && !alm.paging){
@@ -1514,8 +1547,13 @@
          	      $.fn.almSEO(alm, true);
                } 
             }, alm.speed);
-         }
-         
+            
+   	      
+   	      if(alm.resultsText){
+      	      almInitResultsText(alm, 'preloaded');
+   	      }
+   	      
+         }         
          
          // Preloaded
          if(alm.preloaded === 'true' && !alm.paging){	   
@@ -1532,22 +1570,38 @@
 	               }
 		         }
 	         }, alm.speed);	
+   	      
+   	      if(alm.resultsText){
+      	      almInitResultsText(alm, 'preloaded');
+   	      }
 	                
-         }			
+         }	
+          
+         if(alm.paging){
+	         if(alm.resultsText){
+      	      almInitResultsText(alm, 'paging');
+   	      }
+         }		
 
 
 			// Next Page Add-on
-	      if(alm.nextpage){
-   	      if($('.alm-nextpage').length > 1){
-      	      // If alm-nextpage is greater than 1, check that posts remain.
-      	      // triggerDone is total equals total-pages
-      	      var alm_nextpage_pages = $('.alm-nextpage').length,
-      	          alm_nextpage_total = $('.alm-nextpage').eq(0).data('total-pages');
-
+	      if(alm.nextpage){		      
+		      
+   	      if($('.alm-nextpage', alm.container).length){
+	   	      
+      	      // `.alm-nextpage` check that posts remain
+      	      var alm_nextpage_pages = $('.alm-nextpage', alm.container).length,
+      	          alm_nextpage_total = $('.alm-nextpage', alm.container).eq(0).data('total-posts');						 
+					
       	      if(alm_nextpage_pages == alm_nextpage_total){
          	      alm.AjaxLoadMore.triggerDone();
       	      }
    	      }
+   	      
+   	      if(alm.resultsText){
+      	      almInitResultsText(alm, 'nextpage');
+   	      }
+            
 	      }
 
 
@@ -1560,6 +1614,7 @@
 	      });
 
       };
+      
       alm.AjaxLoadMore.init();
 
 
@@ -1674,8 +1729,8 @@
    
 
 
-	/* $.fn.ajaxloadmore()
-    *
+	/** 
+    *  $.fn.ajaxloadmore()
     *  Initiate all instances of Ajax load More
     *  @since 2.1.2
     */
@@ -1694,8 +1749,8 @@
 
    let ajaxloadmore = document.querySelectorAll('.ajax-load-more-wrap');
    if(ajaxloadmore.length){
-	   [...ajaxloadmore].forEach((alm, e) => {	   
-		   new $.ajaxloadmore($(alm), e);
+	   [...ajaxloadmore].forEach((alm, e) => {		 
+			new $.ajaxloadmore($(alm), e);
 	   });
    }
 

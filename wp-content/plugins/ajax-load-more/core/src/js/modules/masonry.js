@@ -17,7 +17,6 @@
    @updated 3.3.2
 */
 
-
 let almMasonry = (container, items, selector, columnWidth, animation, horizontalOrder, speed, masonry_init, init, filtering) => {	
    
    let duration = (speed+100)/1000 +'s'; // Add 100 for some delay
@@ -78,8 +77,8 @@ let almMasonry = (container, items, selector, columnWidth, animation, horizontal
             }
             
             // Get custom Masonry options (https://masonry.desandro.com/options.html)
-            let alm_masonry_vars = alm_masonry_vars;
-            if(alm_masonry_vars){
+            let alm_masonry_vars = window.alm_masonry_vars;
+            if(alm_masonry_vars){ 
 		         Object.keys(alm_masonry_vars).forEach(function(key) {	// Loop object	to create key:prop			
 						defaults[key] = alm_masonry_vars[key];					
 					});

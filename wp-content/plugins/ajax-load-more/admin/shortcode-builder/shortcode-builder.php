@@ -71,7 +71,7 @@
 	         <!-- Container Type -->
 	         <div class="section-title">
 	            <h4><?php _e('Container Type', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('You can define a global container type on the Ajax Load More settings screen','ajax-load-more'); ?>."></a></h4>
-	   		 	<p><?php _e('Override the global Container Type  set on the <a href="admin.php?page=ajax-load-more">ALM Settings page</a>.', 'ajax-load-more'); ?></p>
+	   		 	<p><?php _e('Override the global Container Type set in <a href="admin.php?page=ajax-load-more">ALM Settings</a>.', 'ajax-load-more'); ?></p>
 	   		</div>
 	         <div class="wrap">
 	            <div class="inner">
@@ -112,6 +112,31 @@
 	               <input class="alm_element" name="container-classes" type="text" id="container-classes" placeholder="listing large-12 columns">
 	            </div>
 	         </div>
+	
+	         <div class="clear"></div>
+	         <hr/>
+	
+	         <!-- Nested ALM -->
+	         
+	         <div class="section-title">
+	            <h4><?php _e('Nested Instance', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('When nesting ALM instances it\'s important to set this to true as it removes certain problematic functionality.','ajax-load-more'); ?>"></a></h4>
+	   		 	<p><?php _e('Is this a nested Ajax Load More instance?', 'ajax-load-more'); ?></p>
+	   		 </div>
+	         <div class="wrap">
+	            <div class="inner">
+	               <ul>
+	                  <li>
+	                     <input class="alm_element" type="radio" name="nested" value="t" id="nested_t">
+	                     <label for="nested_t"><?php _e('True', 'ajax-load-more'); ?></label>
+	                  </li>
+	                  <li>
+	                     <input class="alm_element" type="radio" name="nested" value="f" id="nested_f" checked="checked">
+	                     <label for="nested_f"><?php _e('False', 'ajax-load-more'); ?></label>
+	                  </li>
+	               </ul>
+	            </div>
+	         </div>
+	         
 	      </div>
 	   </div>
 	   <!-- End Options -->
@@ -204,7 +229,7 @@
 	            <div class="inner">
 	               <ul>
 	                  <li>
-	                     <input class="alm_element" type="radio" name="scroll" value="t" id="scroll_t" checked>
+	                     <input class="alm_element" type="radio" name="scroll" value="t" id="scroll_t" checked="checked">
 	                     <label for="scroll_t"><?php _e('True', 'ajax-load-more'); ?></label>
 	                  </li>
 	                  <li>
@@ -346,7 +371,7 @@
 		            <div class="inner">
 	                  <ul>
 	                     <li style="width:100%;">
-	                        <input class="alm_element" type="radio" name="masonry-animation" value="default" id="masonry-animation-default" checked>
+	                        <input class="alm_element" type="radio" name="masonry-animation" value="default" id="masonry-animation-default" checked="checked">
 	                        <label for="masonry-animation-default">
 	                           <?php _e('Default (Zoom)', 'ajax-load-more'); ?> 
 	                           <span class="description"><?php _e('Items scale up from 50% to 100% size on load','ajax-load-more'); ?>.</span>

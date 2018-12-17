@@ -500,7 +500,7 @@ var almMasonry = function almMasonry(container, items, selector, columnWidth, an
           }
 
           // Get custom Masonry options (https://masonry.desandro.com/options.html)
-        };var alm_masonry_vars = alm_masonry_vars;
+        };var alm_masonry_vars = window.alm_masonry_vars;
         if (alm_masonry_vars) {
           Object.keys(alm_masonry_vars).forEach(function (key) {
             // Loop object	to create key:prop			
@@ -546,6 +546,161 @@ var almMasonryFadeIn = function almMasonryFadeIn(element, speed) {
 };
 'use strict';
 
+/**  
+ *  Set the results text if required.
+ * 
+ *  @param {Object} alm
+ *  @since 4.1
+ */
+var almResultsText = function almResultsText(alm) {
+   if (!alm.resultsText) return false;
+
+   var resultsType = 'standard';
+   if (alm.nextpage && alm.resultsText) {
+      resultsType = 'nextpage';
+   } else if (alm.paging) {
+      resultsType = 'paging';
+   } else if (alm.preloaded === 'true') {
+      resultsType = 'preloaded';
+   } else {
+      resultsType = 'standard';
+   }
+   almGetResultsText(alm, resultsType);
+};
+
+/**  
+ *  Render `Showing {x} of {y} results` text.
+ * 
+ *  @param {Element} el
+ *  @param {String} current
+ *  @param {String} total
+ *  @since 4.1
+ */
+var almRenderResultsText = function almRenderResultsText(el, current, total) {
+   var text = alm_localize.display_results;
+   text = text.replace('{num}', current);
+   text = text.replace('{total}', total);
+   el.innerHTML = text;
+};
+
+/**  
+ *  Get values for showing results text.
+ * 
+ *  @param {Object} alm
+ *  @param {String} type
+ *  @since 4.1
+ */
+var almGetResultsText = function almGetResultsText(alm) {
+   var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
+
+
+   if (!alm.resultsText) return false;
+
+   var current = 0;
+   var total = 0;
+
+   switch (type) {
+
+      // Nextpage
+      case 'nextpage':
+
+         current = alm.page + 1 + parseInt(alm.nextpage_startpage);
+         total = parseInt(alm.totalposts) + parseInt(alm.nextpage_startpage);
+         almRenderResultsText(alm.resultsText, current, total);
+
+         break;
+
+      // Preloaded
+      case 'preloaded':
+
+         console.log(alm);
+
+         current = parseInt(alm.posts) + parseInt(alm.preloaded_amount);
+         total = parseInt(alm.totalposts) + parseInt(alm.preloaded_amount);
+         almRenderResultsText(alm.resultsText, current, total);
+
+         break;
+
+      // Paging
+      case 'paging':
+
+         var start = parseInt(alm.page) * parseInt(alm.posts_per_page) + 1;
+         current = start + ' - ' + (parseInt(start) - 1 + parseInt(alm.posts));
+         total = parseInt(alm.totalposts) + parseInt(alm.preloaded_amount);
+         almRenderResultsText(alm.resultsText, current, total);
+
+         break;
+
+      default:
+
+         current = alm.posts;
+         total = parseInt(alm.totalposts);
+         almRenderResultsText(alm.resultsText, current, total);
+
+   }
+};
+
+/**  
+ *  Display `Showing {x} of {y} results` text.
+ *
+ *  @param {Object} alm
+ *  @param {String} type
+ *  @since 4.1
+ */
+var almInitResultsText = function almInitResultsText(alm) {
+   var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
+
+
+   if (!alm.resultsText) return false;
+
+   var current = 0;
+   var total = 0;
+   var totalEl = '';
+
+   switch (type) {
+
+      // Nextpage
+      case 'nextpage':
+
+         current = alm.page + parseInt(alm.nextpage_startpage);
+         total = alm.localize.total_posts;
+         if (total) {
+            almRenderResultsText(alm.resultsText, current, total);
+         }
+
+         break;
+
+      // Preloaded
+      case 'preloaded':
+
+         current = parseInt(alm.posts) + parseInt(alm.preloaded_amount);
+         total = alm.localize.total_posts;
+         if (total) {
+            almRenderResultsText(alm.resultsText, current, total);
+         }
+
+         break;
+
+      // Paging
+      case 'paging':
+
+         var start = parseInt(alm.page) * parseInt(alm.posts_per_page) + 1;
+         current = start + ' - ' + (parseInt(start) - 1 + parseInt(alm.posts_per_page));
+         totalEl = alm.container.get(0).querySelector('.alm-preloaded');
+         if (totalEl) {
+            almRenderResultsText(alm.resultsText, current, totalEl.dataset.totalPosts);
+         }
+
+         break;
+
+      default:
+
+         console.log('nothing');
+
+   }
+};
+'use strict';
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 /*
@@ -587,11 +742,21 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       alm.prefix = 'alm-';
       alm.el = el;
       alm.master_id = alm.el.get(0).id; // the actual ALM div#id
+
+      // Get localized <script> variables
+      alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
+      alm.localize = window[alm.master_id + '_vars']; // Get localize vars
+
+      // Main ALM container
       alm.container = el;
       alm.container.addClass('alm-' + e).attr('data-alm-id', e); // Add unique classname and data id
-      alm.content = $('.alm-ajax', alm.container);
-      alm.content_preloaded = $('.alm-preloaded', alm.container);
+
+      var container = alm.container.get(0); // Get DOM element
+      alm.content = $(container.querySelector('.alm-ajax')); // Get first `.alm-ajax` element as $ obj
+      alm.content_preloaded = $(container.querySelector('.alm-preloaded')); // Get first `.alm-preloaded` element as $ obj
+
       alm.canonical_url = alm.el.attr('data-canonical-url');
+      alm.nested = alm.el.attr('data-nested');
       alm.is_search = alm.el.attr('data-search');
       alm.slug = alm.el.attr('data-slug');
       alm.post_id = alm.el.attr('data-post-id');
@@ -603,7 +768,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       alm.post_type = alm.content.attr('data-post-type');
       alm.post_type = alm.post_type.split(",");
       alm.sticky_posts = alm.content.attr('data-sticky-posts');
-      alm.btnWrap = $('.alm-btn-wrap', alm.container);
+      alm.btnWrap = $('> .alm-btn-wrap', alm.container);
       alm.btnWrap.get(0).style.visibility = 'visible';
       alm.button_label = alm.content.attr('data-button-label');
       alm.button_loading_label = alm.content.attr('data-button-loading-label');
@@ -772,16 +937,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
          // Get Preloaded Amount
          alm.preloaded_amount = alm.preloaded_amount === undefined ? alm.posts_per_page : alm.preloaded_amount;
 
-         // Get the preloaded localized <script> object to get total_posts
-         var var_master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
-         var_master_id = var_master_id + '_vars'; // This is the localize variable on the screen (ajax_load_more_vars)
-
-         var preloaded_vars = window[var_master_id]; // Get localize vars
-
          // Disable ALM if total_posts is </= preloaded_amount
-         if (preloaded_vars && preloaded_vars.total_posts) {
-            if (parseInt(preloaded_vars.total_posts) <= parseInt(alm.preloaded_amount)) {
-               alm.preloaded_total_posts = preloaded_vars.total_posts;
+         if (alm.localize && alm.localize.total_posts) {
+            if (parseInt(alm.localize.total_posts) <= parseInt(alm.preloaded_amount)) {
+               alm.preloaded_total_posts = alm.localize.total_posts;
                alm.disable_ajax = true;
             }
          }
@@ -972,11 +1131,19 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       if (alm.paging) {
          alm.content.parent().addClass('loading'); // add loading class to main container
       } else {
-         alm.button = $('.alm-load-more-btn', alm.container); // Set button element	 	
+         alm.button = $('> .alm-btn-wrap .alm-load-more-btn', alm.container); // Set button element	 	
       }
 
-      /*  loadPosts()
-       *
+      // Render "Showing x of y results" text.
+      alm.resultsText = document.querySelector('.alm-results-text');
+      if (alm.resultsText) {
+         alm.resultsText.innerHTML = alm_localize.display_results;
+      } else {
+         alm.resultsText = false;
+      }
+
+      /**  
+       *  LoadPosts()
        *  The function to get posts via Ajax
        *  @since 2.0.0
        */
@@ -1251,7 +1418,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             // Standard ALM query results
             html = data.html;
             meta = data.meta;
-            alm.posts = alm.posts + meta.postcount;
+            alm.posts = alm.paging ? meta.postcount : alm.posts + meta.postcount;
             total = meta.postcount;
             alm.totalposts = meta.totalposts;
 
@@ -1260,12 +1427,18 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             }
          }
 
-         alm.data = $(html); // data converted to an object
+         // Set localized vars for totalposts
+         alm.setlocalizedVars('viewing', alm.posts);
+         alm.setlocalizedVars('total_posts', alm.totalposts);
 
-         if (is_cache) {
-            // If cache, get the length of the data object
-            total = alm.data.length;
-         }
+         almResultsText(alm); // Set Results Text           
+
+
+         // data converted to an object
+         alm.data = $(html);
+
+         // If cache, get the length of the data object
+         total = is_cache ? alm.data.length : total;
 
          // First Run
          if (alm.init) {
@@ -1508,10 +1681,13 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                // Paging
                if (!alm.init) {
                   $('.alm-paging-content', alm.el).html('').append(alm.data).almWaitForImages().done(function () {
-                     // Remove loading class and append data
+                     // Remove loading class, append data
                      $('.alm-paging-loading', alm.el).fadeOut(alm.speed); // Fade out loader
                      if ($.isFunction($.fn.almOnPagingComplete)) {
-                        $.fn.almOnPagingComplete(alm);
+                        setTimeout(function () {
+                           // Delay for effect		                     
+                           $.fn.almOnPagingComplete(alm);
+                        }, alm.speed);
                      }
                      alm.container.removeClass('alm-loading');
                      alm.AjaxLoadMore.triggerAddons(alm);
@@ -1536,18 +1712,6 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             // End ALM Complete
 
 
-            // Filters Add-on Complete            
-            if ($.isFunction($.fn.almFilterComplete)) {
-               // Standard Filtering
-               $.fn.almFilterComplete();
-            }
-            if (typeof almFiltersAddonComplete == "function") {
-               // Filters Add-on
-               almFiltersAddonComplete(el);
-            }
-            // End Filters Add-on Complete
-
-
             // ALM Done
             if (!alm.cache) {
                // Not Cache & Previous Post
@@ -1563,14 +1727,28 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             // End ALM Done
 
          } else {
+            // No Results!	         
 
-            // No Results!
             if (!alm.paging) {
+               // Add .done class, reset btn text
                alm.button.delay(alm.speed).removeClass('loading').addClass('done');
                alm.AjaxLoadMore.resetBtnText();
             }
+
             alm.AjaxLoadMore.triggerDone(); // ALM Done
          }
+
+         // Filters Complete            
+         if ($.isFunction($.fn.almFilterComplete)) {
+            // Standard Filtering
+            $.fn.almFilterComplete();
+         }
+         if (typeof almFiltersAddonComplete == "function") {
+            // Filters Add-on
+            almFiltersAddonComplete(el);
+         }
+         // End Filters Complete
+
 
          // Destroy After
          if (alm.destroy_after !== undefined && alm.destroy_after !== '') {
@@ -1586,8 +1764,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
          }
          // End Destroy After
 
-         alm_is_filtering = false;
-         alm.init = false;
+         alm_is_filtering = alm.init = false;
       };
 
       /*  pagingPreloadedInit()
@@ -1920,8 +2097,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
          }
       };
 
-      /*  Transition End 
-      *
+      /**  
       *  Set variables after loading transiton completes
       *  @since 3.5 
       */
@@ -1937,8 +2113,19 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
          }, alm.speed);
       };
 
-      /*  Init Ajax load More
-       *
+      /**  
+       *  Set localized variables 
+       *  @since 4.1 
+       */
+      alm.setlocalizedVars = function (name, value) {
+         if (alm.localize && name && value) {
+            alm.localize[name] = value; // Set ALM localize var
+            window[alm.master_id + '_vars'][name] = value; // Update global window obj vars
+         }
+      };
+
+      /**  
+      *  Init Ajax load More
        *  Load posts as user scrolls the page
        *  @since 2.0 
        */
@@ -1977,6 +2164,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                   $.fn.almSEO(alm, true);
                }
             }, alm.speed);
+
+            if (alm.resultsText) {
+               almInitResultsText(alm, 'preloaded');
+            }
          }
 
          // Preloaded
@@ -1994,19 +2185,34 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                   }
                }
             }, alm.speed);
+
+            if (alm.resultsText) {
+               almInitResultsText(alm, 'preloaded');
+            }
+         }
+
+         if (alm.paging) {
+            if (alm.resultsText) {
+               almInitResultsText(alm, 'paging');
+            }
          }
 
          // Next Page Add-on
          if (alm.nextpage) {
-            if ($('.alm-nextpage').length > 1) {
-               // If alm-nextpage is greater than 1, check that posts remain.
-               // triggerDone is total equals total-pages
-               var alm_nextpage_pages = $('.alm-nextpage').length,
-                   alm_nextpage_total = $('.alm-nextpage').eq(0).data('total-pages');
+
+            if ($('.alm-nextpage', alm.container).length) {
+
+               // `.alm-nextpage` check that posts remain
+               var alm_nextpage_pages = $('.alm-nextpage', alm.container).length,
+                   alm_nextpage_total = $('.alm-nextpage', alm.container).eq(0).data('total-posts');
 
                if (alm_nextpage_pages == alm_nextpage_total) {
                   alm.AjaxLoadMore.triggerDone();
                }
+            }
+
+            if (alm.resultsText) {
+               almInitResultsText(alm, 'nextpage');
             }
          }
 
@@ -2018,6 +2224,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             }
          });
       };
+
       alm.AjaxLoadMore.init();
 
       //flag to prevent unnecessary loading of post on init. Hold for 2/10 of a second
@@ -2114,8 +2321,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
    // End $.ajaxloadmore
 
 
-   /* $.fn.ajaxloadmore()
-      *
+   /** 
+      *  $.fn.ajaxloadmore()
       *  Initiate all instances of Ajax load More
       *  @since 2.1.2
       */

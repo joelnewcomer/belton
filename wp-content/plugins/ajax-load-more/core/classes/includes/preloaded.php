@@ -282,6 +282,7 @@ else {
 
 
 	// Add total_posts to localized ALM JS variables
+	ALM_LOCALIZE::add_localized_var('viewing', $alm_preload_query->post_count, $div_id);
 	ALM_LOCALIZE::add_localized_var('total_posts', $alm_total_posts, $div_id);
 	
 	
@@ -296,8 +297,12 @@ else {
 		// Append querystring to data-url
       $querystring = ($querystring) ? '?'.$querystring : '';
       
-      $alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded'. $transition_container_classes .'" data-page="1" data-url="'. $canonicalURL .''. $search_slug . $querystring .'">';
+      $alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded'. $transition_container_classes .'" data-page="1" data-url="'. $canonicalURL .''. $search_slug . $querystring .'" data-total-posts="'. $alm_preload_query->found_posts .'">';
       
+   } else {
+	   
+	   $alm_reveal= '<div class="alm-reveal alm-preloaded'. $transition_container_classes .'" data-total-posts="'. $alm_preload_query->found_posts .'">';
+	   
    }
    
    // Open .alm-reveal
