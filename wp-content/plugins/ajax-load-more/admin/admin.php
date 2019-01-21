@@ -1305,12 +1305,6 @@ function alm_admin_init(){
    }
 
 
-	// PREVIOUS POST
-	if(has_action('alm_prev_post_settings')){
-   	do_action('alm_prev_post_settings');
-   }
-
-
 	// PRELOADED
 	if(has_action('alm_preloaded_settings')){
    	do_action('alm_preloaded_settings');
@@ -1327,6 +1321,12 @@ function alm_admin_init(){
 	if(has_action('alm_seo_settings')){
 		do_action('alm_seo_settings');
 	}
+
+
+	// SINGLE POST
+	if(has_action('alm_prev_post_settings')){
+   	do_action('alm_prev_post_settings');
+   }
 
 
 	// THEME REPEATERS

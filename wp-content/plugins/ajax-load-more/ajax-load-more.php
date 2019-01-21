@@ -6,15 +6,15 @@ Description: The ultimate solution to add infinite scroll functionality to your 
 Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
-Author URI: https://connekthq.com 
-Version: 4.1.0
+Author URI: https://connekthq.com
+Version: 4.2.0.1
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '4.1.0');
-define('ALM_RELEASE', 'December 6, 2018');
+define('ALM_VERSION', '4.2.0.1');
+define('ALM_RELEASE', 'January 16, 2019');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -87,6 +87,19 @@ function alm_create_table(){
 		// Insert the default data in created table
 		$wpdb->insert($table_name , array('name' => 'default', 'repeaterDefault' => $defaultRepeater, 'repeaterType' => 'default', 'pluginVersion' => ALM_VERSION));
 	}
+}
+
+
+
+/*
+*  alm_render
+*  Render Ajax Load More public function
+*
+*  @param {array} $args
+*  @since 4.2.0
+*/
+function alm_render($args){
+	echo AjaxLoadMore::alm_shortcode($args);
 }
 
 
@@ -345,7 +358,7 @@ if( !class_exists('AjaxLoadMore') ):
 
    		// Core ALM JS
          $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min'; // Use minified libraries if SCRIPT_DEBUG is turned off
-   		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more'. $suffix .'.js', __FILE__ ), $dependencies,  ALM_VERSION, true );
+   		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more'.$suffix.'.js', __FILE__ ), $dependencies,  ALM_VERSION, true );
 
    		// Progress Bar JS
    		wp_register_script( 'ajax-load-more-progress', plugins_url( '/vendor/js/pace/pace.min.js', __FILE__ ), 'ajax-load-more',  ALM_VERSION, true );
@@ -380,7 +393,6 @@ if( !class_exists('AjaxLoadMore') ):
    				'ajax_object' => array('is_single' => true, 'is_singular' => true )
    			)
    		);
-
    	}
 
 
@@ -392,7 +404,6 @@ if( !class_exists('AjaxLoadMore') ):
    	*  @since 2.0.0
    	*  @updated 3.2.0
    	*/
-
    	public function alm_shortcode($atts) {
 	   	self::$shortcode_atts = $atts;
       	return ALM_SHORTCODE::alm_render_shortcode($atts);
@@ -503,13 +514,13 @@ if( !class_exists('AjaxLoadMore') ):
          }
 
 
-         // Previous Post Add-on
-         $previous_post = false;
-   		$pp_data = (isset($_GET['previous_post'])) ? $_GET['previous_post'] : false;
-   		if($pp_data){
-      		$previous_post = true;
-      		$previous_post_id = (isset($pp_data['id'])) ? $pp_data['id'] : '';
-      		$previous_post_slug = (isset($pp_data['slug'])) ? $pp_data['slug'] : '';
+         // Single Post Add-on
+         $single_post = false;
+   		$single_post_data = (isset($_GET['single_post'])) ? $_GET['single_post'] : false;
+   		if($single_post_data){
+      		$single_post = true;
+      		$single_post_id = (isset($single_post_data['id'])) ? $single_post_data['id'] : '';
+      		$single_post_slug = (isset($single_post_data['slug'])) ? $single_post_data['slug'] : '';
          }
 
 
@@ -528,16 +539,14 @@ if( !class_exists('AjaxLoadMore') ):
 
 
    		/*
-	   	 *	alm_prev_post_args
+	   	 *	alm_single_post_args
 	   	 *
-	   	 * Previous Post Add-on hook
-	   	 * Hijack $args and and return previous post only $args
+	   	 * Single Post Add-on hook
+	   	 * Hijack $args and and return single post only $args
 	   	 *
 	   	 * @return $args;
 	   	 */
-   		if($previous_post && has_action('alm_prev_post_installed')){
-      		$args = apply_filters('alm_prev_post_args', $previous_post_id, $postType);
-         }
+   		$args = ($single_post && has_action('alm_single_post_installed')) ? apply_filters('alm_single_post_args', $single_post_id, $postType) : $args;
 
 
 
@@ -671,9 +680,9 @@ if( !class_exists('AjaxLoadMore') ):
       	   	 * @return null
       	   	 */
    	         if(!empty($cache_id) && has_action('alm_cache_installed') && $do_create_cache){
-      	         if($previous_post){
-         	         // Previous Post Cache
-   	               apply_filters('alm_previous_post_cache_file', $cache_id, $previous_post_id, $data);
+      	         if($single_post){
+         	         // Single Post Cache
+   	               apply_filters('alm_previous_post_cache_file', $cache_id, $single_post_id, $data);
       	         }else{
          	         // Standard Cache
    	               apply_filters('alm_cache_file', $cache_id, $page, $seo_start_page, $data, $preloaded);

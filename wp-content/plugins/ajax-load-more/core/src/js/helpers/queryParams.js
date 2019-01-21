@@ -56,8 +56,8 @@ let almGetAjaxParams = function(alm, action, queryType){
    if(alm.nextpage_array){
       data.nextpage = alm.nextpage_array;
    } 
-   if(alm.previous_post_array){
-      data.previous_post = alm.previous_post_array;
+   if(alm.single_post_array){
+      data.single_post = alm.single_post_array;
    }
    if(alm.users_array){
       data.users = alm.users_array;

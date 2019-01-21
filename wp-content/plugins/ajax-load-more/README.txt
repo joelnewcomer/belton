@@ -3,8 +3,8 @@ Contributors: dcooney, connekthq
 Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 3.6
-Tested up to: 5.0
-Stable tag: 4.1.0
+Tested up to: 5.0.3
+Stable tag: 4.2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,6 @@ Build complex custom WordPress queries with the Ajax Load More shortcode builder
 Ajax Load More is compatible for endless scrolling with popular eCommerce plugins such as WooCommerce and Easy Digital Downloads.
 
 [&rarr; Get More Information](https://connekthq.com/plugins/ajax-load-more/)
-
 
 
 
@@ -62,7 +61,7 @@ Check out the examples below:
 *   [Comments](http://examples.connekthq.com/alm-comments/example-post/) *
 *   [Advanced Custom Fields](https://connekthq.com/plugins/ajax-load-more/examples/advanced-custom-fields/)
 
-* _Add-on required_
+_*Add-on required_
 
 
 
@@ -179,8 +178,8 @@ The [Custom Repeater Add-On](https://connekthq.com/plugins/ajax-load-more/custom
 * **[Next Page](https://connekthq.com/plugins/ajax-load-more/add-ons/next-page/)**: Infinite scroll multipage WordPress content with Ajax Load More and the Next Page add-on.
 * **[Paging](https://connekthq.com/plugins/ajax-load-more/add-ons/paging/)**: Replace the default lazy load/infinite scroll functionality of Ajax Load More with a numbered navigation system.
 * **[Preloaded](https://connekthq.com/plugins/ajax-load-more/add-ons/preloaded/)**: Load an initial set of posts before sending any Ajax requests to your server.
-* **[Previous Post](https://connekthq.com/plugins/ajax-load-more/add-ons/previous-post/)**: Enable infinite scrolling of older(previous) posts on your WordPress single post templates.
 * **[SEO](https://connekthq.com/plugins/ajax-load-more/add-ons/search-engine-optimization/)**: Generate unique paging URLs with each Ajax Load More query.
+* **[Single Post](https://connekthq.com/plugins/ajax-load-more/add-ons/single-post/)**: Enable infinite scrolling of single posts on your WordPress post templates.
 * **[Theme Repeaters](https://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/)**: Manage Ajax Load More repeater templates from within your current theme directory.
 * **[Users](https://connekthq.com/plugins/ajax-load-more/add-ons/users/)**: Lazy loading WordPress Users with Ajax Load More.
 
@@ -235,7 +234,7 @@ The following [functions](https://connekthq.com/plugins/ajax-load-more/docs/call
     };
 
 
-**URL Update** - The almUrlUpdate() function is triggered after a successful URL update (pushState) from the Previous Post or the Search Engine Optimization add-on
+**URL Update** - The almUrlUpdate() function is triggered after a successful URL update (pushState) from the Single Post or the Search Engine Optimization add-on
 
     $.fn.almUrlUpdate = function(permalink, type){
         console.log("URL updated to " + permalink + '- dispatched from the '+ type + ' add-on.');
@@ -371,6 +370,18 @@ How to install Ajax Load More.
 
 
 == Changelog ==
+
+= 4.2.0.1 - January 16, 2019 =
+* FIX - Removed duplicate `transition_container_classes` when using Paging add-on.
+* FIX - Fixed issue with `alm-listing` container causing an error with the Comments addon.
+
+= 4.2.0 - January 15, 2019 =
+* UPGRADE NOTICE - If you also are using the Previous Post add-on you must also update that plugin.
+* NEW - Added new render function `alm_render` for displaying ALM without a shortcode.
+* UPDATE - Started updating core JS to remove jQuery functions. Hopefully sooner than later jQuery will no longer be a dependancy.
+* UPDATE - Updated default `scroll_distance` to 100 from 150.
+* UPDATE - Various admin UI/UX updates.
+* UPDATE - Various bug fixes.
 
 = 4.1.0 - December 6, 2018 =
 * NEW - Added initial support for nesting Ajax Load More instances. Users can now run Ajax Load More inside of another instance of Ajax Load More. For example, using Next Page add-on functionality inside of Previous Post content(Single posts). `[ajax_load_more nested="true"]`. Note: This is new functionality as should be used with caution as it has not fully been tested through every possible situation. Nested ALM Filters are not currently supported.

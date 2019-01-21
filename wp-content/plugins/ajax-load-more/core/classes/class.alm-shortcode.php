@@ -89,8 +89,14 @@ if( !class_exists('ALM_SHORTCODE') ):
       		'nextpage_start' => 1,
       		'previous_post' => false,
       		'previous_post_id' => 'null',
+      		'previous_post_order' => 'previous',
       		'previous_post_taxonomy' => '',
       		'previous_post_excluded_terms' => '',
+      		'single_post' => false,
+      		'single_post_id' => 'null',
+      		'single_post_order' => 'previous',
+      		'single_post_taxonomy' => '',
+      		'single_post_excluded_terms' => '',
    			'cache' => 'false',
    			'cache_id' => '',
    			'paging' => 'false',
@@ -140,7 +146,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'offset' => '0',
    			'posts_per_page' => '5',
    			'scroll' => 'true',
-   			'scroll_distance' => '150',
+   			'scroll_distance' => '100',
    			'scroll_container' => '',
    			'max_pages' => '0',
    			'pause_override' => 'false',
@@ -164,6 +170,17 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'id' => '',
    			'primary' => false
    		), $atts));  		
+   		
+   		
+   		// Backwards compat
+   		// If $previous_post_ is true, set the $single_post_{value} params
+   		if($previous_post === 'true'){
+	   		$single_post = 'true';
+	   		$single_post_id = $previous_post_id;
+	   		$single_post_order = $previous_post_order;
+	   		$single_post_taxonomy = $previous_post_taxonomy;
+	   		$single_post_excluded_terms = $previous_post_excluded_terms;
+   		}
 
 
 			// Start Enqueue Scripts
@@ -225,8 +242,8 @@ if( !class_exists('ALM_SHORTCODE') ):
          }
 
          // Previous Post
-         if(has_action('alm_prev_post_installed') && $previous_post === 'true'){
-      		wp_enqueue_script( 'ajax-load-more-previous-post' );
+         if(has_action('alm_single_post_installed') && $single_post === 'true'){
+      		wp_enqueue_script( 'ajax-load-more-single-posts' );
          }
 
    		// SEO
@@ -253,7 +270,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    		// Filters - Set initial shortcode state
    		$filters = ($filters === 'true' && class_exists('ALMFilters')) ? true : false;
    		if($filters){      		
-      		$previous_post = $seo = false;
+      		$single_post = $seo = false;
       		$transition_container = "true"; // required
       		if(defined('ALM_FILTERS_PATH')){
 	   			include(ALM_FILTERS_PATH .'includes/initial-state-params.php');
@@ -261,10 +278,10 @@ if( !class_exists('ALM_SHORTCODE') ):
    		}   
 			
 			
-         $previous_post = ($previous_post === 'true') ? true : false;
+         $single_post = ($single_post === 'true') ? true : false;
       
 
-   		if($seo === "true" || $previous_post || $filters){
+   		if($seo === "true" || $single_post || $filters){
             $transition_container = "true";
          }
          
@@ -280,7 +297,7 @@ if( !class_exists('ALM_SHORTCODE') ):
          // Get container elements (ul | div)
 
    		$container_element = 'ul';
-   		if($options['_alm_container_type'] == '2' || $previous_post){
+   		if($options['_alm_container_type'] == '2' || $single_post){
    			$container_element = 'div';
          }
          
@@ -292,7 +309,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    		}
 
    		// Previous Post
-   		if($previous_post){
+   		if($single_post){
       		$posts_per_page = 1;
    			$container_element = 'div';
    		}
@@ -404,9 +421,9 @@ if( !class_exists('ALM_SHORTCODE') ):
 				$ajaxloadmore .= apply_filters('alm_masonry_before', $transition);
 
 
-	   		// Previous Post Add-on
+	   		// Single Post Add-on
 	   		// - Set other add-on params to false
-	   		if($previous_post){
+	   		if($single_post){
 	      		$preloaded = false;
 	      		$seo = false;
 	      		$paging = false;
@@ -418,7 +435,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   		// Comments Add-on
 	   		// - Set other add-on params to false
 	   		if($comments){
-	      		$previous_post = false;
+	      		$single_post = false;
 	      		$seo = false;
 	      		$cache = false;
 	      		$acf = false;
@@ -438,7 +455,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   		// Nextpage Add-on
 	   		// - Set other add-on params to false
 	   		if($nextpage){
-	      		$previous_post = false;
+	      		$single_post = false;
 	      		$seo = false;
 	      		$preloaded = false;
 	      		$comments = false;
@@ -654,16 +671,17 @@ if( !class_exists('ALM_SHORTCODE') ):
    	         }
    
    
-   	   		// Previous Post Post Add-on
-   	   		if(has_action('alm_prev_post_installed') && $previous_post){
-   	   		   $prev_post_return = apply_filters(
-   	   		   	'alm_prev_post_shortcode',
-   	   		   	$previous_post_id,
-   	   		   	$previous_post_taxonomy,
-   	   		   	$previous_post_excluded_terms,
+   	   		// Single Posts Add-on
+   	   		if(has_action('alm_single_post_installed') && $single_post){
+   	   		   $single_post_return = apply_filters(
+   	   		   	'alm_single_post_shortcode',
+   	   		   	$single_post_id,
+   	   		   	$single_post_order,
+   	   		   	$single_post_taxonomy,
+   	   		   	$single_post_excluded_terms,
    	   		   	$options
    	   		   );
-   	   			$ajaxloadmore .= $prev_post_return;
+   	   			$ajaxloadmore .= $single_post_return;
    	         }
    
    
@@ -818,7 +836,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 
 	   		// Previous Post
 	         // Get first post and append to alm object
-	   		if(has_action('alm_prev_post_installed') && $previous_post){
+	   		if(has_action('alm_single_post_installed') && $single_post){
    	   		
 	      		$repeater_type = preg_split('/(?=\d)/', $repeater, 2); // split $repeater at number to retrieve type
 	      		$repeater_type = $repeater_type[0]; // (default | repeater | template_)
@@ -827,23 +845,23 @@ if( !class_exists('ALM_SHORTCODE') ):
 	               $repeater_type = null;
 	            }
 	            // Get current permalink - (including querystring)
-					$previous_post_permanlink =  ($_SERVER["QUERY_STRING"]) ? get_permalink($previous_post_id) .'?'. $_SERVER["QUERY_STRING"] : get_permalink($previous_post_id);
+					$single_post_permanlink =  ($_SERVER["QUERY_STRING"]) ? get_permalink($single_post_id) .'?'. $_SERVER["QUERY_STRING"] : get_permalink($single_post_id);
 
 	            // Get previous post include, build output from the next post filter
-	            $previous_post_output = '<div class="alm-reveal alm-previous-post post-'. $previous_post_id .'" data-url="'. $previous_post_permanlink .'" data-title="'. strip_tags(get_the_title($previous_post_id)) .'" data-id="'. $previous_post_id .'" data-page="0">'; // Set the post id .alm-reveal div
+	            $single_post_output = '<div class="alm-reveal alm-single-post post-'. $single_post_id .'" data-url="'. $single_post_permanlink .'" data-title="'. strip_tags(get_the_title($single_post_id)) .'" data-id="'. $single_post_id .'" data-page="0">'; // Set the post id .alm-reveal div
 
 
    	            /*
-   			   	 *	alm_prev_post_inc
+   			   	 *	alm_single_post_inc
    			   	 *
    			   	 * Previous Post Add-on hook
    			   	 *
    			   	 * @return $args;
    			   	 */
-   	      		$previous_post_output .= apply_filters('alm_prev_post_inc', $repeater, $repeater_type, $theme_repeater, $previous_post_id, $post_type);
+   	      		$single_post_output .= apply_filters('alm_single_post_inc', $repeater, $repeater_type, $theme_repeater, $single_post_id, $post_type);
 
-	            $previous_post_output .= '</div>';
-	   			$ajaxloadmore .= $previous_post_output; // Add $previous_post_output data to $ajaxloadmore
+	            $single_post_output .= '</div>';
+	   			$ajaxloadmore .= $single_post_output; // Add $single_post_output data to $ajaxloadmore
 
 	         }
 	         // End Previous Post
@@ -933,7 +951,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    		
    		
    		// Add some localized vars
-   		ALM_LOCALIZE::add_localized_var('IP', $_SERVER['REMOTE_ADDR'], $div_id);
+   		ALM_LOCALIZE::add_localized_var('id', $div_id, $div_id);
          
          
          
@@ -967,12 +985,7 @@ if( !class_exists('ALM_SHORTCODE') ):
          if($paging !== 'true'){            	         
 	         $btn_element = 'button';
 	         $btn_href = '';
-	         $btn_rel = ' rel="next"';
-				/* if($seo === 'true'){
-   	         $btn_element = 'a'; // Convert to link for SEO
-   	         $btn_href = ' href="'. $canonicalURL .'"';
-   	         $btn_rel = ' rel="next"';
-	         } */	        	         
+	         $btn_rel = ' rel="next"';      	         
 	         $html .= '<'. $btn_element .' class="alm-load-more-btn more'. $button_classname .'"'. $btn_href . $btn_rel .'>'. $button_label .'</'. $btn_element .'>';	         
          }         
          $html .= '</div>';

@@ -103,7 +103,10 @@
                </label>
                <input id="next-page-scroll-top" name="next-page-scroll-top" class="alm_element sm" type="number" min="0" max="1000" step="1" value="30" placeholder="30">
             </div>
-         </div>
+         </div>                  
+		   
+         <div class="clear"></div>
+         <hr>
 
          <p class="warning-callout">
             <?php _e('You must add the Next Page shortcode directly to your single template file using the <a href="https://developer.wordpress.org/reference/functions/do_shortcode/" target="_blank">do_shortcode</a> method. &raquo; <a href="https://connekthq.com/plugins/ajax-load-more/add-ons/next-page/" target="_blank">View documentation</a>', 'ajax-load-more'); ?>
