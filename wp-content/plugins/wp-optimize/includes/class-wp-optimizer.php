@@ -261,19 +261,24 @@ class WP_Optimizer {
 	/**
 	 * Returns information about database tables.
 	 *
+	 * @param bool $update refresh or no cached data
+	 *
 	 * @return mixed
 	 */
-	public function get_tables() {
+	public function get_tables($update = false) {
 		static $tables_info = null;
 
-		if (null !== $tables_info) return $tables_info;
+		if (false === $update && null !== $tables_info) return $tables_info;
 
-		$table_status = WP_Optimize()->get_db_info()->get_show_table_status();
+		$table_status = WP_Optimize()->get_db_info()->get_show_table_status($update);
 
 		// Filter on the site's DB prefix (was not done in releases up to 1.9.1).
 		$table_prefix = $this->get_table_prefix();
 		
 		if (is_array($table_status)) {
+
+			$corrupted_tables_count = 0;
+
 			foreach ($table_status as $index => $table) {
 				$table_name = $table->Name;
 				
@@ -291,10 +296,14 @@ class WP_Optimizer {
 				$table_status[$index]->is_optimizable = WP_Optimize()->get_db_info()->is_table_optimizable($table_name);
 				$table_status[$index]->is_type_supported = WP_Optimize()->get_db_info()->is_table_type_optimize_supported($table_name);
 				// add information about corrupted tables.
-				$table_status[$index]->is_needing_repair = WP_Optimize()->get_db_info()->is_table_needing_repair($table_name);
+				$is_needing_repair = WP_Optimize()->get_db_info()->is_table_needing_repair($table_name);
+				$table_status[$index]->is_needing_repair = $is_needing_repair;
+				if ($is_needing_repair) $corrupted_tables_count++;
 
 				$table_status[$index] = $this->join_plugin_information($table_name, $table_status[$index]);
 			}
+
+			WP_Optimize()->get_options()->update_option('corrupted-tables-count', $corrupted_tables_count);
 		}
 
 		$tables_info = apply_filters('wp_optimize_get_tables', $table_status);
