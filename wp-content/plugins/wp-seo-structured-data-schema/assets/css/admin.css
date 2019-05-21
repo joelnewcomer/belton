@@ -137,6 +137,7 @@
 
 .rt-tab-container .field-container input.kcseo-date {
     width: auto;
+    min-width: 180px;
 }
 
 /* tab */

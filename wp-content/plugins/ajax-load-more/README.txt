@@ -3,8 +3,8 @@ Contributors: dcooney, connekthq
 Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.0
-Tested up to: 5.1.1
-Stable tag: 5.0.2
+Tested up to: 5.2.0
+Stable tag: 5.1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -328,7 +328,7 @@ global $post;
 * Safari (Mac, iOS)
 * Opera
 * Android
-* IE10+
+* IE11+
 
 
 = How Can You Contribute? =
@@ -376,6 +376,34 @@ How to install Ajax Load More.
 
 
 == Changelog ==
+
+= 5.1.0.1 - May 7, 2019 =
+
+* UPDATE - After the 5.1.0 launch I discovered an issue with the REST API and WooCommerce. I have reverted the default REST API Usage until I can sort this out. 😢
+
+
+= 5.1.0 - May 7, 2019 =
+
+MAJOR UPDATE NOTICE
+Ajax Load More can now use the WordPress REST API as the default for Ajax requests - this includes all add-ons and extensions. 
+Users that wish to continue using `admin-ajax.php` for Ajax requests can disable the REST API from  `Ajax Load More > Settings > Global Settings` in your WordPress admin. 
+
+For backwards compatibility, all users running WordPress version 4.7 or lower will default to using `admin-ajax.php`.
+
+Please update all your add-ons and extensions when you update Ajax Load More as this release contains breaking changes.
+
+What's New in 5.1.0
+* NEW - ALM now uses the REST API for all Ajax queries 👏. This includes all add-ons and extensions.
+* NEW - Added new Results Text display for displaying the current page number to users. [view example](https://connekthq.com/plugins/ajax-load-more/examples/results-text/)
+* NEW - Added custom JavaScript fix for reply links in Comment query causing page refresh.
+* NEW - Added custom WP_Query parameter, `alm_query` that can be used in hooks/filters to modify the current query.
+* UPDATE - Added `aria` attributes and focus position after Ajax load to improve plugin accessibility.
+* FIX - Fixed issue with images not displaying in Safari when `transition_container="false"` is set.
+* FIX - Fixed issue where Load More button was not hiding after `destory_after` value was reached.
+* FIX - Fixed issue with `meta_value` shortcode parameter. Passing zero as a value was returning false and not the number.
+* FIX - Fixed IE11 issue where filtering was not working with camelCase data attributes. 
+
+
 
 = 5.0.2 - April 4, 2019 =
 * NEW - `alm_shortcode_defaults` filter (docs coming soon).

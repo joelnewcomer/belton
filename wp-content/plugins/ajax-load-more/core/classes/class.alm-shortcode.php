@@ -408,8 +408,8 @@ if( !class_exists('ALM_SHORTCODE') ):
 
    		// Start ALM object
    		$ajaxloadmore = '';
-
-
+			
+			
 
 			/*
 	   	 *	alm_before_container
@@ -506,6 +506,7 @@ if( !class_exists('ALM_SHORTCODE') ):
             	'acf_post_id'   		=> $acf_post_id,
             	'acf_field_type'  	=> $acf_field_type,
             	'acf_field_name'     => $acf_field_name,
+            	'nextpage' 				=> $nextpage,
             	'users' 					=> $users,
             	'users_role' 			=> $users_role,
             	'users_include' 		=> $users_include,
@@ -566,7 +567,8 @@ if( !class_exists('ALM_SHORTCODE') ):
             
             // Open #ajax-load-more
             
-	   		$ajaxloadmore .= '<'.$container_element.' class="'.$listing_class.' alm-ajax'. $paging_container_class . $classname . $css_classes .'"'.$paging_transition.'';
+	   		$ajaxloadmore .= '<'.$container_element.' aria-live="polite"';   	   		
+					$ajaxloadmore .= ' class="'.$listing_class.' alm-ajax'. $paging_container_class . $classname . $css_classes .'"'.$paging_transition.'';
 
 					// Build container data atts
 
@@ -791,7 +793,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   		
    	   		// Meta Query
    	   		$ajaxloadmore .= (!empty($meta_key)) ? ' data-meta-key="'.$meta_key.'"' : '';
-   	   		$ajaxloadmore .= (!empty($meta_value)) ? ' data-meta-value="'.$meta_value.'"' : '';
+   	   		$ajaxloadmore .= (!empty($meta_value) || $meta_value === '0') ? ' data-meta-value="'.$meta_value.'"' : '';
    	   		$ajaxloadmore .= (!empty($meta_compare)) ? ' data-meta-compare="'.$meta_compare.'"' : '';
    	   		$ajaxloadmore .= (!empty($meta_relation)) ? ' data-meta-relation="'.$meta_relation.'"' : '';
    	   		$ajaxloadmore .= (!empty($meta_type)) ? ' data-meta-type="'.$meta_type.'"' : '';
@@ -925,6 +927,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	            $nextpage_is_paged = ($nextpage_start > 1) ? true : false;
 
 	            $alm_nextpage_output = apply_filters('alm_init_nextpage', $nextpage_post_id, $nextpage_start,$nextpage_is_paged, $paging, $div_id, $id);
+	            	            
 	            $ajaxloadmore .= $alm_nextpage_output;
 
 	         }
@@ -967,6 +970,12 @@ if( !class_exists('ALM_SHORTCODE') ):
             
             // Render <noscript> pagination for SEO and Preloaded (./preloaded.php)
             $ajaxloadmore .= (!empty($noscript_pagingnav)) ? $noscript_pagingnav : '';
+            
+            
+            // Render <noscript> pagination for Nextpage addon		
+            if(has_action('alm_nextpage_installed') && $nextpage){   
+		      	$ajaxloadmore .= apply_filters( 'alm_nextpage_noscript_paging', $query_args['post_id'], $query_args['id'] ); // located in Nextpage add-on
+		      }
             
             
 			// Close #ajax-load-more
