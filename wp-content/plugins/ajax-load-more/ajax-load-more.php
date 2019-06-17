@@ -7,26 +7,27 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com 
-Version: 5.1.0.1
+Version: 5.1.1
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '5.1.0.1');
-define('ALM_RELEASE', 'May 7, 2019');
+define('ALM_VERSION', '5.1.1');
+define('ALM_RELEASE', 'May 29, 2019');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
 
-/*
-*  alm_install
-*  Activation hook - Create table & repeater
-*
-*  @since 2.0.0
-*/
+/**
+ * alm_install
+ * Activation hook - Create table & repeater
+ *
+ * @since 2.0.0
+ */
 
 function alm_install($network_wide) {
+	
    global $wpdb;
 	add_option( "alm_version", ALM_VERSION ); // Add to WP Option tbl
    if ( is_multisite() && $network_wide ) {
@@ -40,19 +41,20 @@ function alm_install($network_wide) {
    } else {
       alm_create_table();
    }
+   
 }
 register_activation_hook( __FILE__, 'alm_install' );
 add_action( 'wpmu_new_blog', 'alm_install' );
 
 
 
-/*
-*  alm_create_table
-*  Create new table and repeater template
-*
-*  @since 2.0.0
-*  @updated 3.5
-*/
+/**
+ * alm_create_table
+ * Create new table and repeater template
+ *
+ * @since 2.0.0
+ * @updated 3.5
+ */
 function alm_create_table(){
 
 	global $wpdb;
@@ -71,9 +73,14 @@ function alm_create_table(){
 		$w = fwrite($tmp, $defaultRepeater);
 		fclose($tmp);
 	}
+	
+	// Exit if Repeater Templates are disbaled, we don't want to create the table
+	if( defined('ALM_DISABLE_REPEATER_TEMPLATES') && ALM_DISABLE_REPEATER_TEMPLATES ){
+		return false;
+	}
 
-	//C reate table, if it doesn't already exist.
-	if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+	// Create table, if it doesn't already exist.
+	if( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name ) {
 		$sql = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			name text NOT NULL,
@@ -87,6 +94,7 @@ function alm_create_table(){
 		// Insert the default data in created table
 		$wpdb->insert($table_name , array('name' => 'default', 'repeaterDefault' => $defaultRepeater, 'repeaterType' => 'default', 'pluginVersion' => ALM_VERSION));
 	}
+	
 }
 
 
@@ -257,8 +265,6 @@ if( !class_exists('AjaxLoadMore') ):
    	public function alm_includes(){
 	   	      	
       	include_once( ALM_PATH . 'core/functions.php'); // Load Core Functions
-      	include_once( ALM_PATH . 'core/api/get_posts.php'); // API Endpoint
-      	include_once( ALM_PATH . 'core/api/test.php'); // API Endpoint
       	include_once( ALM_PATH . 'core/classes/class.alm-shortcode.php'); // Load Shortcode Class
       	include_once( ALM_PATH . 'core/classes/class.alm-enqueue.php'); // Load Enqueue Class
       	include_once( ALM_PATH . 'core/classes/class.alm-queryargs.php'); // Load Query Args Class
@@ -351,19 +357,9 @@ if( !class_exists('AjaxLoadMore') ):
    		$options = get_option( 'alm_settings' );
 
 
-   		/*
-	   	 *	alm_js_dependencies
-	   	 *
-	   	 * ALM Core Filter
-	   	 *
-	   	 * @return Boolean
-	   	 */
-			$dependencies = apply_filters( 'alm_js_dependencies', '' );
-
-
    		// Core ALM JS
          $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min'; // Use minified libraries if SCRIPT_DEBUG is turned off
-   		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more'.$suffix.'.js', __FILE__ ), $dependencies,  ALM_VERSION, true );
+   		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more'.$suffix.'.js', __FILE__ ), '',  ALM_VERSION, true );
 
    		// Progress Bar JS
    		wp_register_script( 'ajax-load-more-progress', plugins_url( '/vendor/js/pace/pace.min.js', __FILE__ ), 'ajax-load-more',  ALM_VERSION, true );
@@ -425,7 +421,7 @@ if( !class_exists('AjaxLoadMore') ):
    	 *  @since 2.0.0
    	 *  @updated 3.2.0
    	 */
-   	public function alm_shortcode($atts) {
+   	public static function alm_shortcode($atts) {
 	   	self::$shortcode_atts = $atts;
       	return ALM_SHORTCODE::alm_render_shortcode($atts);
    	}
@@ -460,7 +456,7 @@ if( !class_exists('AjaxLoadMore') ):
 			$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 			$post_id = (isset($_GET['post_id'])) ? $_GET['post_id'] : '';
 			$slug = (isset($_GET['slug'])) ? $_GET['slug'] : '';
-			$canonical_url = (isset($_GET['canonical_url'])) ? $_GET['canonical_url'] : $_SERVER['HTTP_REFERER'];
+			$canonical_url = (isset($_GET['canonical_url'])) ? esc_url($_GET['canonical_url']) : esc_url($_SERVER['HTTP_REFERER']);
 		
 		
 			// Ajax Query Type

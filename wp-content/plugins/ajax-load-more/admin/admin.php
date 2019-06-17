@@ -369,8 +369,14 @@ function alm_set_admin_nonce(){
 */
 
 function alm_core_update() {
+	
+	// Exit if Repeater Templates are disbaled
+	if(defined('ALM_DISABLE_REPEATER_TEMPLATES') && ALM_DISABLE_REPEATER_TEMPLATES){
+		return false;
+	}
 
-	if(!get_option( 'alm_version')){ // Add 'alm_version' to WP options table if it does not exist
+	// Add 'alm_version' to WP options table if it does not exist
+	if(!get_option( 'alm_version')){
 		add_option( 'alm_version', ALM_VERSION );
 	}
 

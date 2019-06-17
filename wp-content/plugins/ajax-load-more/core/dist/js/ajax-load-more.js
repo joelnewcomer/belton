@@ -215,7 +215,7 @@ function _toConsumableArray(arr) {
  */
 
 // Polyfills
-__webpack_require__(/*! @babel/polyfill */ "./node_modules/@babel/polyfill/lib/index.js");
+__webpack_require__(/*! @babel/polyfill/noConflict */ "./node_modules/@babel/polyfill/noConflict.js");
 __webpack_require__(/*! ./helpers/polyfills.js */ "./core/src/js/helpers/polyfills.js");
 
 // External Modules
@@ -266,7 +266,7 @@ var alm_is_filtering = false;
       alm.timer = null;
       alm.ua = window.navigator.userAgent ? window.navigator.userAgent : ''; // User agent
       alm.main = el;
-      alm.master_id = el.id; // The div#id of the ALM instance 
+      alm.master_id = el.dataset.id ? 'ajax-load-more-' + el.dataset.id : el.id; // The defined or generated ID of the ALM instance 
       el.classList.add('alm-' + e); // Add unique classname
       el.setAttribute('data-alm-id', e); // Add unique data id
 
@@ -302,6 +302,7 @@ var alm_is_filtering = false;
       alm.btnWrap = el.querySelectorAll('.alm-btn-wrap'); // Get all `.alm-button-wrap` divs
       alm.btnWrap = Array.prototype.slice.call(alm.btnWrap); // Convert NodeList to array
       alm.btnWrap[alm.btnWrap.length - 1].style.visibility = 'visible'; // Get last element (used for nesting)
+      alm.trigger = alm.btnWrap[alm.btnWrap.length - 1];
 
       alm.button_label = alm.listing.dataset.buttonLabel;
       alm.button_loading_label = alm.listing.dataset.buttonLoadingLabel;
@@ -848,7 +849,7 @@ var alm_is_filtering = false;
             }
          }).catch(function (error) {
             // Error            
-            alm.AjaxLoadMore.error(error.message);
+            alm.AjaxLoadMore.error(error);
          });
       };
 
@@ -910,7 +911,7 @@ var alm_is_filtering = false;
             alm.AjaxLoadMore.success(obj, false); // Send data
          }).catch(function (error) {
             // Error            
-            alm.AjaxLoadMore.error(error.message);
+            alm.AjaxLoadMore.error(error);
          });
       };
 
@@ -1127,6 +1128,9 @@ var alm_is_filtering = false;
 
                            // Append children to `.alm-reveal` element
                            (0, _almAppendChildren2.default)(alm_reveal, return_data[k]);
+
+                           // Run srcSet polyfill
+                           (0, _srcsetPolyfill2.default)(alm_reveal, alm.ua);
 
                            // Push alm_reveal elements into container_array
                            container_array.push(alm_reveal);
@@ -1565,7 +1569,7 @@ var alm_is_filtering = false;
          }).catch(function (error) {
             // Error
 
-            alm.AjaxLoadMore.error(error.message);
+            alm.AjaxLoadMore.error(error);
             alm.fetchingPreviousPost = false;
          });
       };
@@ -1627,14 +1631,30 @@ var alm_is_filtering = false;
        * 
        * @since 2.6.0
        */
-
-      alm.AjaxLoadMore.error = function (message) {
+      alm.AjaxLoadMore.error = function (error) {
          alm.loading = false;
          if (!alm.addons.paging) {
             alm.button.classList.remove('loading');
             alm.AjaxLoadMore.resetBtnText();
          }
-         console.log(message);
+         if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            //console.log(error.response.data);
+            //console.log(error.response.status);
+            //console.log(error.response.headers);
+            console.log('Error: ', error.message);
+         } else if (error.request) {
+            // The request was made but no response was received
+            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+            // http.ClientRequest in node.js
+            console.log(error.request);
+         } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log('Error: ', error.message);
+         }
+
+         console.log('ALM Error Debug: ', error.config);
       };
 
       /** 
@@ -1715,8 +1735,8 @@ var alm_is_filtering = false;
 
          alm.timer = setTimeout(function () {
             if (alm.AjaxLoadMore.isVisible() && !alm.fetchingPreviousPost) {
-               var trigger = alm.button.getBoundingClientRect();
-               var btnPos = Math.round(trigger.top - alm.button.offsetHeight - alm.window.innerHeight) + alm.scroll_distance;
+               var trigger = alm.trigger.getBoundingClientRect();
+               var btnPos = Math.round(trigger.top - alm.window.innerHeight) + alm.scroll_distance;
                var scrollTrigger = btnPos <= 0 ? true : false;
 
                // Scroll Container
@@ -1802,8 +1822,8 @@ var alm_is_filtering = false;
          var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
          if (alm.localize && name !== '' && value !== '') {
-            alm.localize[name] = value; // Set ALM localize var
-            window[alm.master_id + '_vars'][name] = value; // Update global window obj vars
+            alm.localize[name] = value.toString(); // Set ALM localize var
+            window[alm.master_id + '_vars'][name] = value.toString(); // Update global window obj vars
          }
       };
 
@@ -2126,6 +2146,11 @@ var tracking = function tracking(path) {
    if (typeof __gaTracker === 'function') {
       // Monster Insights
       __gaTracker('send', 'pageview', path);
+   }
+
+   // Dispatch global Analytics callback
+   if (typeof almAnalytics === 'function') {
+      window.almAnalytics(path);
    }
 };
 exports.tracking = tracking;
@@ -2518,16 +2543,9 @@ exports.default = getParameterByName;
 // Prevent native browser scrolling on popstate
 // https://developer.mozilla.org/en-US/docs/Web/API/History#Browser_compatibility
 
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
+if ('scrollRestoration' in history) {}
+//history.scrollRestoration = 'manual';
 
-// isArray
-if (typeof Array.isArray === 'undefined') {
-  Array.isArray = function (obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-  };
-};
 
 // Object.entries
 if (!Object.entries) {
@@ -2540,6 +2558,13 @@ if (!Object.entries) {
     }return resArray;
   };
 }
+
+// isArray
+if (typeof Array.isArray === 'undefined') {
+  Array.isArray = function (obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  };
+};
 
 // Array.from
 if (!Array.from) {
@@ -2634,7 +2659,8 @@ if (window.NodeList && !NodeList.prototype.forEach) {
   };
 }
 
-// from:https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
+// removeChild
+// https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
 (function (arr) {
   arr.forEach(function (item) {
     if (item.hasOwnProperty('remove')) {
@@ -4054,7 +4080,6 @@ var setLocalizedVars = function setLocalizedVars(alm) {
    // Total Posts `total_posts`.
    // Only update if !Preloaded && !Nextpage
    if (alm.addons.preloaded !== 'true' && !alm.addons.nextpage) {
-      // Do not set if Preloaded
       alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
    }
 
@@ -4066,15 +4091,15 @@ exports.default = setLocalizedVars;
 
 /***/ }),
 
-/***/ "./node_modules/@babel/polyfill/lib/index.js":
-/*!***************************************************!*\
-  !*** ./node_modules/@babel/polyfill/lib/index.js ***!
-  \***************************************************/
+/***/ "./node_modules/@babel/polyfill/lib/noConflict.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@babel/polyfill/lib/noConflict.js ***!
+  \********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
+
 
 __webpack_require__(/*! core-js/es6 */ "./node_modules/@babel/polyfill/node_modules/core-js/es6/index.js");
 
@@ -4098,12 +4123,17 @@ __webpack_require__(/*! core-js/web */ "./node_modules/@babel/polyfill/node_modu
 
 __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/@babel/polyfill/node_modules/regenerator-runtime/runtime.js");
 
-if (global._babelPolyfill && typeof console !== "undefined" && console.warn) {
-  console.warn("@babel/polyfill is loaded more than once on this page. This is probably not desirable/intended " + "and may have consequences if different versions of the polyfills are applied sequentially. " + "If you do need to load the polyfill more than once, use @babel/polyfill/noConflict " + "instead to bypass the warning.");
-}
+/***/ }),
 
-global._babelPolyfill = true;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+/***/ "./node_modules/@babel/polyfill/noConflict.js":
+/*!****************************************************!*\
+  !*** ./node_modules/@babel/polyfill/noConflict.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(/*! ./lib/noConflict */ "./node_modules/@babel/polyfill/lib/noConflict.js");
+
 
 /***/ }),
 
@@ -17262,37 +17292,6 @@ module.exports = {
   } else {}
 
 }());
-
-
-/***/ }),
-
-/***/ "./node_modules/webpack/buildin/global.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
 
 
 /***/ })

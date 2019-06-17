@@ -425,7 +425,13 @@ if( !class_exists('ALM_SHORTCODE') ):
 
 			// Generate ALM ID
          $div_id = (self::$counter > 1) ? 'ajax-load-more-'.self::$counter : 'ajax-load-more';
-
+         
+         // Localized ID - ID used for storin glocalized variables
+   		$localize_id = (empty($id)) ? $div_id : 'ajax-load-more-'.$id;
+   		
+   		// Master ID - Manual or generated ALM ID
+   		$master_id = (empty($id)) ? $div_id : $id;
+   		
 			// Custom unique ALM ID (shortcode)
          $unique_id = (!empty($id)) ? 'data-id="'.$id.'"' : '';
 
@@ -437,7 +443,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 
 
 			// Start .alm-listing
-   		$ajaxloadmore .= '<div id="'. $div_id .'" class="ajax-load-more-wrap'. $btn_color .''. $paging_color .''. $alm_layouts .'" '. $unique_id .' data-alm-id="" data-canonical-url="'. $canonicalURL .'" data-slug="'. $slug .'" data-post-id="'. $post_id .'" '. $is_search . $is_nested .'>';
+   		$ajaxloadmore .= '<div id="'. $div_id .'" class="ajax-load-more-wrap'. $btn_color .''. $paging_color .''. $alm_layouts .'" '. $unique_id .' data-alm-id="" data-canonical-url="'. $canonicalURL .'" data-slug="'. $slug .'" data-post-id="'. $post_id .'" '. $is_search . $is_nested .' data-localized="'. alm_convert_dashes_to_underscore($localize_id) .'_vars' .'">';
 
 
 				//	Masonry Hook (Before)
@@ -1009,8 +1015,9 @@ if( !class_exists('ALM_SHORTCODE') ):
    		// End REST API Add-on
    		
    		
-   		// Add some localized vars
-   		ALM_LOCALIZE::add_localized_var('id', $div_id, $div_id);
+   		
+   		// Add localized vars
+   		ALM_LOCALIZE::add_localized_var('id', $master_id, $localize_id);
          
          
          
@@ -1021,7 +1028,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   	 *
 	   	 * @return <script>
 	   	 */
-	      ALM_LOCALIZE::create_script_vars($div_id);
+	      ALM_LOCALIZE::create_script_vars($localize_id);
 	      
 	         		
          
