@@ -202,7 +202,8 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'container_type' => '',
    			'css_classes' => '',
    			'id' => '',
-   			'primary' => false
+   			'primary' => false,
+   			'woocommerce' => false,
    		), $atts));   		
    			
    		
@@ -448,6 +449,20 @@ if( !class_exists('ALM_SHORTCODE') ):
 
 				//	Masonry Hook (Before)
 				$ajaxloadmore .= apply_filters('alm_masonry_before', $transition);
+				
+				
+				// WooCommerce
+				// - Set required WooCommerce config options
+				if($woocommerce === 'true'){
+					$css_classes = $css_classes .' products';
+					$post_type = 'product';
+					if(is_archive()){
+						$obj = get_queried_object();
+						$taxonomy = $obj->taxonomy;
+						$taxonomy_terms = $obj->slug;
+						$taxonomy_operator = 'IN';
+					}
+				}
 
 
 	   		// Single Post Add-on

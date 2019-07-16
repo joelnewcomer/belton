@@ -23,26 +23,31 @@ let setFocus = (init = true, preloaded = 'false', element) => {
    // Set tabIndex on `.alm-reveal`
 	element.setAttribute('tabIndex', '-1');
    
-	let scrollHierarchy = [];			
-	let parent = element.parentNode;
-	while (parent) {
-		scrollHierarchy.push([parent, parent.scrollLeft, parent.scrollTop]);
-		parent = parent.parentNode;
+   // Get Parent container
+   let parent = element.parentNode;	
+   
+   // Scroll Container
+	let scrollContainer = parent.dataset.scrollContainer;
+	
+	// If scroll container, move it, not the window.	
+	if(scrollContainer){				
+		let container = document.querySelector(scrollContainer);
+		if(container){
+			let left = container.scrollLeft;
+			let top = container.scrollTop;
+			element.focus();
+			container.scrollLeft = left;
+			container.scrollTop = top;			
+		}		
+	} 
+	
+	// Move window
+	else {   
+		let x = window.scrollX;
+		let y = window.scrollY;
+		element.focus();
+		window.scrollTo(x, y);
 	}
-	
-	element.focus();
-	
-	scrollHierarchy.forEach(function (item) {
-		var element = item[0];
-		
-		// Check first to avoid triggering unnecessary `scroll` events				
-		if (element.scrollLeft != item[1]){
-			element.scrollLeft = item[1];
-		}				
-		if (element.scrollTop != item[2]){
-			element.scrollTop = item[2];
-		}
-	});	
 	
 }
 export default setFocus; 

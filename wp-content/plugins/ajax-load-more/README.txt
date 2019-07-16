@@ -3,8 +3,8 @@ Contributors: dcooney, connekthq
 Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.0
-Tested up to: 5.2.1
-Stable tag: 5.1.1
+Tested up to: 5.2.2
+Stable tag: 5.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -377,6 +377,12 @@ How to install Ajax Load More.
 
 == Changelog ==
 
+= 5.1.2 - June 24, 2019 =
+* NEW - Added direct WooCommerce integration using the `woocommerce` shortcode parameter. Blog post and docs coming soon how to use this new parameter with archive and product listing pages.
+* FIX - Fixed issue with element scroll and auto-focus in iOS and Android devices.
+* UPDATE - Removing REST API code introduced in 5.1 that caused issues for some users. Please make sure you clear your site cache and any combined JavaScript.
+
+
 = 5.1.1 - May 29, 2019 =
 * NEW - Added new `ALM_DISABLE_REPEATER_TEMPLATES` PHP constant that prevents ALM from creating the default Repeater Template or storing template data in your database. To use this feature, add the following to your `wp-config.php` in the root of your site: `define('ALM_DISABLE_REPEATER_TEMPLATES', true);`.
 * UPDATE - Removed REST API settings from admin/admin.php and ajax-load-more.php.
@@ -386,7 +392,7 @@ How to install Ajax Load More.
 * FIX - Security fix for $querystring URLs in Preloaded content.
 * FIX - Fixed issue with nested `.alm-preloaded` div elements with Filters and Preloaded addon.
 * FIX - Fixed issue with alm_render function throwing non static function warning message.
-* FIX - Fixed JS console warning message abut duplicate `babel/polyfill scripts` for users running other versions of Babel.
+* FIX - Fixed JS console warning message abut duplicate `babel/polyfill scripts` for users running other versions of Babel. 
 * FIX - Fixed `srcSet` issue with paged results in Filters and SEO addon when using Safari browser.
 
 
@@ -396,8 +402,8 @@ How to install Ajax Load More.
 
 = 5.1.0 - May 7, 2019 =
 MAJOR UPDATE NOTICE
-Ajax Load More can now use the WordPress REST API as the default for Ajax requests - this includes all add-ons and extensions.
-Users that wish to continue using `admin-ajax.php` for Ajax requests can disable the REST API from  `Ajax Load More > Settings > Global Settings` in your WordPress admin.
+Ajax Load More can now use the WordPress REST API as the default for Ajax requests - this includes all add-ons and extensions. 
+Users that wish to continue using `admin-ajax.php` for Ajax requests can disable the REST API from  `Ajax Load More > Settings > Global Settings` in your WordPress admin. 
 
 For backwards compatibility, all users running WordPress version 4.7 or lower will default to using `admin-ajax.php`.
 
@@ -412,7 +418,7 @@ What's New in 5.1.0
 * FIX - Fixed issue with images not displaying in Safari when `transition_container="false"` is set.
 * FIX - Fixed issue where Load More button was not hiding after `destory_after` value was reached.
 * FIX - Fixed issue with `meta_value` shortcode parameter. Passing zero as a value was returning false and not the number.
-* FIX - Fixed IE11 issue where filtering was not working with camelCase data attributes.
+* FIX - Fixed IE11 issue where filtering was not working with camelCase data attributes. 
 
 
 

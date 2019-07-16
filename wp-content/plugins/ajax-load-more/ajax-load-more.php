@@ -7,14 +7,14 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com 
-Version: 5.1.1
+Version: 5.1.2
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '5.1.1');
-define('ALM_RELEASE', 'May 29, 2019');
+define('ALM_VERSION', '5.1.2');
+define('ALM_RELEASE', 'June 24, 2019');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -381,26 +381,12 @@ if( !class_exists('AjaxLoadMore') ):
    		$scrolltop = (!isset($options['_alm_scroll_top']) || $options['_alm_scroll_top'] != '1') ? 'false' : 'true';
    		
    		
-   		// Use REST API
-   		$use_restapi = function_exists('get_rest_url') ? true : false; // Is REST API enabled   		
-   		if($use_restapi){
-	   		if(isset($options['_alm_use_rest_api']) && $options['_alm_use_rest_api'] == '1'){ // Disable REST API setting checked		
-   				$use_restapi = false;
-   			}
-   		}
-   		
-   		
    		// Localized JS variables
    		wp_localize_script(
    			'ajax-load-more',
    			'alm_localize',
    			array(
    				'ajaxurl' => admin_url('admin-ajax.php'),
-   				'restapi' => array(
-      				'active' => false,
-	   				'url' => function_exists('get_rest_url') ? get_rest_url() : '',
-						'namespace' => ALM_REST_NAMESPACE
-   				),
    				'alm_nonce' => wp_create_nonce( "ajax_load_more_nonce" ),
    				'pluginurl' => ALM_URL,
    				'scrolltop' => $scrolltop,

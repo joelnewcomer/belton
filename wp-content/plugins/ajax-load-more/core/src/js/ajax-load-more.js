@@ -29,7 +29,6 @@ import almTableWrap from './helpers/almTableWrap';
 import almGetCacheUrl from './helpers/almGetCacheUrl';
 import almDomParser from './helpers/almDomParser';
 import * as queryParams from './helpers/queryParams';
-import * as restAPI_Opts from './helpers/restAPI';
 import * as resultsText from './modules/resultsText';
 import setLocalizedVars from './modules/setLocalizedVars';
 import insertScript from './modules/insertScript';
@@ -530,14 +529,14 @@ let alm_is_filtering = false;
       alm.AjaxLoadMore.ajax = function(queryType) {
 
          // Default ALM action
-         let action = 'get_posts';
+         let action = 'alm_get_posts';
 
          // ACF Params
          alm.acf_array = '';
          if (alm.extensions.acf) {
             // Custom query for the Repeater / Gallery / Flexible Content field types
             if (alm.extensions.acf_field_type !== 'relationship') {
-               action = 'acf';
+               action = 'alm_acf';
             }
             alm.acf_array = {
                'acf': 'true',
@@ -550,7 +549,7 @@ let alm_is_filtering = false;
          // Nextpage Params
          alm.nextpage_array = '';
          if (alm.addons.nextpage) {
-            action = 'nextpage';
+            action = 'alm_nextpage';
             alm.nextpage_array = {
                'nextpage': 'true',
                'urls': alm.addons.nextpage_urls,
@@ -574,7 +573,7 @@ let alm_is_filtering = false;
          // Comment Params
          alm.comments_array = '';
          if (alm.addons.comments === 'true') {
-            action = 'comments';
+            action = 'alm_comments';
             alm.posts_per_page = alm.addons.comments_per_page;
             alm.comments_array = {
                'comments': 'true',
@@ -590,7 +589,7 @@ let alm_is_filtering = false;
          // Users Params
          alm.users_array = '';
          if (alm.addons.users) {
-            action = 'users';
+            action = 'alm_users';
             alm.users_array = {
                'users': 'true',
                'role': alm.listing.dataset.usersRole,
@@ -654,14 +653,11 @@ let alm_is_filtering = false;
 				return config; 
 			});			         
          
-         // Get REST API || admin-ajax URL        
-         let ajaxURL = restAPI_Opts.almGetAjaxUrl(action);          
-         
-         // Get the action value
-         let action_name = restAPI_Opts.almGetAjaxAction(action);        
+         // Get admin-ajax.php URL        
+         let ajaxURL = alm_localize.ajaxurl;       
 
 			// Get data params
-         let params = queryParams.almGetAjaxParams(alm, action_name, queryType); // [./helpers/queryParams.js
+         let params = queryParams.almGetAjaxParams(alm, action, queryType); // [./helpers/queryParams.js
                  
          // Send HTTP request via Axios
          axios.get(ajaxURL, {params})
@@ -1264,7 +1260,7 @@ let alm_is_filtering = false;
          }
          
 			
-			// Set focus
+			// Set focus (only with transition_containers)
 			if(alm.transition_container){
 				if(alm.addons.paging){
 			   	setFocus(alm.init, alm.addons.preloaded, pagingContent);
@@ -1432,7 +1428,7 @@ let alm_is_filtering = false;
 
       alm.AjaxLoadMore.getSinglePost = function() {	
 	      
-			let action = 'get_single';      
+			let action = 'alm_get_single';      
 	      
 	      if(alm.fetchingPreviousPost){
 		      return false;
@@ -1440,11 +1436,8 @@ let alm_is_filtering = false;
 	      
          alm.fetchingPreviousPost = true;
          
-         // Get REST API || admin-ajax URL        
-         let ajaxURL = restAPI_Opts.almGetAjaxUrl(action);          
-         
-         // Get the action value
-         let action_name = restAPI_Opts.almGetAjaxAction(action);
+         // Get admin-ajax.php URL        
+         let ajaxURL = alm_localize.ajaxurl;    
          
 			// Get data params       
          let params = {
@@ -1455,7 +1448,7 @@ let alm_is_filtering = false;
             excluded_terms: alm.addons.single_post_excluded_terms,
             post_type: alm.post_type,
             init: alm.addons.single_post_init,
-            action: action_name
+            action: action
          };
          
          // Send HTTP request via Axios

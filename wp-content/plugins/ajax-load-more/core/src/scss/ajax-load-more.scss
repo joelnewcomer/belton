@@ -223,6 +223,13 @@
 	padding: 0;
 	.alm-reveal{
 		outline: none;
+		&:after{
+			display: table;
+			clear: both;
+			height: 0;
+			width: 100%;
+			content: '';
+		}
 	}
 	.alm-reveal > li,
 	.alm-paging-content > li,

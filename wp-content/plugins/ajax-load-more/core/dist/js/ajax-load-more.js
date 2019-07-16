@@ -140,10 +140,6 @@ var _queryParams = __webpack_require__(/*! ./helpers/queryParams */ "./core/src/
 
 var queryParams = _interopRequireWildcard(_queryParams);
 
-var _restAPI = __webpack_require__(/*! ./helpers/restAPI */ "./core/src/js/helpers/restAPI.js");
-
-var restAPI_Opts = _interopRequireWildcard(_restAPI);
-
 var _resultsText = __webpack_require__(/*! ./modules/resultsText */ "./core/src/js/modules/resultsText.js");
 
 var resultsText = _interopRequireWildcard(_resultsText);
@@ -698,14 +694,14 @@ var alm_is_filtering = false;
       alm.AjaxLoadMore.ajax = function (queryType) {
 
          // Default ALM action
-         var action = 'get_posts';
+         var action = 'alm_get_posts';
 
          // ACF Params
          alm.acf_array = '';
          if (alm.extensions.acf) {
             // Custom query for the Repeater / Gallery / Flexible Content field types
             if (alm.extensions.acf_field_type !== 'relationship') {
-               action = 'acf';
+               action = 'alm_acf';
             }
             alm.acf_array = {
                'acf': 'true',
@@ -718,7 +714,7 @@ var alm_is_filtering = false;
          // Nextpage Params
          alm.nextpage_array = '';
          if (alm.addons.nextpage) {
-            action = 'nextpage';
+            action = 'alm_nextpage';
             alm.nextpage_array = {
                'nextpage': 'true',
                'urls': alm.addons.nextpage_urls,
@@ -742,7 +738,7 @@ var alm_is_filtering = false;
          // Comment Params
          alm.comments_array = '';
          if (alm.addons.comments === 'true') {
-            action = 'comments';
+            action = 'alm_comments';
             alm.posts_per_page = alm.addons.comments_per_page;
             alm.comments_array = {
                'comments': 'true',
@@ -758,7 +754,7 @@ var alm_is_filtering = false;
          // Users Params
          alm.users_array = '';
          if (alm.addons.users) {
-            action = 'users';
+            action = 'alm_users';
             alm.users_array = {
                'users': 'true',
                'role': alm.listing.dataset.usersRole,
@@ -819,14 +815,11 @@ var alm_is_filtering = false;
             return config;
          });
 
-         // Get REST API || admin-ajax URL        
-         var ajaxURL = restAPI_Opts.almGetAjaxUrl(action);
-
-         // Get the action value
-         var action_name = restAPI_Opts.almGetAjaxAction(action);
+         // Get admin-ajax.php URL        
+         var ajaxURL = alm_localize.ajaxurl;
 
          // Get data params
-         var params = queryParams.almGetAjaxParams(alm, action_name, queryType); // [./helpers/queryParams.js
+         var params = queryParams.almGetAjaxParams(alm, action, queryType); // [./helpers/queryParams.js
 
          // Send HTTP request via Axios
          _axios2.default.get(ajaxURL, { params: params }).then(function (response) {
@@ -1365,7 +1358,7 @@ var alm_is_filtering = false;
             }
          }
 
-         // Set focus
+         // Set focus (only with transition_containers)
          if (alm.transition_container) {
             if (alm.addons.paging) {
                (0, _setFocus2.default)(alm.init, alm.addons.preloaded, pagingContent);
@@ -1518,7 +1511,7 @@ var alm_is_filtering = false;
 
       alm.AjaxLoadMore.getSinglePost = function () {
 
-         var action = 'get_single';
+         var action = 'alm_get_single';
 
          if (alm.fetchingPreviousPost) {
             return false;
@@ -1526,11 +1519,8 @@ var alm_is_filtering = false;
 
          alm.fetchingPreviousPost = true;
 
-         // Get REST API || admin-ajax URL        
-         var ajaxURL = restAPI_Opts.almGetAjaxUrl(action);
-
-         // Get the action value
-         var action_name = restAPI_Opts.almGetAjaxAction(action);
+         // Get admin-ajax.php URL        
+         var ajaxURL = alm_localize.ajaxurl;
 
          // Get data params       
          var params = {
@@ -1541,7 +1531,7 @@ var alm_is_filtering = false;
             excluded_terms: alm.addons.single_post_excluded_terms,
             post_type: alm.post_type,
             init: alm.addons.single_post_init,
-            action: action_name
+            action: action
          };
 
          // Send HTTP request via Axios
@@ -3149,67 +3139,6 @@ function almGetRestParams(alm) {
 
 /***/ }),
 
-/***/ "./core/src/js/helpers/restAPI.js":
-/*!****************************************!*\
-  !*** ./core/src/js/helpers/restAPI.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-   value: true
-});
-exports.almGetAjaxUrl = almGetAjaxUrl;
-exports.almGetAjaxAction = almGetAjaxAction;
-/**
- * almGetAjaxUrl
- * Build the Ajax URL request
- * 
- * @param action         string
- * @since 3.6
- */
-
-function almGetAjaxUrl() {
-   var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-
-   if (!action) {
-      return false;
-   }
-
-   var url = '';
-   if (alm_localize.restapi.active) {
-      // REST API Endpoint
-      url = '' + alm_localize.restapi.url + alm_localize.restapi.namespace + '/' + action;
-   } else {
-      // admin-ajax.php
-      url = alm_localize.ajaxurl;
-   }
-   return url;
-}
-
-/**
- * almGetAjaxAction
- * If not REST API, prepend 'alm_' to action  
- * 
- * @param action         string
- * @since 5.1
- */
-function almGetAjaxAction() {
-   var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-
-   if (!action) {
-      return false;
-   }
-
-   var action_name = alm_localize.restapi.active ? action : 'alm_' + action;
-   return action_name;
-}
-
-/***/ }),
-
 /***/ "./core/src/js/helpers/srcsetPolyfill.js":
 /*!***********************************************!*\
   !*** ./core/src/js/helpers/srcsetPolyfill.js ***!
@@ -3999,26 +3928,31 @@ var setFocus = function setFocus() {
 	// Set tabIndex on `.alm-reveal`
 	element.setAttribute('tabIndex', '-1');
 
-	var scrollHierarchy = [];
+	// Get Parent container
 	var parent = element.parentNode;
-	while (parent) {
-		scrollHierarchy.push([parent, parent.scrollLeft, parent.scrollTop]);
-		parent = parent.parentNode;
+
+	// Scroll Container
+	var scrollContainer = parent.dataset.scrollContainer;
+
+	// If scroll container, move it, not the window.	
+	if (scrollContainer) {
+		var container = document.querySelector(scrollContainer);
+		if (container) {
+			var left = container.scrollLeft;
+			var top = container.scrollTop;
+			element.focus();
+			container.scrollLeft = left;
+			container.scrollTop = top;
+		}
 	}
 
-	element.focus();
-
-	scrollHierarchy.forEach(function (item) {
-		var element = item[0];
-
-		// Check first to avoid triggering unnecessary `scroll` events				
-		if (element.scrollLeft != item[1]) {
-			element.scrollLeft = item[1];
+	// Move window
+	else {
+			var x = window.scrollX;
+			var y = window.scrollY;
+			element.focus();
+			window.scrollTo(x, y);
 		}
-		if (element.scrollTop != item[2]) {
-			element.scrollTop = item[2];
-		}
-	});
 };
 exports.default = setFocus;
 
