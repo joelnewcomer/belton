@@ -67,8 +67,30 @@
          <hr>
 
          <div class="section-title">
+            <h4><?php _e('URLs', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Querystring URLs allow  users to share deep links to filtered content.','ajax-load-more'); ?>"></a></h4>
+   		 	<p><?php _e('Update the browser querystring with active filters values.','ajax-load-more'); ?><br/><small>e.g. ?category=design&tag=mobile</small></p>
+   		 </div>
+         <div class="wrap">
+   			<div class="inner">
+               <ul>
+                   <li>
+                    <input class="alm_element" type="radio" name="filters-url" value="true" id="filters-url-true" checked="checked">
+                    <label for="filters-url-true"><?php _e('True', 'ajax-load-more'); ?></label>
+                   </li>
+                   <li>
+                    <input class="alm_element" type="radio" name="filters-url" value="false" id="filters-url-false">
+                    <label for="filters-url-false"><?php _e('False', 'ajax-load-more'); ?></label>
+                   </li>
+               </ul>
+   			</div>
+         </div>
+
+         <div class="clear"></div>
+         <hr>
+
+         <div class="section-title">
             <h4><?php _e('Paging Parameters', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Adding paging parameters will allow for deep linking to a paged filter.','ajax-load-more'); ?>"></a></h4>
-   		 	<p><?php _e('Add <span>?pg=x</span> to the browser querystring as users load additional pages.', 'ajax-load-more'); ?></p>
+   		 	<p><?php _e('Add <span>?pg={x}</span> to the browser querystring as users load additional pages.', 'ajax-load-more'); ?></p>
    		 </div>
          <div class="wrap">
    			<div class="inner">

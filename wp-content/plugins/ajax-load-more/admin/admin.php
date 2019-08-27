@@ -1228,18 +1228,18 @@ function alm_admin_init(){
 		'alm_general_settings'
 	);
 
-	add_settings_field(  // Button classes
-		'_alm_btn_classname',
-		__('Button Classes', 'ajax-load-more' ),
-		'alm_btn_class_callback',
-		'ajax-load-more',
-		'alm_general_settings'
-	);
-
 	add_settings_field(  // Inline CSS
 		'_alm_inline_css',
 		__('Load CSS Inline', 'ajax-load-more' ),
 		'alm_inline_css_callback',
+		'ajax-load-more',
+		'alm_general_settings'
+	);
+
+	add_settings_field(  // Button classes
+		'_alm_btn_classname',
+		__('Button Classes', 'ajax-load-more' ),
+		'alm_btn_class_callback',
 		'ajax-load-more',
 		'alm_general_settings'
 	);

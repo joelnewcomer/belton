@@ -136,6 +136,10 @@ var _almDomParser = __webpack_require__(/*! ./helpers/almDomParser */ "./core/sr
 
 var _almDomParser2 = _interopRequireDefault(_almDomParser);
 
+var _stripEmptyNodes = __webpack_require__(/*! ./helpers/stripEmptyNodes */ "./core/src/js/helpers/stripEmptyNodes.js");
+
+var _stripEmptyNodes2 = _interopRequireDefault(_stripEmptyNodes);
+
 var _queryParams = __webpack_require__(/*! ./helpers/queryParams */ "./core/src/js/helpers/queryParams.js");
 
 var queryParams = _interopRequireWildcard(_queryParams);
@@ -171,6 +175,10 @@ var _fadeOut2 = _interopRequireDefault(_fadeOut);
 var _filtering = __webpack_require__(/*! ./modules/filtering */ "./core/src/js/modules/filtering.js");
 
 var _filtering2 = _interopRequireDefault(_filtering);
+
+var _noResults = __webpack_require__(/*! ./modules/noResults */ "./core/src/js/modules/noResults.js");
+
+var _noResults2 = _interopRequireDefault(_noResults);
 
 var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
 
@@ -288,6 +296,10 @@ var alm_is_filtering = false;
       alm.post_id = el.dataset.postId;
       alm.id = el.dataset.id ? el.dataset.id : '';
 
+      // No results template
+      var alm_no_results = el.querySelector('.alm-no-results');
+      alm.no_results = alm_no_results ? alm_no_results.innerHTML : '';
+
       // Shortcode Params 
       alm.repeater = alm.listing.dataset.repeater; // Repeaters
       alm.theme_repeater = alm.listing.dataset.themeRepeater;
@@ -393,11 +405,17 @@ var alm_is_filtering = false;
       /* Paging */
       if (alm.addons.paging === 'true') {
          alm.addons.paging = true;
-         alm.addons.paging_controls = alm.listing.dataset.pagingControls ? true : false;
+         alm.addons.paging_init = true;
+         alm.addons.paging_controls = alm.listing.dataset.pagingControls === 'true' ? true : false;
          alm.addons.paging_show_at_most = alm.listing.dataset.pagingShowAtMost;
          alm.addons.paging_classes = alm.listing.dataset.pagingClasses;
-         alm.addons.paging_init = true;
          alm.addons.paging_show_at_most = alm.addons.paging_show_at_most === undefined ? 7 : alm.addons.paging_show_at_most;
+
+         alm.addons.paging_first_label = alm.listing.dataset.pagingFirstLabel;
+         alm.addons.paging_previous_label = alm.listing.dataset.pagingPreviousLabel;
+         alm.addons.paging_next_label = alm.listing.dataset.pagingNextLabel;
+         alm.addons.paging_last_label = alm.listing.dataset.pagingLastLabel;
+
          // If preloaded, pause ALM	
          alm.pause = alm.addons.preloaded === 'true' ? true : alm.pause;
       } else {
@@ -409,6 +427,7 @@ var alm_is_filtering = false;
       if (alm.addons.filters === 'true') {
          alm.addons.filters = true;
 
+         alm.addons.filters_url = alm.listing.dataset.filtersUrl === 'true' ? true : false;
          alm.addons.filters_paging = alm.listing.dataset.filtersPaging === 'true' ? true : false;
          alm.addons.filters_scroll = alm.listing.dataset.filtersScroll === 'true' ? true : false;
          alm.addons.filters_scrolltop = alm.listing.dataset.filtersScrolltop ? alm.listing.dataset.filtersScrolltop : '30';
@@ -648,6 +667,11 @@ var alm_is_filtering = false;
        */
 
       alm.AjaxLoadMore.loadPosts = function () {
+
+         if (typeof almOnChange === 'function') {
+            window.almOnChange(alm);
+         }
+
          if (!alm.disable_ajax) {
             // Check for ajax blocker
             if (!alm.addons.paging) {
@@ -842,7 +866,7 @@ var alm_is_filtering = false;
             }
          }).catch(function (error) {
             // Error            
-            alm.AjaxLoadMore.error(error);
+            alm.AjaxLoadMore.error(error, 'adminajax');
          });
       };
 
@@ -904,7 +928,7 @@ var alm_is_filtering = false;
             alm.AjaxLoadMore.success(obj, false); // Send data
          }).catch(function (error) {
             // Error            
-            alm.AjaxLoadMore.error(error);
+            alm.AjaxLoadMore.error(error, 'restapi');
          });
       };
 
@@ -984,6 +1008,7 @@ var alm_is_filtering = false;
                   }
                }
                if (typeof almEmpty === 'function') {
+                  (0, _noResults2.default)(alm.content, alm.no_results);
                   window.almEmpty(alm);
                }
             }
@@ -1063,10 +1088,10 @@ var alm_is_filtering = false;
                            total = pages + total; // Get new total w/ CTAs added
                         }
 
-                        // Parse HTML to split data into pages
-                        var _data = (0, _almDomParser2.default)(alm.html, 'text/html');
+                        // Parse returned HTML and strip empty nodes
+                        var _data = (0, _stripEmptyNodes2.default)((0, _almDomParser2.default)(alm.html, 'text/html'));
 
-                        // Slice data array into an array of individual pages
+                        // Slice data array into individual pages (array)
                         for (var i = 0; i < total; i += posts_per_page) {
                            return_data.push(_data.slice(i, posts_per_page + i));
                         }
@@ -1270,24 +1295,43 @@ var alm_is_filtering = false;
                if (!alm.init) {
 
                   if (pagingContent) {
+
+                     (0, _fadeOut2.default)(pagingContent, alm.speed);
+
                      pagingContent.style.outline = 'none';
-                     pagingContent.innerHTML = alm.html;
-                     imagesLoaded(pagingContent, function () {
-                        // Paging addon
-                        if (typeof almOnPagingComplete === 'function') {
-                           window.almOnPagingComplete(alm);
-                        }
-                        // Delay for effect      
-                        setTimeout(function () {
-                           alm.main.classList.remove('alm-loading');
+                     alm.main.classList.remove('alm-loading');
+
+                     setTimeout(function () {
+
+                        pagingContent.style.opacity = 0;
+                        pagingContent.innerHTML = alm.html;
+
+                        imagesLoaded(pagingContent, function () {
+
+                           // Delay for effect                           
                            alm.AjaxLoadMore.triggerAddons(alm);
-                        }, alm.speed);
-                     });
+                           (0, _fadeIn2.default)(pagingContent, alm.speed);
+
+                           // Remove opacity on element to fix CSS transition
+                           setTimeout(function () {
+                              pagingContent.style.opacity = '';
+                           }, parseInt(alm.speed) + 25);
+
+                           // Paging addon
+                           if (typeof almOnPagingComplete === 'function') {
+                              window.almOnPagingComplete(alm);
+                           }
+                        });
+                     }, parseInt(alm.speed) + 25);
                   }
                } else {
 
-                  alm.main.classList.remove('alm-loading');
-                  alm.AjaxLoadMore.triggerAddons(alm);
+                  // almMasonry(alm, alm.init, alm_is_filtering);
+
+                  setTimeout(function () {
+                     alm.main.classList.remove('alm-loading');
+                     alm.AjaxLoadMore.triggerAddons(alm);
+                  }, alm.speed);
                }
                // End Paging
             }
@@ -1372,6 +1416,11 @@ var alm_is_filtering = false;
             (0, _commentReplyFix2.default)(alm.listing);
          }
 
+         // Remove filtering class
+         if (alm.main.classList.contains('alm-is-filtering')) {
+            alm.main.classList.remove('alm-is-filtering');
+         }
+
          // Set flags
          alm_is_filtering = alm.init = false;
       };
@@ -1396,6 +1445,7 @@ var alm_is_filtering = false;
                window.almPagingEmpty(alm);
             }
             if (typeof almEmpty === 'function') {
+               (0, _noResults2.default)(alm.content, alm.no_results);
                window.almEmpty(alm);
             }
          }
@@ -1559,7 +1609,7 @@ var alm_is_filtering = false;
          }).catch(function (error) {
             // Error
 
-            alm.AjaxLoadMore.error(error);
+            alm.AjaxLoadMore.error(error, 'getSinglePost');
             alm.fetchingPreviousPost = false;
          });
       };
@@ -1622,11 +1672,14 @@ var alm_is_filtering = false;
        * @since 2.6.0
        */
       alm.AjaxLoadMore.error = function (error) {
+         var location = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
          alm.loading = false;
          if (!alm.addons.paging) {
             alm.button.classList.remove('loading');
             alm.AjaxLoadMore.resetBtnText();
          }
+
          if (error.response) {
             // The request was made and the server responded with a status code
             // that falls out of the range of 2xx
@@ -1644,7 +1697,13 @@ var alm_is_filtering = false;
             console.log('Error: ', error.message);
          }
 
-         console.log('ALM Error Debug: ', error.config);
+         if (location) {
+            console.log('ALM Error started in ' + location);
+         }
+
+         if (error.config) {
+            console.log('ALM Error Debug: ', error.config);
+         }
       };
 
       /** 
@@ -1929,6 +1988,7 @@ var alm_is_filtering = false;
                // almEmpty
                if (alm.addons.preloaded_total_posts == 0) {
                   if (typeof almEmpty === 'function') {
+                     (0, _noResults2.default)(alm.content, alm.no_results);
                      window.almEmpty(alm);
                   }
                }
@@ -1971,6 +2031,9 @@ var alm_is_filtering = false;
             if (alm.is_masonry_preloaded) {
                (0, _masonry2.default)(alm, true, false);
                alm.masonry_init = false;
+            }
+            if (typeof almOnLoad === 'function') {
+               window.almOnLoad(alm);
             }
          });
       };
@@ -3188,6 +3251,49 @@ exports.default = srcsetPolyfill;
 
 /***/ }),
 
+/***/ "./core/src/js/helpers/stripEmptyNodes.js":
+/*!************************************************!*\
+  !*** ./core/src/js/helpers/stripEmptyNodes.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * Remove empty HTML nodes from array of nodes
+ * Remove all empty text nodes from SEO and Filters return
+ *
+ * @param {*} nodes | Array of HTML nodes
+ * @return array
+ * @since 5.1.3
+ */
+var stripEmptyNodes = function stripEmptyNodes() {
+  var nodes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+  if (!nodes) {
+    return false;
+  }
+
+  // Exclude these nodeNames from being rendered
+  var nodeNameArray = ['#text', '#comment'];
+
+  // Filter data by nodeName 
+  var results = nodes.filter(function (node) {
+    return nodeNameArray.indexOf(node.nodeName.toLowerCase()) === -1;
+  });
+
+  // Send the results
+  return results;
+};
+exports.default = stripEmptyNodes;
+
+/***/ }),
+
 /***/ "./core/src/js/modules/fadeIn.js":
 /*!***************************************!*\
   !*** ./core/src/js/modules/fadeIn.js ***!
@@ -3248,10 +3354,8 @@ Object.defineProperty(exports, "__esModule", {
  */
 var almFadeOut = function almFadeOut(element, speed) {
 	speed = speed / 10;
+	element.style.opacity = 0.5;
 	var fadeEffect = setInterval(function () {
-		if (!element.style.opacity) {
-			element.style.opacity = 1;
-		}
 		if (element.style.opacity < 0.1) {
 			clearInterval(fadeEffect);
 		} else {
@@ -3369,10 +3473,12 @@ var almFilterTransition = function almFilterTransition(transition, speed, data, 
     // Fade, Masonry transition
     (0, _fadeOut2.default)(el, speed);
     setTimeout(function () {
+      el.classList.add('alm-is-filtering');
       almCompleteFilterTransition(speed, data, el);
     }, speed);
   } else {
     // No transition
+    el.classList.add('alm-is-filtering');
     almCompleteFilterTransition(speed, data, el);
   }
 };
@@ -3388,6 +3494,9 @@ var almFilterTransition = function almFilterTransition(transition, speed, data, 
  */
 var almCompleteFilterTransition = function almCompleteFilterTransition(speed, data, el) {
 
+  // Get `.alm-btn-wrap` element
+  var btnWrap = el.querySelector('.alm-btn-wrap');
+
   // Get `.alm-listing` element
   var listing = el.querySelectorAll('.alm-listing');
 
@@ -3397,9 +3506,15 @@ var almCompleteFilterTransition = function almCompleteFilterTransition(speed, da
   });
 
   // Get Load More button
-  var button = el.querySelector('.alm-load-more-btn');
+  var button = btnWrap.querySelector('.alm-load-more-btn');
   if (button) {
     button.classList.remove('done'); // Reset Button 
+  }
+
+  // Clear paging navigation
+  var paging = btnWrap.querySelector('.alm-paging');
+  if (paging) {
+    paging.style.opacity = 0;
   }
 
   // Dispatch Filters
@@ -3745,6 +3860,44 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 };
 
 exports.default = almMasonry;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/noResults.js":
+/*!******************************************!*\
+  !*** ./core/src/js/modules/noResults.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**  
+ * Set the results text if required.
+ * 
+ * @param {*} target The target HTML element
+ * @param {*} html The HTML
+ * @since 5.1
+ */
+var almNoResults = function almNoResults(target) {
+	var html = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+	if (html === '') {
+		return false; // exit if empty	
+	}
+
+	// Remove empty <p/> tags
+	html = html.replace(/(<p><\/p>)+/g, '');
+
+	// Append to DOM
+	target.innerHTML = html;
+};
+
+exports.default = almNoResults;
 
 /***/ }),
 

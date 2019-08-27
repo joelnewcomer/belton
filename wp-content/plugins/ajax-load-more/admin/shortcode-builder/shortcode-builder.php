@@ -130,11 +130,10 @@
 	         <div class="clear"></div>
 	         <hr/>
 	
-	         <!-- Nested ALM -->
-	         
+	         <!-- Nested ALM -->	         
 	         <div class="section-title">
 	            <h4><?php _e('Nested Instance', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('When nesting ALM instances it\'s important to set this to true as it removes certain problematic functionality.','ajax-load-more'); ?>"></a></h4>
-	   		 	<p><?php _e('Is this a nested Ajax Load More instance?', 'ajax-load-more'); ?></p>
+	   		 	<p><?php _e('Is this instance of Ajax Load More nested inside another instance of Ajax Load More?', 'ajax-load-more'); ?></p>
 	   		 </div>
 	         <div class="wrap">
 	            <div class="inner">
@@ -148,6 +147,20 @@
 	                     <label for="nested_f"><?php _e('False', 'ajax-load-more'); ?></label>
 	                  </li>
 	               </ul>
+	            </div>
+	         </div>
+	
+	         <div class="clear"></div>
+	         <hr/>
+	
+	         <!-- No Results -->	         
+	         <div class="section-title">
+	            <h4><?php _e('No Results Text', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('HTML is allowed, however when adding quote marks in classnames or IDs you must single quotes as shown in the example.','ajax-load-more'); ?>"></a></h4>
+	   		 	<p><?php _e('Add text/html to be displayed when no results are returned in the Ajax query.', 'ajax-load-more'); ?><br/><small><?php _e('e.g. &lt;div>Sorry, nothing found in this query&lt;/div>', 'ajax-load-more'); ?></small></p>
+	   		 </div>
+	         <div class="wrap">
+	            <div class="inner">
+	               <textarea class="alm_element" id="no_results_text" rows="4"></textarea>
 	            </div>
 	         </div>
 	         

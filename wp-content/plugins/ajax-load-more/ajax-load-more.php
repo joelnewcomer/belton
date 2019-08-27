@@ -7,14 +7,14 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com 
-Version: 5.1.2
+Version: 5.1.4
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '5.1.2');
-define('ALM_RELEASE', 'June 24, 2019');
+define('ALM_VERSION', '5.1.4');
+define('ALM_RELEASE', 'August 15, 2019');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -435,7 +435,7 @@ if( !class_exists('AjaxLoadMore') ):
    	public function alm_query_posts() {    
    		
    		// WPML fix for category/tag/taxonomy archives
-			if ( (isset( $_GET['category'] ) && $_GET['category']) || (isset($_GET['taxonomy']) && $_GET['taxonomy']) ) {
+			if ( (isset( $_GET['category'] ) && $_GET['category']) || (isset($_GET['taxonomy']) && $_GET['taxonomy']) || (isset($_GET['tag']) && $_GET['tag']) ) {
 				unset($_REQUEST['post_id']);
 			}
 		

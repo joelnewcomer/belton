@@ -1488,7 +1488,8 @@ a.button-small {
 .ajax-load-more #tax-query-relation,
 .ajax-load-more .comments_extras,
 .ajax-load-more #users-extended,
-.ajax-load-more .taxonomy-extended {
+.ajax-load-more .taxonomy-extended,
+.ajax-load-more #paging-controls-nav {
   display: none;
   overflow: hidden; }
 
@@ -1602,6 +1603,7 @@ a.button-small {
 .radio input {
   margin-left: 3px; }
 
+.ajax-load-more textarea,
 .ajax-load-more input[type=text],
 .ajax-load-more input[type=number] {
   padding: 10px 12px;
@@ -1833,8 +1835,8 @@ hr.indented {
   .ajax-load-more .section-title p:last-of-type {
     margin-bottom: 0; }
   .ajax-load-more .section-title small {
-    font-size: 11px;
-    padding-top: 8px;
+    font-size: 12px;
+    padding-top: 10px;
     display: block; }
   .ajax-load-more .section-title h4 {
     font-size: 14px;
@@ -4330,7 +4332,7 @@ span.dismiss a {
   color: #333;
   width: 40px;
   height: 40px;
-  line-height: 40px;
+  line-height: 39px;
   text-align: center;
   z-index: 1;
   font-weight: 700;
@@ -4407,7 +4409,8 @@ span.dismiss a {
   .ajax-load-more input[type=text],
   .ajax-load-more input[type=number],
   .select2-container,
-  #alm-builder .select2-container-multi {
+  #alm-builder .select2-container-multi,
+  .ajax-load-more textarea {
     width: 95%; }
   #alm-builder .select2-container-multi {
     width: 95% !important; } }
@@ -4458,6 +4461,7 @@ span.dismiss a {
     padding: 20px 20px 10px; }
   .ajax-load-more .row .wrap {
     padding: 10px 20px; }
+  .ajax-load-more textarea,
   .ajax-load-more input[type=text],
   .ajax-load-more input[type=number],
   .select2-container,

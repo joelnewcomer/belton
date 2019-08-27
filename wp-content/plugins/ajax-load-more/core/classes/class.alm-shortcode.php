@@ -86,6 +86,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   		'nested' => false,
 	   		'filters' => false,
 	   		'target' => '',
+	   		'filters_url' => 'true',
 	   		'filters_paging' => 'true',
 	   		'filters_scroll' => 'false',
 	   		'filters_scrolltop' => '30',
@@ -137,6 +138,10 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'paging_controls' => 'false',
    			'paging_show_at_most' => '7',
    			'paging_classes' => '',
+   			'paging_first_label' => apply_filters('alm_paging_first_label', ''),
+   			'paging_last_label' => apply_filters('alm_paging_last_label', ''),
+   			'paging_previous_label' => apply_filters('alm_paging_previous_label', '&laquo;'),
+   			'paging_next_label' => apply_filters('alm_paging_next_label', '&raquo;'),
    			'preloaded' => 'false',
    			'preloaded_amount' => '5',
    			'seo' => 'false',
@@ -204,6 +209,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'id' => '',
    			'primary' => false,
    			'woocommerce' => false,
+   			'no_results_text' => ''
    		), $atts));   		
    			
    		
@@ -654,6 +660,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   		   	'alm_filters_shortcode_params',
    	   		   	$filters,
    	   		   	$target,
+   	   		   	$filters_url,
    	   		   	$filters_paging,
    	   		   	$filters_scroll,
    	   		   	$filters_scrolltop,
@@ -672,8 +679,12 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   		   	$paging,
    	   		   	$paging_controls,
    	   		   	$paging_show_at_most,
-   	   		   	$paging_classes,
-   	   		   	$options
+   	   		   	$paging_classes,   	   		   	
+                     $paging_first_label,
+                     $paging_last_label,
+                     $paging_previous_label,
+                     $paging_next_label,
+                     $options
    	   		   );
    	   			$ajaxloadmore .= $paging_return;
    	         }
@@ -902,7 +913,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   		}
 	   		
 
-	   		// Previous Post
+	   		// Single Post
 	         // Get first post and append to alm object
 	   		if(has_action('alm_single_post_installed') && $single_post){
    	   		
@@ -970,9 +981,9 @@ if( !class_exists('ALM_SHORTCODE') ):
 		   	 *
 		   	 * @return html;
 		   	 */
-	   		if($seo === 'true' && $preloaded !== 'true' && !$restapi){
+	   		if(($seo === 'true' || $filters) && $preloaded !== 'true' && !$restapi){
 	            $ajaxloadmore .= apply_filters('alm_noscript', $query_args, $container_element, $css_classes, $transition_container_classes);
-	         }
+	         }	 
 
 
 				/*
@@ -996,6 +1007,11 @@ if( !class_exists('ALM_SHORTCODE') ):
             // Render <noscript> pagination for Nextpage addon		
             if(has_action('alm_nextpage_installed') && $nextpage){   
 		      	$ajaxloadmore .= apply_filters( 'alm_nextpage_noscript_paging', $query_args['post_id'], $query_args['id'] ); // located in Nextpage add-on
+		      }
+		      
+		      // No results text
+		      if($no_results_text !== '' && !empty($no_results_text)){
+					$ajaxloadmore .= '<div class="alm-no-results" style="display: none;">'. $no_results_text .'</div>';
 		      }
             
             

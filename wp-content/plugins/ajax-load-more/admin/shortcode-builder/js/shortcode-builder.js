@@ -327,6 +327,10 @@ jQuery(document).ready(function($) {
 
          output += ' filters="'+filters+'"';
 
+			var filters_url = $('#alm-filters input[name=filters-url]:checked').val().trim();
+         if(filters_url !== '' && filters_url !== 'true')
+            output += ' filters_url="'+filters_url+'"';
+
 			var filters_paging = $('#alm-filters input[name=filters-paging]:checked').val().trim();
          if(filters_paging !== '' && filters_paging !== 'true')
             output += ' filters_paging="'+filters_paging+'"';
@@ -405,6 +409,12 @@ jQuery(document).ready(function($) {
       var paging_controls = $('#alm-paging input[name=paging-controls]:checked').val();
       var paging_show_at_most = $('#alm-paging input#show-at-most').val();
       var paging_classes = $('#alm-paging input#paging-classes').val();
+      
+      var paging_first_label = $('#alm-paging input#paging-first-label').val();
+      var paging_last_label = $('#alm-paging input#paging-last-label').val();
+      var paging_previous_label = $('#alm-paging input#paging-previous-label').val();
+      var paging_next_label = $('#alm-paging input#paging-next-label').val();
+      
       if(paging !== 'false' && paging != undefined){
          output += ' paging="'+paging+'"';
          output += ' paging_controls="'+paging_controls+'"';
@@ -415,6 +425,20 @@ jQuery(document).ready(function($) {
             output += ' paging_classes="'+paging_classes+'"';
          }
          $('#nav-controls').slideDown(250, 'alm_easeInOutQuad');
+         
+         if(paging_controls === 'true'){
+            $('#paging-controls-nav').slideDown(250, 'alm_easeInOutQuad');
+            
+            output += (paging_first_label !== '') ? ' paging_first_label="'+paging_first_label+'"' : '';
+            output += (paging_last_label !== '') ? ' paging_last_label="'+paging_last_label+'"' : '';
+            output += (paging_previous_label !== '') ? ' paging_previous_label="'+paging_previous_label+'"' : '';
+            output += (paging_next_label !== '') ? ' paging_next_label="'+paging_next_label+'"' : '';
+            
+            
+         } else {
+            $('#paging-controls-nav').slideUp(250, 'alm_easeInOutQuad');
+         }
+         
       }else{
          $('#nav-controls').slideUp(250, 'alm_easeInOutQuad');
       }
@@ -1232,6 +1256,18 @@ jQuery(document).ready(function($) {
       var nested = $('.alm-instance-options input[name=nested]:checked').val();
       if(nested === 't'){
          output += ' nested="true"';
+      }
+         
+
+      // ---------------------------
+      // - No Results Text
+      // ---------------------------
+
+      var no_results = $('.alm-instance-options textarea#no_results_text').val();
+      if(no_results !== ''){
+	      no_results = no_results.replace(/"/g, "'");
+
+         output += ' no_results_text="'+ no_results +'"';
       }
 
 

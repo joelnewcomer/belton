@@ -38,17 +38,19 @@ export default almFilter;
  * @param el element;
  * @since 2.13.1
  */
-let almFilterTransition  = function(transition, speed, data, el){
-		
+let almFilterTransition  = function(transition, speed, data, el){   
+   
    if(transition === 'fade' || transition === 'masonry'){ 
 	   // Fade, Masonry transition
       almFadeOut(el, speed);
       setTimeout(function(){
+         el.classList.add('alm-is-filtering');
 	      almCompleteFilterTransition(speed, data, el);
 	   }, speed);
 	   
    }else{ 
 	   // No transition
+	   el.classList.add('alm-is-filtering');
       almCompleteFilterTransition(speed, data, el);
    }
    
@@ -65,7 +67,10 @@ let almFilterTransition  = function(transition, speed, data, el){
  * @param el element;
  * @since 3.3
  */
-let almCompleteFilterTransition = (speed, data, el) => {
+let almCompleteFilterTransition = (speed, data, el) => {	
+	
+	// Get `.alm-btn-wrap` element
+	let btnWrap = el.querySelector('.alm-btn-wrap');
 	
 	// Get `.alm-listing` element
 	let listing = el.querySelectorAll('.alm-listing');
@@ -74,12 +79,18 @@ let almCompleteFilterTransition = (speed, data, el) => {
 	[...listing].forEach(function(e){
 		e.innerHTML = ''; // Clear listings
 	});
-	
+	 
 	// Get Load More button
-	let button = el.querySelector('.alm-load-more-btn');
+	let button = btnWrap.querySelector('.alm-load-more-btn');
 	if(button){
 		button.classList.remove('done');// Reset Button 
 	}
+	
+	// Clear paging navigation
+   let paging = btnWrap.querySelector('.alm-paging');
+   if(paging){
+      paging.style.opacity = 0;
+   }
 	
 	// Dispatch Filters
 	almSetFilters(speed, data, el);

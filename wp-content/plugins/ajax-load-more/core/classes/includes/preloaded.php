@@ -243,7 +243,7 @@ else {
 	   while ($alm_preload_query->have_posts()) : $alm_preload_query->the_post();
 
 	   	$alm_item++;
-         $alm_current++;	 
+         $alm_current++;	
          
          // Call to Action [Before]
 			if($cta && has_action('alm_cta_inc') && $cta_pos === 'before'){
