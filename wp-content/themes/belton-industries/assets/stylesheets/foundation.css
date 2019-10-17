@@ -3686,10 +3686,11 @@ section.solutions .cat-icons {
 .cat-match .icon-wrap a.info-circle {
   color: #69C13C;
   position: absolute;
-  right: 9px;
-  line-height: 8px;
+  top: 10px;
+  right: 10px;
+  line-height: 10px;
   padding: 4px 7px;
-  border: 1px solid;
+  border: 2px solid;
   border-radius: 50px;
   font-size: 12px;
   font-weight: 900; }

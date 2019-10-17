@@ -24,15 +24,17 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 					
 							// STEP 1 - Category Icons
 							$custom_id =  'guide_cats_' . $term->term_id;
-							
+							$link = get_field('link', $custom_id);
 							$icon_url = get_field('icon', $custom_id);
-							echo 'div class="wrapper">';
+							echo 'div class="icon-wrap">';
 					        echo '<a href="#" data-cat-id="' . $term->term_id . '" class="cat-icon transition">';
 					        echo file_get_contents( $icon_url );
 					        echo '<div class="cat-name">' . $term->name . '</div>';
 							echo '</a>';
 							
-							echo '<a href="'. $link .'" class="info-circle">i</a>"';
+							if ($link) {
+								echo '<a href="'. $link .'" class="info-circle"><strong>i</strong></a>';
+							}
 					
 							echo '</div>';
 					        
