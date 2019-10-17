@@ -621,6 +621,24 @@ section.solutions {
 	}
 }
 
+.cat-match .icon-wrap {
+    display: inline;
+    position: relative;
+}
+.cat-match .icon-wrap a.info-circle {
+	color: #69C13C;
+    position: absolute;
+	right: 9px;
+	line-height: 8px;
+    padding: 4px 7px;
+    border: 1px solid;
+    border-radius: 50px;
+    font-size: 12px;
+	font-weight: 900;
+	&:hover {
+		color: #1365C3;
+	}
+}
 .cat-icons {
 	.cat-icon svg {
 		width: 48px;

@@ -1549,10 +1549,6 @@ input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
   color: #cacaca; }
 
-input::-moz-placeholder,
-textarea::-moz-placeholder {
-  color: #cacaca; }
-
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
   color: #cacaca; }
@@ -2438,7 +2434,6 @@ section.cta {
       margin: 5px 0 5px 55px; }
     #footer-container .footer-menu ul {
       -webkit-column-count: 2;
-         -moz-column-count: 2;
               column-count: 2; }
     #footer-container .footer-menu li.home {
       display: none; }
@@ -3684,6 +3679,23 @@ section.solutions .cat-icons {
       section.solutions .cat-icons.cat-match {
         padding: 0; } }
 
+.cat-match .icon-wrap {
+  display: inline;
+  position: relative; }
+
+.cat-match .icon-wrap a.info-circle {
+  color: #69C13C;
+  position: absolute;
+  right: 9px;
+  line-height: 8px;
+  padding: 4px 7px;
+  border: 1px solid;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 900; }
+  .cat-match .icon-wrap a.info-circle:hover {
+    color: #1365C3; }
+
 .cat-icons .cat-icon svg {
   width: 48px;
   height: 48px;
@@ -3880,7 +3892,6 @@ section.solutions .cat-products {
   @media only screen and (min-width: 40.063em) {
     #no-matches ul {
       -webkit-column-count: 2;
-         -moz-column-count: 2;
               column-count: 2; } }
   #no-matches li {
     font-size: 16px;
@@ -6656,7 +6667,8 @@ h2.resp-accordion {
 .easy-autocomplete-container ul li, .easy-autocomplete-container ul .eac-category {
   background: inherit;
   border-color: #ccc;
-  border-image: none;
+  -webkit-border-image: none;
+          border-image: none;
   border-style: solid;
   border-width: 0 1px;
   display: block;

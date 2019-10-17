@@ -27,6 +27,21 @@
             "mime_types": ""
         },
         {
+            "key": "field_5da8bffb35aef",
+            "label": "Link",
+            "name": "link",
+            "type": "link",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array"
+        },
+        {
             "key": "field_59c55b03970a4",
             "label": "Category Background Image",
             "name": "bg_image",
@@ -136,7 +151,7 @@
             {
                 "param": "taxonomy",
                 "operator": "==",
-                "value": "search_cats"
+                "value": "all"
             }
         ]
     ],
@@ -148,5 +163,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1510256200
+    "modified": 1571340310
 }
