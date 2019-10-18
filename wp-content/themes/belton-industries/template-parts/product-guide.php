@@ -102,7 +102,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 			        $bg_url = get_field('bg_image', $custom_id);
 			        if ( !wp_is_mobile() ) { 
 						echo '<div class="icon-wrap">';
-			        	echo '<a href="#" data-cat-id="' . $term->term_id . '" data-bg-url="' . $bg_url . '" class="cat-icon transition hide-for-small">';
+			        	echo '<a href="#" data-cat-id="' . $term->term_id . '" data-bg-url="' . $bg_url . '" class="cat-icon transition">';
 			        	echo file_get_contents( $icon_url );
 			        	echo '<div class="cat-name">' . $term->name . '</div>';
 						echo '</a>';
@@ -116,7 +116,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 
 			        <!-- STEP 2 - Subcategory Checkboxes -->
 			        <?php if ( !wp_is_mobile() ) : ?>
-			        <div class="<?php echo $term->term_id; ?> sub-cat transition hide-for-small">
+			        <div class="<?php echo $term->term_id; ?> sub-cat transition">
 				        <form class="subcat-checkboxes">
 					        <?php $subcats = get_terms('guide_cats', array ( 'parent' => $term->term_id, 'hide_empty' => false  )); ?>
 					        <?php foreach ($subcats as $subcat) : ?>

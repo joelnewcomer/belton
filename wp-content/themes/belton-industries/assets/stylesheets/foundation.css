@@ -3693,7 +3693,9 @@ section.solutions .cat-icons {
   border: 2px solid;
   border-radius: 50px;
   font-size: 12px;
-  font-weight: 900; }
+  font-weight: 900;
+  width: 22px;
+  height: 22px; }
   .cat-match .icon-wrap a.info-circle:hover {
     color: #1365C3; }
 
