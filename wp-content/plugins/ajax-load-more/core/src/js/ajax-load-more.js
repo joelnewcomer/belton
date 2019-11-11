@@ -39,6 +39,7 @@ import almFadeIn from './modules/fadeIn';
 import almFadeOut from './modules/fadeOut';
 import almFilter from './modules/filtering';
 import almNoResults from './modules/noResults';
+import almDebug from './modules/almDebug';
 import srcsetPolyfill from './helpers/srcsetPolyfill';
 
 
@@ -213,6 +214,7 @@ let alm_is_filtering = false;
       alm.extensions.acf = alm.listing.dataset.acf; // ACF
       alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
       alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
+      alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
       alm.extensions.acf_post_id = alm.listing.dataset.acfPostId;
       alm.extensions.acf = (alm.extensions.acf === 'true') ? true : false;
       // if field type, name or post ID is empty
@@ -585,7 +587,8 @@ let alm_is_filtering = false;
                'acf': 'true',
                'post_id': alm.extensions.acf_post_id,
                'field_type': alm.extensions.acf_field_type,
-               'field_name': alm.extensions.acf_field_name
+               'field_name': alm.extensions.acf_field_name,
+               'parent_field_name': alm.extensions.acf_parent_field_name
             };
          }
 
@@ -924,7 +927,8 @@ let alm_is_filtering = false;
             total = meta.postcount;
             alm.totalposts = meta.totalposts;
             alm.totalposts = (alm.addons.preloaded === 'true') ? alm.totalposts - alm.addons.preloaded_amount : alm.totalposts;
-         }
+            alm.debug = (meta.debug) ? meta.debug : '';
+         }         
 
 			// Set alm.html as plain text return
          alm.html = html; 
@@ -972,15 +976,19 @@ let alm_is_filtering = false;
                   }
                }               
             }
-         }                
-
+         }         
+			
+			
+			/*
+          *  Display alm_debug results
+          */ 
+         almDebug(alm);
 
 
          /*
           *  Set localized variables
           */          
-         setLocalizedVars(alm);
-         
+         setLocalizedVars(alm);         
          
          
          /*

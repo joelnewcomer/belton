@@ -25,7 +25,7 @@
 	      <div class="nested-component--inner">	
 
 	         <div class="section-title">
-	            <h4><?php _e('Post ID', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Leave this field blank and Ajax Load More will retrieve the ID from the global $post object','ajax-load-more'); ?>."></a></h4>
+	            <h4><?php _e('Post ID', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Leave this field blank and Ajax Load More will retrieve the ID from the global $post object.','ajax-load-more'); ?>"></a></h4>
 	   		 	<p><?php _e('The ID of the current page/post.', 'ajax-load-more'); ?></p>
 	   		 </div>
 	         <div class="wrap">
@@ -39,7 +39,7 @@
 	
 			   <div class="section-title">
 					<h4><?php _e('Field Type', 'ajax-load-more'); ?></h4>
-					<p><?php _e('Select the type of ACF field', 'ajax-load-more'); ?>.</p>
+					<p><?php _e('Select the type of ACF field.', 'ajax-load-more'); ?></p>
 				</div>
 				<div class="wrap">
 	   			<div class="inner">
@@ -59,12 +59,29 @@
 	
 			   <div class="section-title">
 					<h4><?php _e('Field Name', 'ajax-load-more'); ?></h4>
-					<p><?php _e('Enter the name of the ACF field', 'ajax-load-more'); ?>.</p>
+					<p><?php _e('Enter the name of the ACF field.', 'ajax-load-more'); ?></p>
 				</div>
 				<div class="wrap">
 	   			<div class="inner">
 	               <label class="offscreen" for="acf_field_name"><?php _e('Field Type', 'ajax-load-more'); ?>:</label>
-	               <input type="text" class="alm_element" name="acf_field_name" id="acf_field_name" placeholder="{your_field_name}">
+	               <input type="text" class="alm_element" name="acf_field_name" id="acf_field_name" placeholder="field_name">
+	   			</div>
+				</div>
+				
+				<div class="clear"></div>
+	         <hr> 
+	                  	
+			   <div class="section-title">
+					<h4><?php _e('Parent Field Name', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('This option is only relevant when trying to access content in sub fields.','ajax-load-more'); ?>"></a></h4>
+					<p>
+   					<?php _e('If this a nested ACF <a href="https://www.advancedcustomfields.com/resources/get_sub_field/" target="_blank">sub_field</a>, enter the parent field names.', 'ajax-load-more'); ?>
+   					<br/><small><?php _e('Access fields up to the three levels deep by colon separating the field names.', 'ajax-load-more'); ?><br/>e.g. top_parent:second_level</small>
+               </p>
+				</div>
+				<div class="wrap">
+	   			<div class="inner">
+	               <label class="offscreen" for="acf_parent_field_name"><?php _e('Field Name', 'ajax-load-more'); ?>:</label>
+	               <input type="text" class="alm_element" name="acf_parent_field_name" id="acf_parent_field_name" placeholder="top_parent:second_level">
 	   			</div>
 				</div>
 	      </div>

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Ajax Load More\n"
-"POT-Creation-Date: 2019-10-01 10:06-0400\n"
+"POT-Creation-Date: 2019-10-22 11:05-0400\n"
 "PO-Revision-Date: 2018-06-20 13:05-0500\n"
 "Last-Translator: Darren Cooney <darren@connekthq.com>\n"
 "Language-Team: \n"
@@ -170,7 +170,7 @@ msgid ""
 "to read and write files within the /ajax-load-more/core/repeater directory."
 msgstr ""
 
-#: admin/admin.php:615 admin/admin.php:616 ajax-load-more.php:353
+#: admin/admin.php:615 admin/admin.php:616 ajax-load-more.php:342
 msgid "Settings"
 msgstr ""
 
@@ -362,7 +362,7 @@ msgstr ""
 
 #: admin/admin.php:1742 admin/shortcode-builder/shortcode-builder.php:104
 #: admin/shortcode-builder/shortcode-builder.php:269
-#: core/classes/class.alm-shortcode.php:208
+#: core/classes/class.alm-shortcode.php:209
 msgid "Older Posts"
 msgstr ""
 
@@ -761,7 +761,7 @@ msgstr ""
 #: admin/shortcode-builder/components/acf.php:28
 msgid ""
 "Leave this field blank and Ajax Load More will retrieve the ID from the "
-"global $post object"
+"global $post object."
 msgstr ""
 
 #: admin/shortcode-builder/components/acf.php:29
@@ -776,7 +776,7 @@ msgid "Field Type"
 msgstr ""
 
 #: admin/shortcode-builder/components/acf.php:42
-msgid "Select the type of ACF field"
+msgid "Select the type of ACF field."
 msgstr ""
 
 #: admin/shortcode-builder/components/acf.php:48
@@ -800,11 +800,34 @@ msgid "Repeater"
 msgstr ""
 
 #: admin/shortcode-builder/components/acf.php:61
+#: admin/shortcode-builder/components/acf.php:83
 msgid "Field Name"
 msgstr ""
 
 #: admin/shortcode-builder/components/acf.php:62
-msgid "Enter the name of the ACF field"
+msgid "Enter the name of the ACF field."
+msgstr ""
+
+#: admin/shortcode-builder/components/acf.php:75
+msgid "Parent Field Name"
+msgstr ""
+
+#: admin/shortcode-builder/components/acf.php:75
+msgid ""
+"This option is only relevant when trying to access content in sub fields."
+msgstr ""
+
+#: admin/shortcode-builder/components/acf.php:77
+msgid ""
+"If this a nested ACF <a href=\"https://www.advancedcustomfields.com/"
+"resources/get_sub_field/\" target=\"_blank\">sub_field</a>, enter the parent "
+"field names."
+msgstr ""
+
+#: admin/shortcode-builder/components/acf.php:78
+msgid ""
+"Access fields up to the three levels deep by colon separating the field "
+"names."
 msgstr ""
 
 #: admin/shortcode-builder/components/cache.php:6
@@ -2622,15 +2645,15 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:296
+#: ajax-load-more.php:286
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:440
+#: ajax-load-more.php:429
 msgid "Displaying page {num} of {total}."
 msgstr ""
 
-#: ajax-load-more.php:441
+#: ajax-load-more.php:430
 msgid "No results found."
 msgstr ""
 

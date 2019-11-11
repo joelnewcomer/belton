@@ -208,7 +208,8 @@ jQuery(document).ready(function($) {
 
          var acf_post_id = $('#acf_post_id').val(),
              acf_field_type = $('#acf_field_type').val(),
-             acf_field_name = $('#acf_field_name').val();
+             acf_field_name = $('#acf_field_name').val(),
+             acf_parent_field_name = $('#acf_parent_field_name').val();
 
          $('.acf-options').slideDown(250, 'alm_easeInOutQuad');
 
@@ -219,6 +220,10 @@ jQuery(document).ready(function($) {
             }
             output += ' acf_field_type="'+ acf_field_type +'"';
             output += ' acf_field_name="'+ acf_field_name +'"';
+            
+            if(acf_parent_field_name){
+	            output += ' acf_parent_field_name="'+ acf_parent_field_name +'"';
+            }
          }
 
       }else{

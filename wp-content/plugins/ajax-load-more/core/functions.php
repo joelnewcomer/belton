@@ -685,10 +685,14 @@ function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_o
 *  @since 2.5.0
 */
 function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
-   if(!empty($meta_key)){
+   if(!empty($meta_key)){  
+      
+      // do_shortcode fixes (shortcode was rendering as HTML when using < OR  <==)
+      $meta_compare = ($meta_compare === 'lessthan') ? '<' : $meta_compare; 
+      $meta_compare = ($meta_compare === 'lessthanequalto') ? '<=' : $meta_compare; 
      
       // Get optimized `meta_value` parameter
-      $meta_values = alm_parse_meta_value($meta_value, $meta_compare);
+      $meta_values = alm_parse_meta_value($meta_value, $meta_compare);      
       
       // Unset `$meta_values` if empty
       if($meta_values === ''){         

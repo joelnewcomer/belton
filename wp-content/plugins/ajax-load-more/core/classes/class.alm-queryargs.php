@@ -72,17 +72,15 @@ if(!class_exists('ALM_QUERY_ARGS')):
    		// Custom Fields
    		$meta_key = (isset($a['meta_key'])) ? $a['meta_key'] : '';
    		$meta_value = (isset($a['meta_value'])) ? $a['meta_value'] : '';
-   		$meta_compare = (isset($a['meta_compare'])) ? $a['meta_compare'] : '';
-   		if(empty($meta_compare))
-   			$meta_compare = 'IN'; 
-   		if($meta_compare === 'lessthan') $meta_compare = '<'; // do_shortcode fix (shortcode was rendering as HTML)
-   		if($meta_compare === 'lessthanequalto') $meta_compare = '<='; // do_shortcode fix (shortcode was rendering as HTML)
-   		$meta_relation = (isset($a['meta_relation'])) ? $a['meta_relation'] : '';
-   		if(empty($meta_relation))
-   			$meta_relation = 'AND';
+   		
+   		$meta_compare = (isset($a['meta_compare'])) ? $a['meta_compare'] : '';   		
+   		$meta_compare = (empty($meta_compare)) ? 'IN' : $meta_compare;  		
+   		
    		$meta_type = (isset($a['meta_type'])) ? $a['meta_type'] : '';
-   		if(empty($meta_type))
-   			$meta_type = 'CHAR';
+   		$meta_type = (empty($meta_type)) ? 'CHAR' : $meta_type;
+   		
+   		$meta_relation = (isset($a['meta_relation'])) ? $a['meta_relation'] : '';
+   		$meta_relation = (empty($meta_relation)) ? 'AND' : $meta_relation;
    		
    		// Search
    		$s = (isset($a['search'])) ? $a['search'] : '';   		
@@ -131,8 +129,9 @@ if(!class_exists('ALM_QUERY_ARGS')):
 	         $acf = (isset($a['acf'])) ? true : false;
 	   		if($acf){
 	            $acf_post_id = (isset($a['acf']['post_id'])) ? $a['acf']['post_id'] : ''; // Post ID
-	            $acf_field_type = (isset($a['acf']['field_type'])) ? $a['acf']['field_type'] : ''; // ACF Field Type
-	            $acf_field_name = (isset($a['acf']['field_name'])) ? $a['acf']['field_name'] : ''; // ACF Field Type
+	            $acf_field_type = (isset($a['acf']['field_type'])) ? $a['acf']['field_type'] : ''; // Field Type
+	            $acf_field_name = (isset($a['acf']['field_name'])) ? $a['acf']['field_name'] : ''; // Field Name
+	            $acf_parent_field_name = (isset($a['acf']['parent_field_name'])) ? $a['acf']['parent_field_name'] : ''; // Parent Field Name
 	         }
 				         
          } else {
@@ -140,8 +139,9 @@ if(!class_exists('ALM_QUERY_ARGS')):
 	   		if(isset($a['acf'])){
 		   		if($a['acf'] === 'true'){
 		            $acf_post_id = (isset($a['acf_post_id'])) ? $a['acf_post_id'] : ''; // Post ID
-		            $acf_field_type = (isset($a['acf_field_type'])) ? $a['acf_field_type'] : ''; // ACF Field Type
-		            $acf_field_name = (isset($a['acf_field_name'])) ? $a['acf_field_name'] : ''; // ACF Field Type
+		            $acf_field_type = (isset($a['acf_field_type'])) ? $a['acf_field_type'] : ''; // Field Type
+		            $acf_field_name = (isset($a['acf_field_name'])) ? $a['acf_field_name'] : ''; //  Field Name
+						$acf_parent_field_name = (isset($a['acf_parent_field_name'])) ? $a['acf_parent_field_name'] : ''; // Parent Field Name
 		         }
 	         }
          }
@@ -373,22 +373,28 @@ if(!class_exists('ALM_QUERY_ARGS')):
    		// Advanced Custom Fields
    		if(!empty($acf_field_type) && !empty($acf_field_name) && function_exists('get_field')){
       		if($acf_field_type === 'relationship'){ // Relationship Field
-         		if(empty($acf_post_id)){
-                  $acf_post_id = $post_id;
-         		}
-               $acf_post_ids = get_field($acf_field_name, $acf_post_id); // Get field value from ACF            
-               if($acf_post_ids){
-                  $args['post__in'] = $acf_post_ids;
+         		$acf_post_id = (empty($acf_post_id)) ? $post_id : $acf_post_id;
+         		$acf_post_ids = [];
+         		
+         		if(empty($acf_parent_field_name)){
+	         		// Get field value from ACF
+               	$acf_post_ids = get_field($acf_field_name, $acf_post_id);  
                } else {
-                  $args['post__in'] = array(0);
-               }
+	               // Call function in ACF extension
+	               if(function_exists('alm_acf_loop_gallery_rows')){
+							// Sub Fields
+							$acf_post_ids = alm_acf_loop_relationship_rows($acf_parent_field_name, $acf_field_name, $acf_post_id);
+						}
+               }   
+               $args['post__in'] = ($acf_post_ids) ? $acf_post_ids : array(0);
             }
-         }
-   		
+         }   		
+         
+         //alm_pretty_print($args);
+         
+         // Return $args
    	   return $args;
          
-      }
-   
-   }
-   
+      }   
+   }   
 endif;

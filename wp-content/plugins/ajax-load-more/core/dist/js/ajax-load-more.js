@@ -180,6 +180,10 @@ var _noResults = __webpack_require__(/*! ./modules/noResults */ "./core/src/js/m
 
 var _noResults2 = _interopRequireDefault(_noResults);
 
+var _almDebug = __webpack_require__(/*! ./modules/almDebug */ "./core/src/js/modules/almDebug.js");
+
+var _almDebug2 = _interopRequireDefault(_almDebug);
+
 var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
 
 var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
@@ -398,6 +402,7 @@ var alm_is_filtering = false;
       alm.extensions.acf = alm.listing.dataset.acf; // ACF
       alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
       alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
+      alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
       alm.extensions.acf_post_id = alm.listing.dataset.acfPostId;
       alm.extensions.acf = alm.extensions.acf === 'true' ? true : false;
       // if field type, name or post ID is empty
@@ -755,7 +760,8 @@ var alm_is_filtering = false;
                'acf': 'true',
                'post_id': alm.extensions.acf_post_id,
                'field_type': alm.extensions.acf_field_type,
-               'field_name': alm.extensions.acf_field_name
+               'field_name': alm.extensions.acf_field_name,
+               'parent_field_name': alm.extensions.acf_parent_field_name
             };
          }
 
@@ -1063,6 +1069,7 @@ var alm_is_filtering = false;
             total = meta.postcount;
             alm.totalposts = meta.totalposts;
             alm.totalposts = alm.addons.preloaded === 'true' ? alm.totalposts - alm.addons.preloaded_amount : alm.totalposts;
+            alm.debug = meta.debug ? meta.debug : '';
          }
 
          // Set alm.html as plain text return
@@ -1112,6 +1119,11 @@ var alm_is_filtering = false;
                }
             }
          }
+
+         /*
+                *  Display alm_debug results
+                */
+         (0, _almDebug2.default)(alm);
 
          /*
           *  Set localized variables
@@ -3488,6 +3500,37 @@ var stripEmptyNodes = function stripEmptyNodes() {
   return results;
 };
 exports.default = stripEmptyNodes;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/almDebug.js":
+/*!*****************************************!*\
+  !*** ./core/src/js/modules/almDebug.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**  
+ * Display alm_debug results
+ * https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug
+ *
+ * @param {object} alm     Global alm object
+ * @since 5.1.6 
+ */
+
+var almDebug = function almDebug(alm) {
+  if (alm && alm.debug) {
+    console.log('alm_debug info:', alm.debug);
+  }
+};
+
+exports.default = almDebug;
 
 /***/ }),
 

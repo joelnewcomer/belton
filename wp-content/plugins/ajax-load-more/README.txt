@@ -3,8 +3,8 @@ Contributors: dcooney, connekthq
 Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.0
-Tested up to: 5.2.3
-Stable tag: 5.1.5
+Tested up to: 5.2.4
+Stable tag: 5.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -380,6 +380,12 @@ How to install Ajax Load More.
 
 
 == Changelog ==
+
+= 5.1.6 - October 22, 2019 =
+* NEW - Added support for ACF Sub Fields in the [ACF extension](https://connekthq.com/plugins/ajax-load-more/extensions/advanced-custom-fields/).
+* FIX - Fixed issue with ALM not starting if the global settings were not saved previously 😔.
+* UPDATE - Improved the functionality of the [alm_debug](https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug) filter hook. Query args are now displayed in the browser console under it's own entry.
+
 
 = 5.1.5 - October 1, 2019 =
 * NEW - Added new `loading_style` parameter that allows users to override the global button style at the shortcode level.
