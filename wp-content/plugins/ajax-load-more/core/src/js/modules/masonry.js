@@ -14,8 +14,6 @@ let imagesLoaded = require('imagesloaded');
  * @since 3.1
  * @updated 5.0.2
 */
-
-let msnry = '';
 let almMasonry = (alm, init, filtering) => {	
 	
 	let container = alm.listing;
@@ -98,7 +96,7 @@ let almMasonry = (alm, init, filtering) => {
             
             // Init Masonry, delay to allow time for items to be added to the page
             setTimeout(function(){
-            	msnry = new Masonry( container, defaults );
+            	alm.msnry = new Masonry( container, defaults );
             	// Fade In
 					almFadeIn(container.parentNode, speed); 
             }, 100 );				
@@ -123,16 +121,15 @@ let almMasonry = (alm, init, filtering) => {
    			
    			// Confirm imagesLoaded & append
    			imagesLoaded( container, function() {
-					msnry.appended( data );				
+					alm.msnry.appended( data );				
 				});
 				
 			}
 		}
 
-	} else{
+	} else{		
    	
-		// Reset
-		msnry.destroy(); // destroy masonry
+		// Reset		
 		container.parentNode.style.opacity = 0;
 		almMasonry(alm, true, false);
 		

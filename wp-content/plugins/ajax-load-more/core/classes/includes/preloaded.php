@@ -1,6 +1,5 @@
 <?php
    
-// Preloaded
 // Get preloaded posts and append to alm object
 
 
@@ -49,7 +48,7 @@ $type = alm_get_repeater_type($repeater);
 
 
 // Tabs
-if($tabs === 'true'){
+if($tabs){
 	
 	/*
 	 *	alm_tabs_preloaded
@@ -200,20 +199,6 @@ else {
 	 */
    if(class_exists('ALM_QUERY_ARGS')){
       $args = ALM_QUERY_ARGS::alm_build_queryargs($query_args, false);
-   }
-
-
-
-   /*
-	 *	alm_filters_preloaded_args
-	 *
-	 * ALM Filters add-on Hook
-	 *
-	 * @return $args;
-	 */
-	
-	if($filters && has_action('alm_filters_preloaded_args')){
-   	// $args = apply_filters('alm_filters_preloaded_args', $args); // Create filters $args
    }
 
 

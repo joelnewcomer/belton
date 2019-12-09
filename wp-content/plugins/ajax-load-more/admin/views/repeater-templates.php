@@ -28,13 +28,12 @@
 				   </ul>
 				<?php } ?>
 
-
 				<?php
 
 				// Theme Repeaters
 
 				if($theme_repeaters){ ?>
-				<div class="group no-shadow">
+				<div class="repeater-listing">
 
 				<?php
 
@@ -80,14 +79,15 @@
       	   							?>
       	   							<textarea rows="10" id="template-tr-<?php echo $id; ?>" class="_alm_repeater"><?php echo $tr_contents; ?></textarea>
       	   			            <script>
-      	                           var editorDefault = CodeMirror.fromTextArea(document.getElementById("template-tr-<?php echo $id; ?>"), {
+      	                           var editor_default = CodeMirror.fromTextArea(document.getElementById("template-tr-<?php echo $id; ?>"), {
       	                             mode:  "application/x-httpd-php",
       	                             lineNumbers: true,
       	                             lineWrapping: true,
       	                             indentUnit: 0,
       	                             matchBrackets: true,
       	                             readOnly: true,
-      	                             viewportMargin: Infinity,
+      	                             viewportMargin: Infinity,foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
       	                             extraKeys: {"Ctrl-Space": "autocomplete"},
       	                           });
       	                        </script>
@@ -97,8 +97,8 @@
    								<div class="alm-row">
       								<div class="column">
       	   							<div class="file-location">
-      		   							<p title="<?php echo $file; ?>"><?php _e('Location', 'ajax-load-more'); ?>:</p>
-      		   							<code><?php echo $file_directory; ?>/<?php echo basename($file); ?></code>
+      		   							<p><?php _e('Location', 'ajax-load-more'); ?>:</p>
+      		   							<code title="<?php echo $file; ?>"><?php echo $file_directory; ?>/<?php echo basename($file); ?></code>
       		   						</div>
       								</div>
    								</div>
@@ -122,7 +122,7 @@
 	            }
 
 	            if($count > 1){?>
-					<span class="toggle-all">
+					<span class="toggle-all" role="button" tabindex="0">
 						<span class="inner-wrap">
 							<em class="collapse"><?php _e('Collapse All', 'ajax-load-more'); ?></em>
 							<em class="expand"><?php _e('Expand All', 'ajax-load-more'); ?></em>
@@ -148,11 +148,11 @@
 				<?php } else { ?>
 
 			   <!-- Repeaters -->
-			   <div class="group no-shadow">
+			   <div class="<?php if(has_action('alm_get_theme_repeater')){ echo 'repeater-listing'; } ?>">
 
 			      <?php
 	            if (has_action('alm_custom_repeaters') || has_action('alm_unlimited_repeaters')){ ?>
-					<span class="toggle-all">
+					<span class="toggle-all" role="button" tabindex="0">
 						<span class="inner-wrap">
 							<em class="collapse"><?php _e('Collapse All', 'ajax-load-more'); ?></em>
 							<em class="expand"><?php _e('Expand All', 'ajax-load-more'); ?></em>
@@ -200,9 +200,10 @@
    									echo '<div class="alm-row alm-row--margin-btm">';
       									echo '<div class="column column--two-third">';
       										// Add Label
-      										echo '<label class="template-title" for="template-default">';
-      										   _e('Enter the HTML and PHP code for the default template', 'ajax-load-more');
-      										echo ':</label>';
+      										echo '<label class="template-title trigger-codemirror" data-id="default" for="template-default">';
+      										   _e('Template Code:', 'ajax-load-more');
+      										   echo '<span>'. __('Enter the PHP and HTML markup for this template.', 'ajax-load-more') .'</span>';
+      										echo '</label>';
       									echo '</div>';
       									echo '<div class="column column--one-third">';
    	                        	   do_action('alm_get_layouts'); // Layouts - Template Selection
@@ -214,14 +215,15 @@
    	      			      <div class="column">
       				            <textarea rows="10" id="template-default" class="_alm_repeater"><?php echo $contents; ?></textarea>
       				            <script>
-      	                        var editorDefault = CodeMirror.fromTextArea(document.getElementById("template-default"), {
+      	                        var editor_default = CodeMirror.fromTextArea(document.getElementById("template-default"), {
       	                          mode:  "application/x-httpd-php",
       	                          lineNumbers: true,
       	                          lineWrapping: true,
       	                          indentUnit: 0,
       	                          matchBrackets: true,
       	                          readOnly: <?php echo $readOnly; ?>,
-      	                          viewportMargin: Infinity,
+      	                          viewportMargin: Infinity,foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
       	                          extraKeys: {"Ctrl-Space": "autocomplete"},
       	                        });
       	                     </script>
@@ -325,7 +327,7 @@
 								var id = editorId.replace('template-', ''); // Editor ID
 
 								if(id === 'default'){ // Default Template
-									value = editorDefault.getValue();
+									value = editor_default.getValue();
 							   }else{ // Repeater Templates
 							      var eid = window['editor_'+id]; // Set editor ID
 							      value = eid.getValue();
@@ -424,7 +426,7 @@
 										},
 										success: function(response) {
 										   if(id === 'default'){ // Default Template
-	         								editorDefault.setValue(response);
+	         								editor_default.setValue(response);
 	                              }else{ // Repeater Templates
 	         						      var eid = window['editor_'+id]; // Set editor ID
 	         						      eid.setValue(response);

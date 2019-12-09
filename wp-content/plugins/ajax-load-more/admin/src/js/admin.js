@@ -9,6 +9,7 @@ jQuery(document).ready(function($) {
 	
 	
 	
+	
 	/*
 	*  Test REST API access
 	*
@@ -30,6 +31,45 @@ jQuery(document).ready(function($) {
    		}
    	});
 	}
+	
+	
+	
+	/*
+   *  Save Repeater Templates with cmd + s and ctrl + s
+   *  @since 5.1
+   */
+	document.addEventListener("keydown", function(e) {
+		if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83) {
+			
+			
+			if(e.target.nodeName === 'TEXTAREA' && $(e.target).closest('.repeater-wrap')){
+				console.log('Saving template...');
+				var btn = $(e.target).closest('.repeater-wrap').find('input.save-repeater');
+				if(btn){
+					btn.click();
+				}
+			}
+			
+			e.preventDefault();
+			
+		}
+	}, false);  
+	 
+   
+   
+   /*
+   *  Set focus in code mirror editor
+   *  @since 5.1
+   */
+   $('label.trigger-codemirror').on('click', function(){
+	   var el = $(this);
+	   var id = el.data('id');
+	   var cm = window['editor_'+id];
+	   if(cm){
+		   cm.focus();
+		   cm.setCursor(cm.lineCount(), 0);
+	   }
+   });
 	
 
 
@@ -383,13 +423,14 @@ jQuery(document).ready(function($) {
 	   	});
    	}
    });
-
-
-
-   /*
+   
+   
+   
+	/*
    *  Get layout value Ajax
    *  @since 2.8.7
    */
+   console.log(window.editorDefault);
    $(document).on('click', '.alm-layout-selection li a.layout', function(e){
       e.preventDefault();
       var el = $(this), 
@@ -408,7 +449,7 @@ jQuery(document).ready(function($) {
          var eid = '';
          if(name === 'default'){ 
             // Default Template
-            eid = window.editorDefault;
+            eid = window.editor_default;
    	   }else{ 
       	   // Repeater Templates
             eid = window['editor_'+name];

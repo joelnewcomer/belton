@@ -188,6 +188,8 @@ var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./cor
 
 var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
 
+var _placeholder = __webpack_require__(/*! ./modules/placeholder */ "./core/src/js/modules/placeholder.js");
+
 function _interopRequireWildcard(obj) {
    if (obj && obj.__esModule) {
       return obj;
@@ -272,7 +274,11 @@ var alm_is_filtering = false;
       alm.loading = true;
       alm.finished = false;
       alm.timer = null;
-      alm.ua = window.navigator.userAgent ? window.navigator.userAgent : ''; // User agent
+
+      alm.ua = window.navigator.userAgent ? window.navigator.userAgent : ''; // Browser User Agent
+      alm.vendor = window.navigator.vendor ? window.navigator.vendor : ''; // Browser Vendor
+      alm.isSafari = /Safari/i.test(alm.ua) && /Apple Computer/.test(alm.vendor) && !/Mobi|Android/i.test(alm.ua);
+
       alm.main = el;
       alm.master_id = el.dataset.id ? 'ajax-load-more-' + el.dataset.id : el.id; // The defined or generated ID of the ALM instance 
       el.classList.add('alm-' + e); // Add unique classname
@@ -318,6 +324,7 @@ var alm_is_filtering = false;
 
       alm.button_label = alm.listing.dataset.buttonLabel;
       alm.button_loading_label = alm.listing.dataset.buttonLoadingLabel;
+      alm.placeholder = alm.main.querySelector('.alm-placeholder');
 
       alm.scroll_distance = alm.listing.dataset.scrollDistance;
       alm.scroll_distance = alm.scroll_distance ? parseInt(alm.scroll_distance) : 100;
@@ -461,16 +468,22 @@ var alm_is_filtering = false;
       if (alm.addons.tabs === 'true') {
          alm.addons.tabs = true;
          alm.addons.tab_template = alm.listing.dataset.tabTemplate ? alm.listing.dataset.tabTemplate : '';
-
-         // Set current template		
-         setTimeout(function () {
-            //window.almTabsOnLoad(alm);
-         }, 500);
-         if (typeof almTabsOnLoad === 'function' && window.location.hash) {
-            //alm.addons.tab_template = window.almTabsOnLoad(alm);
-         }
-
+         alm.addons.tab_onload = alm.listing.dataset.tabOnload ? alm.listing.dataset.tabOnload : '';
          alm.addons.tabs_resturl = alm.listing.dataset.tabsRestUrl ? alm.listing.dataset.tabsRestUrl : '';
+
+         // Locate active template (deeplinks)
+         if (alm.addons.tab_onload !== '') {
+            var tabNav = document.querySelector('.alm-tab-nav li [data-tab-url=' + alm.addons.tab_onload + ']');
+            alm.addons.tab_template = tabNav ? tabNav.dataset.tabTemplate : alm.addons.tab_template;
+            alm.listing.dataset.tabOnload = '';
+            // Set selected tab
+            if (tabNav) {
+               var activeTab = document.querySelector('.alm-tab-nav li .active');
+               if (activeTab) {
+                  activeTab.classList.remove('active');
+               }
+            }
+         }
       } else {
          alm.addons.tabs = false;
       }
@@ -627,6 +640,11 @@ var alm_is_filtering = false;
       alm.is_masonry_preloaded = false;
       if (alm.transition === 'masonry') {
          alm.masonry_init = true;
+         if (alm.msnry) {
+            alm.msnry.destroy(); // destroy masonry if currently exists
+         } else {
+            alm.msnry = '';
+         }
          alm.masonry_selector = alm.listing.dataset.masonrySelector;
          alm.masonry_columnwidth = alm.listing.dataset.masonryColumnwidth;
          alm.masonry_animation = alm.listing.dataset.masonryAnimation;
@@ -700,6 +718,8 @@ var alm_is_filtering = false;
          if (typeof almOnChange === 'function') {
             window.almOnChange(alm);
          }
+
+         (0, _placeholder.showPlaceholder)(alm);
 
          if (!alm.disable_ajax) {
             // Check for ajax blocker
@@ -834,14 +854,15 @@ var alm_is_filtering = false;
          // REST API
          if (alm.extensions.restapi) {
             alm.AjaxLoadMore.restapi(alm, action, queryType);
-         } else if (alm.addons.tabs) {
-            alm.AjaxLoadMore.tabs(alm);
          }
-
-         // Standard ALM
-         else {
-               alm.AjaxLoadMore.adminajax(alm, action, queryType);
+         // Tabs
+         else if (alm.addons.tabs) {
+               alm.AjaxLoadMore.tabs(alm);
             }
+            // Standard ALM
+            else {
+                  alm.AjaxLoadMore.adminajax(alm, action, queryType);
+               }
       };
 
       /**  
@@ -1326,16 +1347,18 @@ var alm_is_filtering = false;
                         if (alm.images_loaded === 'true') {
                            imagesLoaded(reveal, function () {
                               (0, _almAppendChildren2.default)(alm.listing, reveal);
+
                               // Run srcSet polyfill
                               (0, _srcsetPolyfill2.default)(alm.listing, alm.ua);
                            });
                         } else {
                            (0, _almAppendChildren2.default)(alm.listing, reveal);
+
                            // Run srcSet polyfill
                            (0, _srcsetPolyfill2.default)(alm.listing, alm.ua);
                         }
                      } else {
-                        // Standard container
+                        // Standard container	
                         alm.listing.appendChild(reveal);
                      }
                   }
@@ -1384,27 +1407,14 @@ var alm_is_filtering = false;
                         }
                      }
 
-               // *****
                // TABS - Trigger almTabsSetHeight callback in Tabs add-on
-               // *****
-               if (typeof almTabsSetHeight === 'function') {
-                  if (alm.images_loaded === 'true') {
-                     imagesLoaded(reveal, function () {
-                        setTimeout(function () {
-                           (0, _fadeIn2.default)(alm.listing, alm.speed);
-                           setTimeout(function () {
-                              window.almTabsSetHeight(alm);
-                           }, alm.speed);
-                        }, alm.speed + 1);
-                     });
-                  } else {
+               if (alm.addons.tabs && typeof almTabsSetHeight === 'function') {
+                  imagesLoaded(reveal, function () {
+                     (0, _fadeIn2.default)(alm.listing, alm.speed);
                      setTimeout(function () {
-                        (0, _fadeIn2.default)(alm.listing, alm.speed);
-                        setTimeout(function () {
-                           window.almTabsSetHeight(alm);
-                        }, alm.speed);
-                     }, alm.speed + 1);
-                  }
+                        window.almTabsSetHeight(alm);
+                     }, alm.speed);
+                  });
                }
             } else {
 
@@ -1443,8 +1453,7 @@ var alm_is_filtering = false;
                   }
                } else {
 
-                  // almMasonry(alm, alm.init, alm_is_filtering);
-
+                  // almMasonry(alm, alm.init, alm_is_filtering);               
                   setTimeout(function () {
                      alm.main.classList.remove('alm-loading');
                      alm.AjaxLoadMore.triggerAddons(alm);
@@ -1455,7 +1464,11 @@ var alm_is_filtering = false;
 
             // almFiltersOnload [Filters Add-on hook]
             if (typeof almFiltersOnload === 'function' && alm.init) {
-               window.almFiltersOnload(alm);
+               imagesLoaded(reveal, function () {
+                  //setTimeout(function(){
+                  window.almFiltersOnload(alm);
+                  //}, parseInt(alm.speed) + 25); 
+               });
             }
 
             // ALM Complete / Nested
@@ -1520,27 +1533,10 @@ var alm_is_filtering = false;
          }
 
          // Set Focus for A11y
-         if (alm.transition_container && total > 0) {
-            if (alm.addons.paging) {
-               // Paging
-               (0, _setFocus2.default)(alm.init, alm.addons.preloaded, alm.listing, alm_is_filtering);
-            } else if (alm.addons.single_post || alm.addons.nextpage) {
-               // Single Posts OR Next Page, set `init` to false to trigger focus
-               (0, _setFocus2.default)(false, alm.addons.preloaded, reveal, alm_is_filtering);
-            } else {
-               // Standard ALM
-               (0, _setFocus2.default)(alm.init, alm.addons.preloaded, reveal, alm_is_filtering);
-            }
-         } else if (!alm.transition_container && alm.container_type === 'table') {
-
-            // Table Layout
-            (0, _setFocus2.default)(alm.init, alm.addons.preloaded, reveal[0], alm_is_filtering);
-         }
+         (0, _setFocus2.default)(alm, reveal, total, alm_is_filtering);
 
          // Comment Reply Fix
-         if (alm.addons.comments === 'true') {
-            (0, _commentReplyFix2.default)(alm.listing);
-         }
+         (0, _commentReplyFix2.default)(alm.addons.comments, alm.listing);
 
          // Remove filtering class
          if (alm.main.classList.contains('alm-is-filtering')) {
@@ -1776,6 +1772,7 @@ var alm_is_filtering = false;
             // Delay done until animations complete
             setTimeout(function () {
                window.almDone(alm);
+               (0, _placeholder.hidePlaceholder)(alm);
             }, alm.speed + 10);
          }
       };
@@ -1808,13 +1805,14 @@ var alm_is_filtering = false;
             alm.AjaxLoadMore.resetBtnText();
          }
 
+         console.log('Error: ', error);
          if (error.response) {
             // The request was made and the server responded with a status code
             // that falls out of the range of 2xx
             //console.log(error.response.data);
             //console.log(error.response.status);
             //console.log(error.response.headers);
-            console.log('Error: ', error.message);
+            console.log('Error Msg: ', error.message);
          } else if (error.request) {
             // The request was made but no response was received
             // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -1822,7 +1820,7 @@ var alm_is_filtering = false;
             console.log(error.request);
          } else {
             // Something happened in setting up the request that triggered an Error
-            console.log('Error: ', error.message);
+            console.log('Error Msg: ', error.message);
          }
 
          if (location) {
@@ -2006,11 +2004,11 @@ var alm_is_filtering = false;
             alm.AjaxLoadMore.triggerAddons(alm);
             if (!alm.addons.paging) {
                setTimeout(function () {
-
                   alm.loading = false; // Delay to prevent loading to fast
                }, alm.speed * 3);
             }
          }, 100);
+         (0, _placeholder.hidePlaceholder)(alm);
       };
 
       /**  
@@ -2456,8 +2454,7 @@ var getOffset = function getOffset() {
 exports.getOffset = getOffset;
 
 /** 
- *  almScroll
- *  Scroll window to position (global function)
+ *  render
  *
  *  @since 5.0
  *  @param {*} position
@@ -2720,32 +2717,34 @@ Object.defineProperty(exports, "__esModule", {
  * commentReplyFix
  * Hotfix for Reply links not working in WordPress 5.1+
  * 
+ * @param comments  string
  * @param listing  object
  * @since 5.1
  */
 var commentReplyFix = function commentReplyFix() {
-   var listing = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+   var comments = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+   var listing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+   if (comments !== 'true') {
+      // Exit if not comments
+      return false;
+   }
 
    // Get  all `Reply` links.
    var replyLinks = listing.querySelectorAll('.comment-reply-link');
    if (!replyLinks) {
       return false;
    }
-
    // Loop links
    replyLinks.forEach(function (link) {
-
       // Add custom click handler
       link.onclick = function (e) {
-
          e.preventDefault();
-
          var commId = link.dataset.belowelement,
              parentId = link.dataset.commentid,
              respondId = link.dataset.respondelement,
              postId = link.dataset.postid,
              follow = void 0;
-
          if (!commId || !parentId || !respondId || !postId) {
             /*
             * Theme or plugin defines own link via custom `wp_list_comments()` callback            
@@ -4026,8 +4025,6 @@ var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/image
  * @since 3.1
  * @updated 5.0.2
 */
-
-var msnry = '';
 var almMasonry = function almMasonry(alm, init, filtering) {
 
   var container = alm.listing;
@@ -4111,7 +4108,7 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 
         // Init Masonry, delay to allow time for items to be added to the page
         setTimeout(function () {
-          msnry = new Masonry(container, defaults);
+          alm.msnry = new Masonry(container, defaults);
           // Fade In
           (0, _fadeIn2.default)(container.parentNode, speed);
         }, 100);
@@ -4134,14 +4131,13 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 
           // Confirm imagesLoaded & append
           imagesLoaded(container, function () {
-            msnry.appended(data);
+            alm.msnry.appended(data);
           });
         }
       }
   } else {
 
-    // Reset
-    msnry.destroy(); // destroy masonry
+    // Reset		
     container.parentNode.style.opacity = 0;
     almMasonry(alm, true, false);
   }
@@ -4186,6 +4182,58 @@ var almNoResults = function almNoResults(target) {
 };
 
 exports.default = almNoResults;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/placeholder.js":
+/*!********************************************!*\
+  !*** ./core/src/js/modules/placeholder.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+   value: true
+});
+exports.showPlaceholder = showPlaceholder;
+exports.hidePlaceholder = hidePlaceholder;
+
+var _fadeIn = __webpack_require__(/*! ./fadeIn */ "./core/src/js/modules/fadeIn.js");
+
+var _fadeIn2 = _interopRequireDefault(_fadeIn);
+
+var _fadeOut = __webpack_require__(/*! ./fadeOut */ "./core/src/js/modules/fadeOut.js");
+
+var _fadeOut2 = _interopRequireDefault(_fadeOut);
+
+function _interopRequireDefault(obj) {
+   return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function showPlaceholder(alm) {
+   if (!alm || !alm.main || alm.addons.paging) {
+      return false;
+   }
+   if (alm.placeholder) {
+      alm.placeholder.style.display = 'block';
+      (0, _fadeIn2.default)(alm.placeholder, 75);
+   }
+}
+
+function hidePlaceholder(alm) {
+   if (!alm || !alm.main || alm.addons.paging) {
+      return false;
+   }
+   if (alm.placeholder) {
+      (0, _fadeOut2.default)(alm.placeholder, 75);
+      setTimeout(function () {
+         alm.placeholder.style.display = 'none';
+      }, 75);
+   }
+}
 
 /***/ }),
 
@@ -4345,19 +4393,58 @@ Object.defineProperty(exports, "__esModule", {
  * setFocus
  * Set user focus to improve accessibility after load events
  * 
+ * @param {Object} alm
+ * @param {HTMLElement} preloaded
+ * @param {Number} total
+ * @param {Boolean} is_filtering
+ * @since 5.1
+ */
+
+var setFocus = function setFocus(alm) {
+	var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	var total = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+	var is_filtering = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+	// If has total
+	if (alm.transition_container && total > 0) {
+		if (alm.addons.paging) {
+			// Paging
+			moveFocus(alm.init, alm.addons.preloaded, alm.listing, is_filtering, alm.isSafari);
+		} else if (alm.addons.single_post || alm.addons.nextpage) {
+			// Single Posts OR Next Page, set `init` to false to trigger focus
+			moveFocus(false, alm.addons.preloaded, element, is_filtering, isSafari);
+		} else {
+			// Standard ALM
+			moveFocus(alm.init, alm.addons.preloaded, element, is_filtering, alm.isSafari);
+		}
+	} else if (!alm.transition_container && alm.container_type === 'table') {
+
+		// Table Layout
+		moveFocus(alm.init, alm.addons.preloaded, element[0], is_filtering, alm.isSafari);
+	}
+};
+exports.default = setFocus;
+
+/**
+ * moveFocus
+ * Move user focus to alm-reveal div
+ * 
  * @param {Boolean} init
  * @param {String} preloaded
  * @param {HTMLElement} element
- * @param {Boolean} alm_is_filtering
+ * @param {Boolean} is_filtering
+ * @param {Boolean} isSafari
  * @since 5.1
  */
-var setFocus = function setFocus() {
+
+var moveFocus = function moveFocus() {
 	var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 	var preloaded = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'false';
 	var element = arguments[2];
-	var alm_is_filtering = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+	var is_filtering = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+	var isSafari = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
 
-	if (!alm_is_filtering) {
+	if (!is_filtering) {
 		if ((init || !element) && preloaded !== 'true') {
 			return false; // Exit if first run
 		}
@@ -4397,11 +4484,15 @@ var setFocus = function setFocus() {
 	else {
 			var x = window.scrollX;
 			var y = window.scrollY;
+			// Safari fix for window movement if Y = 0
+			if (isSafari) {
+				window.scrollTo(x, y);
+				y = y === 0 ? 1 : y;
+			}
 			element.focus();
 			window.scrollTo(x, y);
 		}
 };
-exports.default = setFocus;
 
 /***/ }),
 

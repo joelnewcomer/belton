@@ -80,7 +80,7 @@ function alm_prefix_plugin_update_message( $data, $response ) {
 					__( 'Please activate the <a href="admin.php?page=ajax-load-more-licenses" target="_blank">license</a> to update.', 'ajax-load-more' )
 				);
 			}
-			//alm_pretty_print($response);
+			
 		}
 	}
 }
@@ -181,56 +181,6 @@ add_action( 'admin_init', 'alm_repeaters_export');
 
 
 /*
-*  alm_admin_notice_errors
-*  Invalid license notifications
-*
-*  @since 3.3.0
-*/
-function alm_admin_notice_errors() {
-
-   $screen = get_current_screen();
-   $alm_is_admin_screen = alm_is_admin_screen();
-   // Exit if screen is not dashboard, plugins or ALM admin.
-	if(!$alm_is_admin_screen && $screen->id !== 'dashboard' && $screen->id !== 'plugins'){
-		return;
-	}
-   $class = 'notice error alm-err-notice';
-   $message = '';
-   $count = 0;
-
-   if(has_action('alm_pro_installed')){ // Pro
-	   $addons = alm_get_pro_addon();
-	   $message = __( 'You have an invalid or expired <a href="admin.php?page=ajax-load-more"><b>Ajax Load More Pro</b></a> license key - please visit the <a href="admin.php?page=ajax-load-more-licenses">License</a> section to input your key or <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank">purchase</a> one now.', 'ajax-load-more' );
-
-   } else {
-	   $addons = alm_get_addons();
-	   $message = __( 'You have invalid <a href="admin.php?page=ajax-load-more"><b>Ajax Load More</b></a> license keys - please visit the <a href="admin.php?page=ajax-load-more-licenses">Licenses</a> section and input your keys.', 'ajax-load-more' );
-	}
-
-	 // Loop each addon
-   foreach($addons as $addon){
-      $action = $addon['action']; // Get action
-      if (has_action($action)){
-         $key = $addon['key']; // Option key
-         $status = $addon['status']; // license status
-         $addon_status = get_option( $status );
-         if( !isset($addon_status) || empty($addon_status) || $addon_status !== 'valid' ) {
-            $count++;
-         }
-      }
-   }
-
-	// Print result
-	if( $count > 0 ) {
-		printf( '<div class="%1$s"><p>%2$s</p></div>', $class, $message );
-	}
-
-}
-add_action( 'admin_notices', 'alm_admin_notice_errors' );
-
-
-
-/*
 *  alm_license_activation
 *  Activate Add-on licenses
 *
@@ -321,9 +271,67 @@ function alm_license_activation(){
 
 
 /*
+*  alm_admin_notice_errors
+*  Invalid license notifications
+*
+*  @since 3.3.0
+*/
+function alm_admin_notice_errors() {
+
+   $screen = get_current_screen();
+   $alm_is_admin_screen = alm_is_admin_screen();
+   
+   // Exit if screen is not dashboard, plugins, settings or ALM admin.
+	if(!$alm_is_admin_screen && $screen->id !== 'dashboard' && $screen->id !== 'plugins' && $screen->id !== 'options-general' && $screen->id !== 'options'){
+		return;
+	}
+	
+   $class = 'notice error alm-err-notice';
+   $message = '';
+   $count = 0;
+
+   if(has_action('alm_pro_installed')){ // Pro
+	   $addons = alm_get_pro_addon();
+	   $message = __( 'You have an invalid or expired <a href="admin.php?page=ajax-load-more"><b>Ajax Load More Pro</b></a> license key - please visit the <a href="admin.php?page=ajax-load-more-licenses">License</a> section to input your key or <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank">purchase</a> one now.', 'ajax-load-more' );
+
+   } else { // Other Addons
+	   $addons = alm_get_addons();
+	   $message = __( 'You have invalid or expired <a href="admin.php?page=ajax-load-more"><b>Ajax Load More</b></a> license keys - please visit the <a href="admin.php?page=ajax-load-more-licenses">Licenses</a> section and input your keys.', 'ajax-load-more' );
+	}
+
+	 // Loop each addon
+   foreach($addons as $addon){
+	   
+      if (has_action($addon['action'])){	      
+         $key = $addon['key']; // Option key
+         $status = get_option($addon['status']); // license status
+         
+         // Check license
+         $license_status = alm_license_check($addon['item_id'], get_option($key), $status);
+         
+         if( !isset($status) || empty($status) || $license_status !== 'valid' ) {
+            $count++;
+         }
+      }
+   }
+
+	// Print result
+	if( $count > 0 ) {
+		printf( '<div class="%1$s"><p>%2$s</p></div>', $class, $message );
+	}
+}
+add_action( 'admin_notices', 'alm_admin_notice_errors' );
+
+
+
+/*
 *  alm_license_check
 *  Check the status of a license
 *
+*  @param {String} $item_id The ID of the product
+*  @param {String} $license The actual license key
+*  @param {String} $option_status The status of the license
+*  @updated 5.1.7
 *  @since 2.8.3
 */
 function alm_license_check($item_id = null, $license = null, $option_status = null){
@@ -332,28 +340,38 @@ function alm_license_check($item_id = null, $license = null, $option_status = nu
 		return false;
 	}
 	
-	$api_params = array(
-		'edd_action' => 'check_license',
-		'license' => $license,
-		'item_id' => $item_id,
-		'url' => home_url()
-	);
-	$response = wp_remote_post( ALM_STORE_URL, array( 'body' => $api_params, 'timeout' => 15, 'sslverify' => false ) );
-	if ( is_wp_error( $response ) ) {
-		return false;
+	// Get plugin transient for license status
+	if(get_transient( "alm_{$item_id}_{$license}")){
+		
+		// Transient exists
+		return get_transient( "alm_{$item_id}_{$license}");
+		
+	} else {
+	
+		$api_params = array(
+			'edd_action' => 'check_license',
+			'license' => $license,
+			'item_id' => $item_id,
+			'url' => home_url()
+		);
+		$response = wp_remote_post( ALM_STORE_URL, array( 'body' => $api_params, 'timeout' => 15, 'sslverify' => false ) );
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+		
+		// Get Data
+		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+		
+		// Update the options table
+		update_option( $option_status, $license_data->license);
+		
+		// Set transient value to store license status
+		set_transient( "alm_{$item_id}_{$license}", $license_data->license, 168 * HOUR_IN_SECONDS ); // 7 days
+		
+		// Return the status
+		return $license_data->license;
+		
 	}
-	
-	// Get Data
-	$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-	
-	// Update the options table
-	update_option( $option_status, $license_data->license);
-	
-	// Set transient value to store license status
-	set_transient( "alm_{$item_id}_{$license}", $license_data->license, 168 * HOUR_IN_SECONDS ); // 7 days
-	
-	// Return the status
-	return $license_data->license;
 	
 }
 
@@ -1899,7 +1917,7 @@ function _alm_uninstall_callback(){
 	$html =  '<input type="hidden" name="alm_settings[_alm_uninstall]" value="0" />';
 	$html .= '<input type="checkbox" name="alm_settings[_alm_uninstall]" id="_alm_uninstall" value="1"'. (($options['_alm_uninstall']) ? ' checked="checked"' : '') .' />';
 	$html .= '<label for="_alm_uninstall">'.__('Check this box if Ajax Load More should remove all of its data* when the plugin is deleted.', 'ajax-load-more');
-	$html .= '<span style="display:block">'. __('* Database Tables, Options and Repeater Templates', 'ajax-load-more') .'</span>';
+	$html .= '<span style="display:block"><em>'. __('* Database Tables, Options and Repeater Templates', 'ajax-load-more') .'</em></span>';
 	$html .= '</label>';
 
 	echo $html;

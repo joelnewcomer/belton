@@ -118,20 +118,20 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'comments_style' => 'ol',
    			'comments_template' => 'none',
    			'comments_callback' => '',
-   			'comments_post_id' => 'null',
+   			'comments_post_id' => '',
       		'nextpage' => false,
-      		'nextpage_post_id' => 'null',
+      		'nextpage_post_id' => '',      		
       		'nextpage_urls' => 'true',
       		'nextpage_scroll' => 'true:30',
       		'nextpage_pageviews' => 'true',
       		'nextpage_start' => 1,
       		'previous_post' => false,
-      		'previous_post_id' => 'null',
+      		'previous_post_id' => '',
       		'previous_post_order' => 'previous',
       		'previous_post_taxonomy' => '',
       		'previous_post_excluded_terms' => '',
       		'single_post' => false,
-      		'single_post_id' => 'null',
+      		'single_post_id' => '',
       		'single_post_order' => 'previous',
       		'single_post_taxonomy' => '',
       		'single_post_excluded_terms' => '',
@@ -214,9 +214,22 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'id' => '',
    			'primary' => false,
    			'woocommerce' => false,
-   			'no_results_text' => ''
-   		), $atts));   		
+   			'elementor' => false,
+   			'no_results_text' => '',
+   			'placeholder' => ''
+   		), $atts));  		
    			
+   		
+   		// Elementor
+			if($elementor === 'true'){				
+				// If Elementor && not on a singular page, exit ALM.
+				if(!is_singular($post_type)){
+					return false;
+				}
+				$container_element = 'div';
+				$offset = '1';
+			} 
+   		
    		
    		// Backwards compat
    		// If $previous_post_ is true, set the $single_post_{value} params
@@ -225,7 +238,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   		$single_post_id = $previous_post_id;
 	   		$single_post_order = $previous_post_order;
 	   		$single_post_taxonomy = $previous_post_taxonomy;
-	   		$single_post_excluded_terms = $previous_post_excluded_terms;
+	   		$single_post_excluded_terms = $previous_post_excluded_terms;	   		
    		}
 
 
@@ -364,8 +377,8 @@ if( !class_exists('ALM_SHORTCODE') ):
    		// Previous Post
    		if($single_post){
       		$posts_per_page = 1;
-   			$container_element = 'div';
-   			$seo = false;
+   			$container_element = 'div';   
+   			$seo = false;		 
    		}
    		
    		// Users
@@ -443,9 +456,6 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   	 */
          $ajaxloadmore .= apply_filters('alm_before_container', '');
 
-         // Build Canonical URL
-         $canonicalURL = apply_filters('alm_canonical_url', alm_get_canonical_url());
-
 			// Generate ALM ID
          $div_id = (self::$counter > 1) ? 'ajax-load-more-'.self::$counter : 'ajax-load-more';
          
@@ -463,6 +473,9 @@ if( !class_exists('ALM_SHORTCODE') ):
 
 			// Nested Instance
          $is_nested = ($nested === 'true') ? ' data-nested="true"' : '';
+
+         // Build Canonical URL
+         $canonicalURL = apply_filters('alm_canonical_url_'.$id, alm_get_canonical_url());
 
 
 			// Start .alm-listing
@@ -782,7 +795,14 @@ if( !class_exists('ALM_SHORTCODE') ):
    
    
    	   		// Single Posts Add-on
-   	   		if(has_action('alm_single_post_installed') && $single_post){
+   	   		if(has_action('alm_single_post_installed') && $single_post){	   	   		
+	   	   		
+	   	   		// Get post ID if null
+	   	   		if(!$single_post_id){
+			   			global $post;
+			   			$single_post_id = $post->ID;
+			   		}
+			   		
    	   		   $single_post_return = apply_filters(
    	   		   	'alm_single_post_shortcode',
    	   		   	$single_post_id,
@@ -798,6 +818,13 @@ if( !class_exists('ALM_SHORTCODE') ):
    
    	   		// Nextpage Post Add-on
    	   		if(has_action('alm_nextpage_installed') && $nextpage){
+	   	   		
+	   	   		// Get post ID if null
+	   	   		if(!$nextpage_post_id){
+			   			global $post;
+			   			$nextpage_post_id = $post->ID;
+			   		}
+			   		
    	   		   $nextpage_return = apply_filters(
    	   		   	'alm_nextpage_shortcode',
    	   		   	$nextpage_urls,
@@ -936,7 +963,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   		$ajaxloadmore .= ($primary !== false) ? ' data-primary="true"' : '';
 	         
 	   		$ajaxloadmore .= '>';
-	   		// End .alm-listing
+	   		// End .alm-listing data 
 	   		
 	   		
    			// Preloaded  			
@@ -1005,7 +1032,11 @@ if( !class_exists('ALM_SHORTCODE') ):
 				
 				
 				// Close ALM container element
-	   		$ajaxloadmore .= '</'.$container_element.'>';	 		   
+	   		$ajaxloadmore .= '</'.$container_element.'>';	 	
+	   		
+	   		
+	   		// Create Placeholder
+	         $ajaxloadmore .= self::alm_render_placeholder($placeholder, $paging);	   
 		   
 		   
 			   /*
@@ -1049,7 +1080,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 		      
 		      // No results text
 		      if($no_results_text !== '' && !empty($no_results_text)){
-					$ajaxloadmore .= '<div class="alm-no-results" style="display: none;">'. $no_results_text .'</div>';
+					$ajaxloadmore .= '<div class="alm-no-results" style="display: none;">'. html_entity_decode($no_results_text) .'</div>';
 		      }
 	         
 	         
@@ -1133,6 +1164,29 @@ if( !class_exists('ALM_SHORTCODE') ):
          return $html;         
          
       }  
+      
+      
+      
+      /**
+	    * alm_render_placeholder
+	    * Render a placeholder loader.
+   	 *
+   	 * @since         5.1.7
+   	 * @return        $html
+   	 */
+      public static function alm_render_placeholder($placeholder, $paging){
+         
+         if(isset($placeholder) && !empty($placeholder) && $paging !== 'true'){
+            $placeholder_url = ($placeholder === 'true') ? ALM_URL .'/core/img/placeholder.png' : $placeholder;
+            if($placeholder_url){
+               $html = '<div class="alm-placeholder"><img src="'. $placeholder_url .'" alt=""></div>';               
+               return $html; 
+            }
+         }   
+         
+      }
+      
+      
 
    }
    

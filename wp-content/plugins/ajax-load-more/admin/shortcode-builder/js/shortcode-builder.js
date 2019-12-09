@@ -1168,6 +1168,41 @@ jQuery(document).ready(function($) {
       var destroy_after = $('.alm-destroy-after input[name=destroy-after]').val();
       if(destroy_after !== '' && destroy_after !== undefined && destroy_after !== '0')
          output += ' destroy_after="'+destroy_after+'"';
+         
+
+      // ---------------------------
+      // - Images loaded
+      // ---------------------------
+
+      var images_loaded = $('.alm-images-loaded input[name=images_loaded]:checked').val();
+      if(images_loaded === 't')
+      	output += ' images_loaded="true"';
+
+
+      // ---------------------------
+      // - Placeholder
+      // ---------------------------
+
+      var placeholder = $('.alm-placeholder-wrap input[name=has_placeholder]:checked').val();
+      var placeholder_target = $('.alm-placeholder-wrap .alm-placeholder-target');
+      var placeholder_url = $('.alm-placeholder-wrap #placeholder');
+      var placeholder_img = $('.alm-placeholder-wrap #placeholder-img');
+      if(placeholder === 't'){         
+      	output += ' placeholder="true"';
+      	placeholder_target.slideDown(250, 'alm_easeInOutQuad');
+      	
+      	// Set preview image
+      	if(placeholder_url.val() === '' || placeholder_url.val() === placeholder_url.data('empty')){
+         	output += ' placeholder="true"';
+         	placeholder_img.attr('src', placeholder_url.data('empty'));
+      	} else {
+         	output += ' placeholder="'+ placeholder_url.val() +'"';
+      	   placeholder_img.attr('src', placeholder_url.val());
+         }
+      	
+      } else {
+      	placeholder_target.slideUp(250, 'alm_easeInOutQuad');         
+      }
 
 
       // ---------------------------
@@ -1275,17 +1310,6 @@ jQuery(document).ready(function($) {
 	   }else{
 	   	$('.progress-bar-options').slideUp(250, 'alm_easeInOutQuad');
 	   }
-
-
-
-
-      // ---------------------------
-      // - Images loaded
-      // ---------------------------
-
-      var images_loaded = $('.alm-images-loaded input[name=images_loaded]:checked').val();
-      if(images_loaded === 't')
-      	output += ' images_loaded="true"';
 
 
       // ---------------------------

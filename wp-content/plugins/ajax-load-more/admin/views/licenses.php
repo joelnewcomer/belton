@@ -59,17 +59,10 @@
 	            		continue;	
 	            	}
                		
-            		$addon_count++;
-            		 
-            		 
-						// Get plugin transient for license status
-            		if(get_transient( "alm_{$item_id}_{$license}")){
-	            		// Exists
-	            		$license_status = get_transient( "alm_{$item_id}_{$license}");
-            		}else{
-	            		// Check license
-	            		$license_status = alm_license_check($item_id, $license, $status);
-            		}
+            		$addon_count++;            		 
+						
+            		// Check license
+            		$license_status = alm_license_check($item_id, $license, $status);
             		
                ?> 
                
@@ -123,16 +116,21 @@
    					         	data-option-status="<?php echo $status; ?>"
    						         data-option-key="<?php echo $key; ?>"
    						         data-upgrade-url="<?php echo $url; ?>">
-   		         			<button type="button" class="activate license-btn <?php if($license_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
+   		         			<button type="button" class="activate license-btn <?php if($license_status === 'valid'){ echo 'hide'; } ?> button button-primary" data-type="activate">
    							   	<?php _e('Activate License', 'ajax-load-more'); ?>
    							   </button>
-   							   <button type="button" class="deactivate license-btn <?php if($license_status !== 'valid'){ echo 'hide'; } ?> button-secondary" data-type="deactivate">
+   							   <button type="button" class="deactivate license-btn <?php if($license_status !== 'valid'){ echo 'hide'; } ?> button button-secondary" data-type="deactivate">
    							   	<?php _e('Deactivate License', 'ajax-load-more'); ?>
    							   </button>
-   							   <button type="button" class="check-licence license-btn <?php if($license_status !== 'valid'){ echo 'hide'; } ?> button-secondary" data-type="check">
+   							   <button type="button" class="check-licence license-btn <?php if($license_status !== 'valid'){ echo 'hide'; } ?> button button-secondary" data-type="check">
    							   	<i class="fa fa-refresh" aria-hidden="true"></i> <?php _e('Refresh Status', 'ajax-load-more'); ?>
    							   </button>
-   							   <?php if($license_status === 'expired'){ ?>
+   							   <?php if($license_status === 'expired'){ 
+	   							   if(isset($license) && !empty($license)){
+		   							   $store = ALM_STORE_URL;
+		   							   $url = "{$store}/checkout/?edd_license_key={$license}&download_id={$item_id}";
+	   							   }
+   							   ?>
 	      	         		<a class="button renew-btn" href="<?php echo $url; ?>" target="_blank">
  <?php _e('Renew License', 'ajax-load-more'); ?></a>
 	      	         		<?php } ?>
@@ -170,7 +168,7 @@
 	                     </ul>
 	                  </div>
 	                  <div class="major-publishing-actions">
-	      	            <a class="button button-primary button-large" target="_blank" href="https://connekthq.com/account/">
+	      	            <a class="button button-primary" target="_blank" href="https://connekthq.com/account/">
 	      		            <?php _e('Your Account', 'ajax-load-more'); ?>
 	                     </a>
 	                  </div>

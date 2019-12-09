@@ -7,14 +7,14 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com 
-Version: 5.1.6
+Version: 5.1.7
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '5.1.6');
-define('ALM_RELEASE', 'October 22, 2019');
+define('ALM_VERSION', '5.1.7');
+define('ALM_RELEASE', 'December 6, 2019');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -304,7 +304,8 @@ if( !class_exists('AjaxLoadMore') ):
    	 */
 
       public function alm_action_links( $links ) {
-         $links[] = '<a href="'. get_admin_url(null, 'admin.php?page=ajax-load-more') .'">'.__('Settings', 'ajax-load-more').'</a>';
+	      $settings = '<a href="'. get_admin_url(null, 'admin.php?page=ajax-load-more') .'">'.__('Settings', 'ajax-load-more').'</a>';
+			array_unshift( $links, $settings );
          return $links;
       }
 
@@ -656,6 +657,7 @@ if( !class_exists('AjaxLoadMore') ):
 			   	   	do_action('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false);
 			   	   	$alm_has_cta = true;
 					   }
+					   // End Call to Action [Before]
 		
 					   // Repeater Template
 						if($theme_repeater != 'null' && has_action('alm_get_theme_repeater')){  // Theme Repeater
@@ -670,6 +672,7 @@ if( !class_exists('AjaxLoadMore') ):
 			   	   	do_action('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false);
 			   	   	$alm_has_cta = true;
 					   }
+					   // End Call to Action [After]
 		
 		         endwhile; wp_reset_query();
 		         // End ALM Loop
