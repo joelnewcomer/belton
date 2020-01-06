@@ -19,7 +19,7 @@ let setFocus = (alm, element = null, total = 0, is_filtering = false) => {
 	   	
 	   } else if(alm.addons.single_post || alm.addons.nextpage){
 		   // Single Posts OR Next Page, set `init` to false to trigger focus
-   	   moveFocus(false, alm.addons.preloaded, element, is_filtering, isSafari);
+   	   moveFocus(false, alm.addons.preloaded, element, is_filtering, alm.isSafari);
    	   
       } else {
          // Standard ALM

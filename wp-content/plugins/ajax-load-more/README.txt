@@ -4,7 +4,7 @@ Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.0
 Tested up to: 5.3
-Stable tag: 5.1.7
+Stable tag: 5.1.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -382,13 +382,17 @@ How to install Ajax Load More.
 
 == Changelog ==
 
+= 5.1.7.1 - December 9, 2019 =
+* FIX - Hotfix to remove JavaSscript error/warning message for Single Posts and Next Page add-on users.
+
+
 = 5.1.7 - December 6, 2019 =
 * NEW - Added support for multiple instances on ALM Masonry on the same page.
 * NEW - Added `CTRL+S` and `CMD+S` support for saving Repeater Templates in the Ajax Load More admin :)
 * NEW - Added built-in support for Elementor using the `elementor="true"` shortcode parameter. [View Blog Post](https://connekthq.com/elementor-infinite-scrolling/)
 * FIX - Fixed issue where loading `placeholder` would remain on screen if no results were found.
 * FIX - Added fix for Safari desktop moving browser window when an instance of ALM is filtered.
-* FIX - Fixed error in PHP 7.2.2 in the `plugin_action_links_` filter related to a string array. 
+* FIX - Fixed error in PHP 7.2.2 in the `plugin_action_links_` filter related to a string array.
 * UPDATE - Added functionality to get the current post ID is not specified in the shortcode for Single Posts and Next page add-ons.
 * UPDATE - Updated Code Mirror code editor for Repeater Templates.
 * UPDATE - Improved admin UI and UX.
@@ -396,7 +400,7 @@ How to install Ajax Load More.
 
 = 5.1.6.1 - November 19, 2019 =
 * NEW - Added new `placeholder` parameter that allows users to display a placeholder image while Ajax content is being loaded. [View Example](https://connekthq.com/plugins/ajax-load-more/examples/placeholder/).
-* FIX - Fixed issue with deep linking URLs in the filters add-on not sending user to correct location on the page. 
+* FIX - Fixed issue with deep linking URLs in the filters add-on not sending user to correct location on the page.
 * FIX - Fixed issue with HTML elements in `no_results_text` being rendered as plain text.
 * UPDATE - Updated admin CSS to match WordPress 5.3.
 * UPDATE - Improved license expiration notices and renewal links.

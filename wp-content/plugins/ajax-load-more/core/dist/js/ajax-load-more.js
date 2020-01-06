@@ -625,7 +625,7 @@ var alm_is_filtering = false;
       alm.max_pages = alm.max_pages === undefined || alm.max_pages === 0 ? 10000 : alm.max_pages;
 
       /* Scroll Distance */
-      alm.scroll_distance = alm.scroll_distance === undefined ? 150 : alm.scroll_distance;
+      alm.scroll_distance = alm.scroll_distance === undefined ? 100 : alm.scroll_distance;
 
       /* Scroll Container */
       alm.scroll_container = alm.scroll_container === undefined ? '' : alm.scroll_container;
@@ -2632,31 +2632,40 @@ var almGetCacheUrl = function almGetCacheUrl(alm) {
    var cache_url = '';
    var ext = '.html';
 
+   // SEO Add-on
    if (alm.init && alm.addons.seo && alm.isPaged) {
-      // SEO Add-on
       // If the request is a paged URL (/page/3/)
       var firstpage = '1';
       cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + firstpage + '-' + alm.start_page + ext;
-   } else if (alm.addons.nextpage) {
-      // Nextpage add-on
-      var nextpage_cache_url = void 0;
-      if (alm.addons.paging) {
-         nextpage_cache_url = parseInt(alm.page) + 1;
-      } else {
-         nextpage_cache_url = parseInt(alm.page) + 2;
-         if (alm.isPaged) {
-            // If the request a paged URL (/page/3/)
-            nextpage_cache_url = parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
-         }
-      }
-      cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + nextpage_cache_url + ext;
-   } else if (alm.addons.single_post) {
-      // Previous Post
-      cache_url = alm.addons.cache_path + alm.addons.cache_id + '/' + alm.addons.single_post_id + ext;
-   } else {
-      // Standard URL request
-      cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + (alm.page + 1) + ext;
    }
+
+   // Nextpage add-on
+   else if (alm.addons.nextpage) {
+
+         var nextpage_cache_url = void 0;
+         if (alm.addons.paging) {
+            nextpage_cache_url = parseInt(alm.page) + 1;
+         } else {
+            nextpage_cache_url = parseInt(alm.page) + 2;
+            if (alm.isPaged) {
+               // If the request a paged URL (/page/3/)
+               nextpage_cache_url = parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
+            }
+         }
+         cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + nextpage_cache_url + ext;
+      }
+      // Single Post
+      else if (alm.addons.single_post) {
+            cache_url = alm.addons.cache_path + alm.addons.cache_id + '/' + alm.addons.single_post_id + ext;
+         }
+
+         // Filters
+         else if (alm.addons.filters) {
+               console.log(alm);
+            } else {
+               // Standard URL request
+               cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + (alm.page + 1) + ext;
+            }
 
    return cache_url;
 };
@@ -4412,7 +4421,7 @@ var setFocus = function setFocus(alm) {
 			moveFocus(alm.init, alm.addons.preloaded, alm.listing, is_filtering, alm.isSafari);
 		} else if (alm.addons.single_post || alm.addons.nextpage) {
 			// Single Posts OR Next Page, set `init` to false to trigger focus
-			moveFocus(false, alm.addons.preloaded, element, is_filtering, isSafari);
+			moveFocus(false, alm.addons.preloaded, element, is_filtering, alm.isSafari);
 		} else {
 			// Standard ALM
 			moveFocus(alm.init, alm.addons.preloaded, element, is_filtering, alm.isSafari);
