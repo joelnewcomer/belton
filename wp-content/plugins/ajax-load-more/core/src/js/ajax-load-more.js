@@ -40,6 +40,7 @@ import almFadeOut from './modules/fadeOut';
 import almFilter from './modules/filtering';
 import almNoResults from './modules/noResults';
 import almDebug from './modules/almDebug';
+import getScrollPercentage from './modules/getScrollPercentage';
 import srcsetPolyfill from './helpers/srcsetPolyfill';
 import { showPlaceholder, hidePlaceholder } from './modules/placeholder';
 
@@ -137,7 +138,7 @@ let alm_is_filtering = false;
       alm.placeholder = alm.main.querySelector('.alm-placeholder');
 
       alm.scroll_distance = alm.listing.dataset.scrollDistance;
-      alm.scroll_distance = (alm.scroll_distance) ? parseInt(alm.scroll_distance) : 100;
+      alm.scroll_distance = (alm.scroll_distance) ? alm.scroll_distance : 100;
       alm.scroll_container = alm.listing.dataset.scrollContainer;
       alm.max_pages = (alm.listing.dataset.maxPages) ? parseInt(alm.listing.dataset.maxPages) : 0;
       alm.pause_override = alm.listing.dataset.pauseOverride; // true | false
@@ -227,7 +228,13 @@ let alm_is_filtering = false;
          alm.extensions.acf = false;
       }
       
-
+      alm.extensions.term_query = alm.listing.dataset.termQuery; // TERM QUERY
+      alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
+      alm.extensions.term_query_fields = alm.listing.dataset.termQueryFields;
+      alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
+      alm.extensions.term_query = (alm.extensions.term_query === 'true') ? true : false;
+      
+		
       /* Paging */
       if (alm.addons.paging === 'true') {
          alm.addons.paging = true;
@@ -437,11 +444,23 @@ let alm_is_filtering = false;
       alm.repeater = (alm.repeater === undefined) ? 'default' : alm.repeater;
       alm.theme_repeater = (alm.theme_repeater === undefined) ? false : alm.theme_repeater;
 
-      /* Max Pages (while scrolling) */
-      alm.max_pages = (alm.max_pages === undefined || alm.max_pages === 0) ? 10000 : alm.max_pages;
 
+      /* Max Pages (while scrolling) */
+      alm.max_pages = (alm.max_pages === undefined || alm.max_pages === 0) ? 10000 : alm.max_pages;		
+		
+		
       /* Scroll Distance */
-      alm.scroll_distance = (alm.scroll_distance === undefined) ? 150 : alm.scroll_distance;
+      alm.scroll_distance = (alm.scroll_distance === undefined) ? 100 : alm.scroll_distance;
+      alm.scroll_distance_perc = false;
+      if(alm.scroll_distance.toString().indexOf("%") == -1){
+	       // Standard scroll_distance
+	      alm.scroll_distance = parseInt(alm.scroll_distance);
+      } else {
+	      // Percentage scroll_distance
+	      alm.scroll_distance_perc = true;
+	      alm.scroll_distance_orig = parseInt(alm.scroll_distance);
+	      alm.scroll_distance = getScrollPercentage(alm);  	         
+      }
 
       /* Scroll Container */
       alm.scroll_container = (alm.scroll_container === undefined) ? '' : alm.scroll_container;
@@ -607,6 +626,18 @@ let alm_is_filtering = false;
                'field_type': alm.extensions.acf_field_type,
                'field_name': alm.extensions.acf_field_name,
                'parent_field_name': alm.extensions.acf_parent_field_name
+            };
+         }
+         
+         // Term Query Params
+         alm.term_query_array = '';
+         if (alm.extensions.term_query) {
+	         action = 'alm_get_terms';
+            alm.term_query_array = {
+               'term_query': 'true',
+               'taxonomy': alm.extensions.term_query_taxonomy,
+               'fields': alm.extensions.term_query_fields,
+               'number': alm.extensions.term_query_number,
             };
          }
 
@@ -976,7 +1007,10 @@ let alm_is_filtering = false;
                   window.almEmpty(alm);
                }
                if(alm.no_results){
-	               almNoResults(alm.content, alm.no_results);
+	               setTimeout(function() {
+		               almNoResults(alm.content, alm.no_results);
+		            }, alm.speed + 10);
+	               
                }
             }
 
@@ -1256,9 +1290,18 @@ let alm_is_filtering = false;
                // Masonry
                if (alm.transition === 'masonry') {
                   alm.el = alm.listing;
-                  almMasonry(alm, alm.init, alm_is_filtering);
-                  alm.masonry_init = false;
-                  alm.AjaxLoadMore.transitionEnd();
+                                    
+                  // Wrap almMasonry in anonymous async/await function
+						(async function() {
+							await almMasonry(alm, alm.init, alm_is_filtering);
+							alm.masonry_init = false;
+							alm.AjaxLoadMore.transitionEnd();
+							if (typeof almComplete === 'function') {
+	                  	window.almComplete(alm);
+	                  }
+						})().catch((e) => {
+   						console.log('There was an error with ALM Masonry');
+						});                  
 
                }
                
@@ -1276,7 +1319,7 @@ let alm_is_filtering = false;
                   }
                }
                
-               // Fade transition (default)
+               // Default (Fade)
                else {
                   if (alm.images_loaded === 'true') {	                  
 	                  imagesLoaded( reveal, function() {
@@ -1309,22 +1352,17 @@ let alm_is_filtering = false;
             } else {
 
                // Paging               
-               if (!alm.init) {
-	               
-	               if(pagingContent){ 
-		               
-		               almFadeOut(pagingContent, alm.speed);
-   			               
+               if (!alm.init) {	               
+	               if(pagingContent){ 		               
+		               almFadeOut(pagingContent, alm.speed);   			               
    			         pagingContent.style.outline = 'none';  
    		            alm.main.classList.remove('alm-loading');		                   
 
-		               setTimeout(function(){		
-   		               		
+		               setTimeout(function(){   		               		
 								pagingContent.style.opacity = 0;
                         pagingContent.innerHTML = alm.html;
    								
-			               imagesLoaded( pagingContent, function() {   								
-   								
+			               imagesLoaded( pagingContent, function() {  								   								
 		                     // Delay for effect                           
 	                        alm.AjaxLoadMore.triggerAddons(alm);
 	                        almFadeIn(pagingContent, alm.speed);
@@ -1332,21 +1370,17 @@ let alm_is_filtering = false;
 	                        // Remove opacity on element to fix CSS transition
 	                        setTimeout(function(){	 	             	
 		                     	pagingContent.style.opacity = '';
-		                     }, parseInt(alm.speed) + 25);                      
+		                     }, parseInt(alm.speed) + 25);                 
    								
 				               // Paging addon
 		                     if (typeof almOnPagingComplete === 'function') {
 		                        window.almOnPagingComplete(alm);
-		                     }  	                             
-   	                      
-								});
-								
+		                     }                                 	                      
+								});								
 		               }, parseInt(alm.speed) + 25); 
 	               }
 
-               } else {
-	               
-	               // almMasonry(alm, alm.init, alm_is_filtering);               
+               } else {	               
                   setTimeout(function(){
                      alm.main.classList.remove('alm-loading');
                      alm.AjaxLoadMore.triggerAddons(alm);
@@ -1356,53 +1390,45 @@ let alm_is_filtering = false;
                // End Paging
 
             }
-            
-            
-				// almFiltersOnload [Filters Add-on hook]
-				if(typeof almFiltersOnload === 'function' && alm.init){
-					imagesLoaded( reveal, function() {
-						//setTimeout(function(){
-						window.almFiltersOnload(alm);
-						//}, parseInt(alm.speed) + 25); 
-					});
-				}						
+					
 				
             
-            // ALM Complete / Nested
-            if (alm.images_loaded === 'true') {
-               imagesLoaded( reveal, function() {
-                  alm.AjaxLoadMore.nested(reveal); // Nested						
-						insertScript.init(alm.el); // Run script inserter
-                  if (typeof almComplete === 'function') {
-                  	window.almComplete(alm);
-                  }
-               });
-               
-            } else {
-               alm.AjaxLoadMore.nested(reveal); // Nested
-					insertScript.init(alm.el); // Run script inserter
-               if (typeof almComplete === 'function') {
+            // ALM Loaded            
+            imagesLoaded( reveal, function() {               
+               // Nested
+               alm.AjaxLoadMore.nested(reveal);   
+                            
+               // Insert Script						
+					insertScript.init(alm.el); 
+										
+					// almComplete
+               if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
                	window.almComplete(alm);
+               }  
+                              
+               // Filters onLoad
+               if(typeof almFiltersOnload === 'function' && alm.init){
+                  window.almFiltersOnload(alm);
+   				}	
+   				   
+   				// ALM Done
+               if (!alm.addons.cache) { // Not Cache & Previous Post
+                  if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
+                     alm.AjaxLoadMore.triggerDone();
+                  }
+               } else { // Cache 
+                  if (total < alm.posts_per_page) {
+                     alm.AjaxLoadMore.triggerDone();
+                  }
                }
-               
-            }
-            // End ALM Complete / Nested
+               // End ALM Done   
+                      
+            });
+            // End ALM Loaded
             
 
-            // ALM Done
-            if (!alm.addons.cache) {
-	            // Not Cache & Previous Post
-               if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
-                  alm.AjaxLoadMore.triggerDone();
-               }
-            } else { // Cache 
-               if (total < alm.posts_per_page) {
-                  alm.AjaxLoadMore.triggerDone();
-               }
-            }
-            // End ALM Done
-
-
+            
+                       
          } 
          
          
@@ -1800,12 +1826,12 @@ let alm_is_filtering = false;
 
       /**
 	    * Window Resize
-       * Add resize function for Paging & Tabs add-ons.
+       * Add resize function for Paging, Scroll Distance Percentage & Tabs.
        * 
        * @since 2.1.2
        * @updated 5.2
        */
-      if (alm.addons.paging || alm.addons.tabs) {
+      if (alm.addons.paging || alm.addons.tabs || alm.scroll_distance_perc) {
          let resize;
          alm.window.onresize = function() {
             clearTimeout(resize);
@@ -1820,11 +1846,14 @@ let alm_is_filtering = false;
 	                  window.almOnWindowResize(alm);
 	               }
                }
+               if(alm.scroll_distance_perc){
+	               alm.scroll_distance = getScrollPercentage(alm);
+               }
             }, alm.speed);
          };
       }
-
-
+		
+		
 
       /**
 	    * isVisible
@@ -1883,6 +1912,7 @@ let alm_is_filtering = false;
             
          }, 25);
       };
+		
       
 
       // Add scroll eventlisteners, only when needed
@@ -2137,8 +2167,15 @@ let alm_is_filtering = false;
          // Window Load (Masonry + Preloaded)
          alm.window.addEventListener('load', function() {
             if (alm.is_masonry_preloaded) {
-               almMasonry(alm, true, false);
-               alm.masonry_init = false;
+	            
+	            // Wrap almMasonry in anonymous async/await function
+	            (async function() {
+						await almMasonry(alm, true, false);
+						alm.masonry_init = false;
+					})().catch((e) => {
+						console.log('There was an error with ALM Masonry');
+					}); 
+					
             }
 				if (typeof almOnLoad === 'function') {
 					window.almOnLoad(alm);

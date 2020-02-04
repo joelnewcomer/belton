@@ -28,7 +28,10 @@ if(!class_exists('ALM_QUERY_ARGS')):
       
       public static function alm_build_queryargs($a, $is_ajax = true){
          
-         // ID
+         // Post ID
+         $id = (isset($a['id'])) ? $a['id'] : '';
+         
+         // Post ID
          $post_id = (isset($a['post_id'])) ? $a['post_id'] : '';
       	
       	// Posts Per Page
@@ -390,7 +393,16 @@ if(!class_exists('ALM_QUERY_ARGS')):
             }
          }   		
          
+         /*
+		    * Custom `alm_id` query parameter in the WP_Query
+			 * This allows pre_get_posts to parse based on ALM ID
+			 * print_r($query->query);
+			 */ 
+         $args['alm_id'] = $id; 
+         
+         
          //alm_pretty_print($args);
+                 
          
          // Return $args
    	   return $args;

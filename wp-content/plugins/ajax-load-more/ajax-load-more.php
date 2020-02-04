@@ -7,14 +7,14 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com
-Version: 5.1.7.1
+Version: 5.1.7.2
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '5.1.7.1');
-define('ALM_RELEASE', 'December 9, 2019');
+define('ALM_VERSION', '5.1.7.2');
+define('ALM_RELEASE', 'January 25, 2020');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -359,7 +359,7 @@ if( !class_exists('AjaxLoadMore') ):
 
    		// Core ALM JS
          $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min'; // Use minified libraries if SCRIPT_DEBUG is turned off
-   		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more'.$suffix.'.js', __FILE__ ), '',  ALM_VERSION, true );
+   		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more'. $suffix .'.js', __FILE__ ), '',  ALM_VERSION, true );
 
    		// Progress Bar JS
    		wp_register_script( 'ajax-load-more-progress', plugins_url( '/vendor/js/pace/pace.min.js', __FILE__ ), 'ajax-load-more',  ALM_VERSION, true );
@@ -446,35 +446,28 @@ if( !class_exists('AjaxLoadMore') ):
 			$slug = (isset($_GET['slug'])) ? $_GET['slug'] : '';
 			$canonical_url = (isset($_GET['canonical_url'])) ? esc_url($_GET['canonical_url']) : esc_url($_SERVER['HTTP_REFERER']);
 
-
 			// Ajax Query Type
 			$queryType = (isset($_GET['query_type'])) ? $_GET['query_type'] : 'standard';	// 'standard' or 'totalposts'; totalposts returns $alm_found_posts
-
 
 			// Cache
 			$cache_id = (isset($_GET['cache_id'])) ? $_GET['cache_id'] : '';
 			$cache_logged_in = (isset($_GET['cache_logged_in'])) ? $_GET['cache_logged_in'] : false;
 			$do_create_cache = ($cache_logged_in === 'true' && is_user_logged_in()) ? false : true;
 
-
 			// Offset
 			$offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
-
 
 			// Repeater Templates
 			$repeater = (isset($_GET['repeater'])) ? $_GET['repeater'] : 'default';
 			$type = alm_get_repeater_type($repeater);
 			$theme_repeater = (isset($_GET['theme_repeater'])) ? $_GET['theme_repeater'] : 'null';
 
-
 			// Post Type
 			$postType = (isset($_GET['post_type'])) ? $_GET['post_type'] : 'post';
-
 
 			// Page Parameters
 			$posts_per_page = (isset($_GET['posts_per_page'])) ? $_GET['posts_per_page'] : 5;
 			$page = (isset($_GET['page'])) ? $_GET['page'] : 0;
-
 
 			// Advanced Custom Fields
 			$acfData = (isset($_GET['acf'])) ? $_GET['acf'] : false;
@@ -485,10 +478,8 @@ if( !class_exists('AjaxLoadMore') ):
 		      $acf_field_name = (isset($acfData['field_name'])) ? $acfData['field_name'] : ''; // ACF Field Type
 		   }
 
-
 			// Paging Add-on
 			$paging = (isset($_GET['paging'])) ? $_GET['paging'] : 'false';
-
 
 			// Preload Add-on
 			$preloaded = (isset($_GET['preloaded'])) ? $_GET['preloaded'] : 'false';
@@ -498,7 +489,6 @@ if( !class_exists('AjaxLoadMore') ):
 			   $old_offset = $preloaded_amount;
 			   $offset = $offset + $preloaded_amount;
 		   }
-
 
 			// CTA Add-on
 		   $cta = false;
@@ -514,7 +504,6 @@ if( !class_exists('AjaxLoadMore') ):
 			   $cta_theme_repeater = (isset($ctaData['cta_theme_repeater'])) ? $ctaData['cta_theme_repeater'] : 'null';
 		   }
 
-
 		   // Single Post Add-on
 		   $single_post = false;
 			$single_post_data = (isset($_GET['single_post'])) ? $_GET['single_post'] : false;
@@ -524,10 +513,8 @@ if( !class_exists('AjaxLoadMore') ):
 				$single_post_slug = (isset($single_post_data['slug'])) ? $single_post_data['slug'] : '';
 		   }
 
-
 		   // SEO Add-on
 			$seo_start_page = (isset($_GET['seo_start_page'])) ? $_GET['seo_start_page'] : 1;
-
 
 		   // Set up initial WP_Query $args
 		   $args = ALM_QUERY_ARGS::alm_build_queryargs($_GET, true);
@@ -570,12 +557,12 @@ if( !class_exists('AjaxLoadMore') ):
 			 *
 			 * @return $args;
 			 */
-		   $args = apply_filters('alm_query_args_'.$id, $args, $post_id); // ALM Core Filter Hook
+		   $args = apply_filters('alm_query_args_'. $id, $args, $post_id); // ALM Core Filter Hook
 
 
 
 			/*
-		    * Set custom `alm_action` parameter in the WP_Query
+		    * Custom `alm_query` parameter in the WP_Query
 			 * Value is accessed elsewhere for filters & hooks etc.
 			 */
 		   $args['alm_query'] = ($single_post) ? 'single_posts' : 'alm';
@@ -583,11 +570,22 @@ if( !class_exists('AjaxLoadMore') ):
 
 
 			/*
-			 *	WP_Query || ALM Query
+			 *	WP_Query
 			 *
 			 * @return $alm_query;
 			 */
 			$alm_query = new WP_Query( $args );
+
+
+
+			/*
+			 *	alm_query_after_{id}
+			 *
+			 * ALM Core Filter Hook to modify the returned query
+			 *
+			 * @return $alm_query;
+			 */
+		   $alm_query = apply_filters('alm_query_after_'. $id, $alm_query, $post_id); // ALM Core Filter Hook
 
 
 			// If preloaded, update our loop count and total posts

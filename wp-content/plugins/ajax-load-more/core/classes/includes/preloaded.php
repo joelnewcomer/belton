@@ -140,6 +140,47 @@ elseif($users){
 	}
 }
 
+// Term Query
+elseif($term_query){ 
+   
+   if(has_action('alm_terms_preloaded') && $term_query){		       
+      
+   
+   	/*
+   	 *	alm_terms_preloaded
+   	 *
+   	 * Preloaded Terms Filter
+   	 *
+   	 * @return $preloaded_users;
+   	 */
+	   $preloaded_terms = apply_filters('alm_terms_preloaded', $query_args, $preloaded_amount, $repeater, $theme_repeater); // located in Terms extension
+	   
+	   $preloaded_terms_data = $preloaded_terms['data'];
+	   $preloaded_terms_total = $preloaded_terms['total'];
+	   
+		
+		// Add total_posts to localized ALM JS variables
+		ALM_LOCALIZE::add_localized_var('total_posts', $preloaded_terms_total, $localize_id);
+		
+		
+		// Open .alm-reveal
+		
+      if($seo === 'true'){
+         $alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded'. $transition_container_classes .'" data-page="1" data-url="'.$canonicalURL.'">';
+      }
+         
+      // Open .alm-reveal      
+      $preloaded_output .= $alm_reveal;
+      	
+	   	// Append content
+	   	$preloaded_output .= $preloaded_terms_data;
+      
+      // Close .alm-reveal
+      $preloaded_output .= ($seo === "true" || $transition_container_classes !== 'false') ? '</div>' : '';
+  
+	}
+}
+
 // Advanced Custom Fields (Repeater, Gallery, Flex Content
 elseif($acf && ($acf_field_type !== 'relationship')){ 
 
@@ -176,21 +217,9 @@ elseif($acf && ($acf_field_type !== 'relationship')){
 }
 
 // Standard ALM
-else {    			      
-
-
-   /*
-	 *	alm_preload_args
-	 * ALM Preloaded add-on Hook
-	 *
-	 * @return $args;
-	 * @deprecated in 3.7
-	 */
-   //$args = apply_filters('alm_preload_args', $query_args); // Create preloaded $args
-   
-   
-   
-   /*
+else {  
+	
+	/*
 	 *	alm_get_queryargs
 	 * This function will return an $args array for the ALM WP_Query 
 	 *
@@ -200,7 +229,6 @@ else {
    if(class_exists('ALM_QUERY_ARGS')){
       $args = ALM_QUERY_ARGS::alm_build_queryargs($query_args, false);
    }
-
 
 
 	/*
@@ -221,9 +249,26 @@ else {
 	 *
 	 * @return $args;
 	 */
-   $args = apply_filters('alm_query_args_'.$id, $args, $post_id);
-				
+   $args = apply_filters('alm_query_args_'. $id, $args, $post_id);
+   
+   
+	/*
+	 *	WP_Query
+	 *
+	 * @return $alm_preload_query;
+	 */		
 	$alm_preload_query = new WP_Query($args);
+	
+	
+	/*
+	 *	alm_query_after_{id}
+	 *
+	 * ALM Core Filter Hook to modify the returned query
+	 *
+	 * @return $alm_query;
+	 */
+   $alm_preload_query = apply_filters('alm_query_after_'. $id, $alm_preload_query, $post_id); // ALM Core Filter Hook
+   
 	
 	$alm_total_posts = $alm_preload_query->found_posts - $offset;	
 	

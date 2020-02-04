@@ -184,6 +184,10 @@ var _almDebug = __webpack_require__(/*! ./modules/almDebug */ "./core/src/js/mod
 
 var _almDebug2 = _interopRequireDefault(_almDebug);
 
+var _getScrollPercentage = __webpack_require__(/*! ./modules/getScrollPercentage */ "./core/src/js/modules/getScrollPercentage.js");
+
+var _getScrollPercentage2 = _interopRequireDefault(_getScrollPercentage);
+
 var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
 
 var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
@@ -214,6 +218,28 @@ function _toConsumableArray(arr) {
    } else {
       return Array.from(arr);
    }
+}
+
+function _asyncToGenerator(fn) {
+   return function () {
+      var gen = fn.apply(this, arguments);return new Promise(function (resolve, reject) {
+         function step(key, arg) {
+            try {
+               var info = gen[key](arg);var value = info.value;
+            } catch (error) {
+               reject(error);return;
+            }if (info.done) {
+               resolve(value);
+            } else {
+               return Promise.resolve(value).then(function (value) {
+                  step("next", value);
+               }, function (err) {
+                  step("throw", err);
+               });
+            }
+         }return step("next");
+      });
+   };
 }
 
 /*
@@ -327,7 +353,7 @@ var alm_is_filtering = false;
       alm.placeholder = alm.main.querySelector('.alm-placeholder');
 
       alm.scroll_distance = alm.listing.dataset.scrollDistance;
-      alm.scroll_distance = alm.scroll_distance ? parseInt(alm.scroll_distance) : 100;
+      alm.scroll_distance = alm.scroll_distance ? alm.scroll_distance : 100;
       alm.scroll_container = alm.listing.dataset.scrollContainer;
       alm.max_pages = alm.listing.dataset.maxPages ? parseInt(alm.listing.dataset.maxPages) : 0;
       alm.pause_override = alm.listing.dataset.pauseOverride; // true | false
@@ -416,6 +442,12 @@ var alm_is_filtering = false;
       if (alm.extensions.acf_field_type === undefined || alm.extensions.acf_field_name === undefined || alm.extensions.acf_post_id === undefined) {
          alm.extensions.acf = false;
       }
+
+      alm.extensions.term_query = alm.listing.dataset.termQuery; // TERM QUERY
+      alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
+      alm.extensions.term_query_fields = alm.listing.dataset.termQueryFields;
+      alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
+      alm.extensions.term_query = alm.extensions.term_query === 'true' ? true : false;
 
       /* Paging */
       if (alm.addons.paging === 'true') {
@@ -626,6 +658,16 @@ var alm_is_filtering = false;
 
       /* Scroll Distance */
       alm.scroll_distance = alm.scroll_distance === undefined ? 100 : alm.scroll_distance;
+      alm.scroll_distance_perc = false;
+      if (alm.scroll_distance.toString().indexOf("%") == -1) {
+         // Standard scroll_distance
+         alm.scroll_distance = parseInt(alm.scroll_distance);
+      } else {
+         // Percentage scroll_distance
+         alm.scroll_distance_perc = true;
+         alm.scroll_distance_orig = parseInt(alm.scroll_distance);
+         alm.scroll_distance = (0, _getScrollPercentage2.default)(alm);
+      }
 
       /* Scroll Container */
       alm.scroll_container = alm.scroll_container === undefined ? '' : alm.scroll_container;
@@ -782,6 +824,18 @@ var alm_is_filtering = false;
                'field_type': alm.extensions.acf_field_type,
                'field_name': alm.extensions.acf_field_name,
                'parent_field_name': alm.extensions.acf_parent_field_name
+            };
+         }
+
+         // Term Query Params
+         alm.term_query_array = '';
+         if (alm.extensions.term_query) {
+            action = 'alm_get_terms';
+            alm.term_query_array = {
+               'term_query': 'true',
+               'taxonomy': alm.extensions.term_query_taxonomy,
+               'fields': alm.extensions.term_query_fields,
+               'number': alm.extensions.term_query_number
             };
          }
 
@@ -1121,7 +1175,9 @@ var alm_is_filtering = false;
                   window.almEmpty(alm);
                }
                if (alm.no_results) {
-                  (0, _noResults2.default)(alm.content, alm.no_results);
+                  setTimeout(function () {
+                     (0, _noResults2.default)(alm.content, alm.no_results);
+                  }, alm.speed + 10);
                }
             }
 
@@ -1372,9 +1428,32 @@ var alm_is_filtering = false;
                // Masonry
                if (alm.transition === 'masonry') {
                   alm.el = alm.listing;
-                  (0, _masonry2.default)(alm, alm.init, alm_is_filtering);
-                  alm.masonry_init = false;
-                  alm.AjaxLoadMore.transitionEnd();
+
+                  // Wrap almMasonry in anonymous async/await function
+                  _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                     return regeneratorRuntime.wrap(function _callee$(_context) {
+                        while (1) {
+                           switch (_context.prev = _context.next) {
+                              case 0:
+                                 _context.next = 2;
+                                 return (0, _masonry2.default)(alm, alm.init, alm_is_filtering);
+
+                              case 2:
+                                 alm.masonry_init = false;
+                                 alm.AjaxLoadMore.transitionEnd();
+                                 if (typeof almComplete === 'function') {
+                                    window.almComplete(alm);
+                                 }
+
+                              case 5:
+                              case 'end':
+                                 return _context.stop();
+                           }
+                        }
+                     }, _callee, this);
+                  }))().catch(function (e) {
+                     console.log('There was an error with ALM Masonry');
+                  });
                }
 
                // None
@@ -1390,7 +1469,7 @@ var alm_is_filtering = false;
                      }
                   }
 
-                  // Fade transition (default)
+                  // Default (Fade)
                   else {
                         if (alm.images_loaded === 'true') {
                            imagesLoaded(reveal, function () {
@@ -1420,21 +1499,16 @@ var alm_is_filtering = false;
 
                // Paging               
                if (!alm.init) {
-
                   if (pagingContent) {
-
                      (0, _fadeOut2.default)(pagingContent, alm.speed);
-
                      pagingContent.style.outline = 'none';
                      alm.main.classList.remove('alm-loading');
 
                      setTimeout(function () {
-
                         pagingContent.style.opacity = 0;
                         pagingContent.innerHTML = alm.html;
 
                         imagesLoaded(pagingContent, function () {
-
                            // Delay for effect                           
                            alm.AjaxLoadMore.triggerAddons(alm);
                            (0, _fadeIn2.default)(pagingContent, alm.speed);
@@ -1452,8 +1526,6 @@ var alm_is_filtering = false;
                      }, parseInt(alm.speed) + 25);
                   }
                } else {
-
-                  // almMasonry(alm, alm.init, alm_is_filtering);               
                   setTimeout(function () {
                      alm.main.classList.remove('alm-loading');
                      alm.AjaxLoadMore.triggerAddons(alm);
@@ -1462,47 +1534,39 @@ var alm_is_filtering = false;
                // End Paging
             }
 
-            // almFiltersOnload [Filters Add-on hook]
-            if (typeof almFiltersOnload === 'function' && alm.init) {
-               imagesLoaded(reveal, function () {
-                  //setTimeout(function(){
-                  window.almFiltersOnload(alm);
-                  //}, parseInt(alm.speed) + 25); 
-               });
-            }
+            // ALM Loaded            
+            imagesLoaded(reveal, function () {
+               // Nested
+               alm.AjaxLoadMore.nested(reveal);
 
-            // ALM Complete / Nested
-            if (alm.images_loaded === 'true') {
-               imagesLoaded(reveal, function () {
-                  alm.AjaxLoadMore.nested(reveal); // Nested						
-                  _insertScript2.default.init(alm.el); // Run script inserter
-                  if (typeof almComplete === 'function') {
-                     window.almComplete(alm);
-                  }
-               });
-            } else {
-               alm.AjaxLoadMore.nested(reveal); // Nested
-               _insertScript2.default.init(alm.el); // Run script inserter
-               if (typeof almComplete === 'function') {
+               // Insert Script						
+               _insertScript2.default.init(alm.el);
+
+               // almComplete
+               if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
                   window.almComplete(alm);
                }
-            }
-            // End ALM Complete / Nested
 
+               // Filters onLoad
+               if (typeof almFiltersOnload === 'function' && alm.init) {
+                  window.almFiltersOnload(alm);
+               }
 
-            // ALM Done
-            if (!alm.addons.cache) {
-               // Not Cache & Previous Post
-               if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
-                  alm.AjaxLoadMore.triggerDone();
+               // ALM Done
+               if (!alm.addons.cache) {
+                  // Not Cache & Previous Post
+                  if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
+                     alm.AjaxLoadMore.triggerDone();
+                  }
+               } else {
+                  // Cache 
+                  if (total < alm.posts_per_page) {
+                     alm.AjaxLoadMore.triggerDone();
+                  }
                }
-            } else {
-               // Cache 
-               if (total < alm.posts_per_page) {
-                  alm.AjaxLoadMore.triggerDone();
-               }
-            }
-            // End ALM Done
+               // End ALM Done   
+            });
+            // End ALM Loaded
          }
 
          /*
@@ -1865,12 +1929,12 @@ var alm_is_filtering = false;
 
       /**
       * Window Resize
-       * Add resize function for Paging & Tabs add-ons.
+       * Add resize function for Paging, Scroll Distance Percentage & Tabs.
        * 
        * @since 2.1.2
        * @updated 5.2
        */
-      if (alm.addons.paging || alm.addons.tabs) {
+      if (alm.addons.paging || alm.addons.tabs || alm.scroll_distance_perc) {
          var resize = void 0;
          alm.window.onresize = function () {
             clearTimeout(resize);
@@ -1886,6 +1950,9 @@ var alm_is_filtering = false;
                   if (typeof almOnWindowResize === 'function') {
                      window.almOnWindowResize(alm);
                   }
+               }
+               if (alm.scroll_distance_perc) {
+                  alm.scroll_distance = (0, _getScrollPercentage2.default)(alm);
                }
             }, alm.speed);
          };
@@ -2184,8 +2251,28 @@ var alm_is_filtering = false;
          // Window Load (Masonry + Preloaded)
          alm.window.addEventListener('load', function () {
             if (alm.is_masonry_preloaded) {
-               (0, _masonry2.default)(alm, true, false);
-               alm.masonry_init = false;
+
+               // Wrap almMasonry in anonymous async/await function
+               _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+                  return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                     while (1) {
+                        switch (_context2.prev = _context2.next) {
+                           case 0:
+                              _context2.next = 2;
+                              return (0, _masonry2.default)(alm, true, false);
+
+                           case 2:
+                              alm.masonry_init = false;
+
+                           case 3:
+                           case 'end':
+                              return _context2.stop();
+                        }
+                     }
+                  }, _callee2, this);
+               }))().catch(function (e) {
+                  console.log('There was an error with ALM Masonry');
+               });
             }
             if (typeof almOnLoad === 'function') {
                window.almOnLoad(alm);
@@ -3248,6 +3335,9 @@ function almGetAjaxParams(alm, action, queryType) {
    if (alm.acf_array) {
       data.acf = alm.acf_array;
    }
+   if (alm.term_query_array) {
+      data.term_query = alm.term_query_array;
+   }
    if (alm.cta_array) {
       data.cta = alm.cta_array;
    }
@@ -3905,6 +3995,48 @@ var almSetFilters = function almSetFilters() {
 
 /***/ }),
 
+/***/ "./core/src/js/modules/getScrollPercentage.js":
+/*!****************************************************!*\
+  !*** ./core/src/js/modules/getScrollPercentage.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * getScrollPercentage
+ * Get the scroll distance in pixels from a percentage
+ * 
+ * @param {Object} alm
+ * @return {NUMBER} newdistance
+ * @since 5.2
+ */
+
+var getScrollPercentage = function getScrollPercentage(alm) {
+	if (!alm) {
+		return false;
+	}
+
+	var is_negative = alm.scroll_distance_orig.toString().indexOf("-") === -1 ? false : true; // Is this a negative number   
+	var raw_distance = alm.scroll_distance_orig.toString().replace("-", "").replace("%", ""); // Remove - and perc 	
+	var wh = alm.window.innerHeight; // window height
+
+	var height = Math.floor(wh / 100 * parseInt(raw_distance)); // Do math to get distance
+
+	var newdistance = is_negative ? "-" + height : height; // Set the distance	
+	//console.log(parseInt(newdistance));
+
+	return parseInt(newdistance);
+};
+exports.default = getScrollPercentage;
+
+/***/ }),
+
 /***/ "./core/src/js/modules/insertScript.js":
 /*!*********************************************!*\
   !*** ./core/src/js/modules/insertScript.js ***!
@@ -3999,7 +4131,7 @@ exports.default = insertScript;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 
 var _fadeIn = __webpack_require__(/*! ./fadeIn */ "./core/src/js/modules/fadeIn.js");
@@ -4019,7 +4151,7 @@ var _srcsetPolyfill = __webpack_require__(/*! ../helpers/srcsetPolyfill */ "./co
 var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
 
 function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
+	return obj && obj.__esModule ? obj : { default: obj };
 }
 
 var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
@@ -4036,120 +4168,126 @@ var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/image
 */
 var almMasonry = function almMasonry(alm, init, filtering) {
 
-  var container = alm.listing;
-  var html = alm.html;
+	return new Promise(function (resolve) {
 
-  var selector = alm.masonry_selector;
-  var columnWidth = alm.masonry_columnwidth;
-  var animation = alm.masonry_animation;
-  var horizontalOrder = alm.masonry_horizontalorder;
-  var speed = alm.speed;
-  var masonry_init = alm.masonry_init;
+		var container = alm.listing;
+		var html = alm.html;
 
-  var duration = (speed + 100) / 1000 + 's'; // Add 100 for some delay
-  var hidden = 'scale(0.5)';
-  var visible = 'scale(1)';
+		var selector = alm.masonry_selector;
+		var columnWidth = alm.masonry_columnwidth;
+		var animation = alm.masonry_animation;
+		var horizontalOrder = alm.masonry_horizontalorder;
+		var speed = alm.speed;
+		var masonry_init = alm.masonry_init;
 
-  if (animation === 'zoom-out') {
-    hidden = 'translateY(-20px) scale(1.25)';
-    visible = 'translateY(0) scale(1)';
-  }
+		var duration = (speed + 100) / 1000 + 's'; // Add 100 for some delay
+		var hidden = 'scale(0.5)';
+		var visible = 'scale(1)';
 
-  if (animation === 'slide-up') {
-    hidden = 'translateY(50px)';
-    visible = 'translateY(0)';
-  }
+		if (animation === 'zoom-out') {
+			hidden = 'translateY(-20px) scale(1.25)';
+			visible = 'translateY(0) scale(1)';
+		}
 
-  if (animation === 'slide-down') {
-    hidden = 'translateY(-50px)';
-    visible = 'translateY(0)';
-  }
+		if (animation === 'slide-up') {
+			hidden = 'translateY(50px)';
+			visible = 'translateY(0)';
+		}
 
-  if (animation === 'none') {
-    hidden = 'translateY(0)';
-    visible = 'translateY(0)';
-  }
+		if (animation === 'slide-down') {
+			hidden = 'translateY(-50px)';
+			visible = 'translateY(0)';
+		}
 
-  // columnWidth
-  if (columnWidth) {
-    if (!isNaN(columnWidth)) {
-      // Check if number
-      columnWidth = parseInt(columnWidth);
-    }
-  } else {
-    // No columnWidth, use the selector
-    columnWidth = selector;
-  }
+		if (animation === 'none') {
+			hidden = 'translateY(0)';
+			visible = 'translateY(0)';
+		}
 
-  // horizontalOrder
-  horizontalOrder = horizontalOrder === 'true' ? true : false;
+		// columnWidth
+		if (columnWidth) {
+			if (!isNaN(columnWidth)) {
+				// Check if number
+				columnWidth = parseInt(columnWidth);
+			}
+		} else {
+			// No columnWidth, use the selector
+			columnWidth = selector;
+		}
 
-  if (!filtering) {
+		// horizontalOrder
+		horizontalOrder = horizontalOrder === 'true' ? true : false;
 
-    // First Run
-    if (masonry_init && init) {
+		if (!filtering) {
 
-      (0, _srcsetPolyfill2.default)(container, alm.ua); // Run srcSet polyfill			
+			// First Run
+			if (masonry_init && init) {
 
-      imagesLoaded(container, function () {
+				(0, _srcsetPolyfill2.default)(container, alm.ua); // Run srcSet polyfill			
 
-        var defaults = {
-          itemSelector: selector,
-          transitionDuration: duration,
-          columnWidth: columnWidth,
-          horizontalOrder: horizontalOrder,
-          hiddenStyle: {
-            transform: hidden,
-            opacity: 0
-          },
-          visibleStyle: {
-            transform: visible,
-            opacity: 1
+				imagesLoaded(container, function () {
 
-            // Get custom Masonry options (https://masonry.desandro.com/options.html)
-          } };var alm_masonry_vars = window.alm_masonry_vars;
-        if (alm_masonry_vars) {
-          Object.keys(alm_masonry_vars).forEach(function (key) {
-            // Loop object	to create key:prop			
-            defaults[key] = alm_masonry_vars[key];
-          });
-        }
+					var defaults = {
+						itemSelector: selector,
+						transitionDuration: duration,
+						columnWidth: columnWidth,
+						horizontalOrder: horizontalOrder,
+						hiddenStyle: {
+							transform: hidden,
+							opacity: 0
+						},
+						visibleStyle: {
+							transform: visible,
+							opacity: 1
 
-        // Init Masonry, delay to allow time for items to be added to the page
-        setTimeout(function () {
-          alm.msnry = new Masonry(container, defaults);
-          // Fade In
-          (0, _fadeIn2.default)(container.parentNode, speed);
-        }, 100);
-      });
-    }
+							// Get custom Masonry options (https://masonry.desandro.com/options.html)
+						} };var alm_masonry_vars = window.alm_masonry_vars;
+					if (alm_masonry_vars) {
+						Object.keys(alm_masonry_vars).forEach(function (key) {
+							// Loop object	to create key:prop			
+							defaults[key] = alm_masonry_vars[key];
+						});
+					}
 
-    // Standard / Append content
-    else {
+					// Init Masonry, delay to allow time for items to be added to the page
+					setTimeout(function () {
+						alm.msnry = new Masonry(container, defaults);
+						// Fade In
+						(0, _fadeIn2.default)(container.parentNode, speed);
+						resolve(true);
+					}, 100);
+				});
+			}
 
-        // Loop all items and create array of node elements
-        var data = (0, _almDomParser2.default)(html, 'text/html');
+			// Standard / Append content
+			else {
 
-        if (data) {
+					// Loop all items and create array of node elements
+					var data = (0, _almDomParser2.default)(html, 'text/html');
 
-          // Append elements listing
-          (0, _almAppendChildren2.default)(alm.listing, data, 'masonry');
+					if (data) {
 
-          // Run srcSet polyfill
-          (0, _srcsetPolyfill2.default)(container, alm.ua);
+						// Append elements listing
+						(0, _almAppendChildren2.default)(alm.listing, data, 'masonry');
 
-          // Confirm imagesLoaded & append
-          imagesLoaded(container, function () {
-            alm.msnry.appended(data);
-          });
-        }
-      }
-  } else {
+						// Run srcSet polyfill
+						(0, _srcsetPolyfill2.default)(container, alm.ua);
 
-    // Reset		
-    container.parentNode.style.opacity = 0;
-    almMasonry(alm, true, false);
-  }
+						// Confirm imagesLoaded & append
+						imagesLoaded(container, function () {
+							alm.msnry.appended(data);
+							resolve(true);
+						});
+					}
+				}
+		} else {
+
+			// Reset		
+			container.parentNode.style.opacity = 0;
+			almMasonry(alm, true, false);
+			resolve(true);
+		}
+	});
 };
 
 exports.default = almMasonry;

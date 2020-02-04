@@ -58,8 +58,8 @@ jQuery(document).ready(function($) {
 	         $('#alm-taxonomy .controls button').addClass('disabled');
 	      }
 
-      }else{
-         alert("Sorry - maximum of 3 tax_query objects.");
+      }else{	      	      
+         alert(alm_admin_localize.shortcode_max);
          return false;
       }
 
@@ -1152,7 +1152,7 @@ jQuery(document).ready(function($) {
 
 
       // ---------------------------
-      // - Pause Loading
+      // - Pause
       // ---------------------------
 
       var pause_load = $('.pause_load input[name=pause]:checked').val();
@@ -1188,7 +1188,6 @@ jQuery(document).ready(function($) {
       var placeholder_url = $('.alm-placeholder-wrap #placeholder');
       var placeholder_img = $('.alm-placeholder-wrap #placeholder-img');
       if(placeholder === 't'){         
-      	output += ' placeholder="true"';
       	placeholder_target.slideDown(250, 'alm_easeInOutQuad');
       	
       	// Set preview image
@@ -1213,16 +1212,26 @@ jQuery(document).ready(function($) {
       if(scroll_load === 'f'){
 
          $('.scrolling-options').slideUp(250, 'alm_easeInOutQuad');
-         if($('.scroll_load input').hasClass('changed'))
+         if($('.scroll_load input').hasClass('changed')){
             output += ' scroll="false"';
+         }
 
       }else{
 
          $('.scrolling-options').slideDown(250, 'alm_easeInOutQuad');
 
          var scroll_distance = $('.scroll_distance input').val();
-         if(scroll_distance !== '100')
-            output += ' scroll_distance="'+$('.scroll_distance input').val()+'"';
+         var scroll_distance_toggle_btns = $('.scroll_distance .builder-option-toggle--buttons');
+         var scroll_distance_px = $('button.pixels', scroll_distance_toggle_btns);
+         var scroll_distance_perc = $('button.perc', scroll_distance_toggle_btns);
+         var scroll_distance_type = '';
+         
+         if(scroll_distance !== '100' || scroll_distance_perc.hasClass('active')){	       	         
+	         if(scroll_distance_perc.hasClass('active')){
+		         scroll_distance_type = '%';
+	         }	         
+            output += ' scroll_distance="'+$('.scroll_distance input').val()+ scroll_distance_type +'"';
+         }
 
          var scroll_container = $('.scroll_container input').val();
          if(scroll_container != '')
@@ -1614,6 +1623,19 @@ jQuery(document).ready(function($) {
        $(el).val(id);
        //_alm.buildShortcode();
    }
+   
+   
+   
+   /*
+   *  Option toggle click events
+   8
+   *  @since 5.2.0
+   */
+	$('.builder-option-toggle--buttons button').on('click', function(){
+		var siblings = $(this).siblings('button').removeClass('active');
+		$(this).addClass('active');
+		_alm.buildShortcode();
+	});
 
 
 

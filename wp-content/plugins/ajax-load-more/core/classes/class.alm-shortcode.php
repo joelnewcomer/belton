@@ -94,6 +94,10 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   		'filters_scrolltop' => '30',
 	   		'filters_analytics' => 'true',
 	   		'filters_debug' => false,
+	   		'term_query' => false,
+	   		'term_query_taxonomy' => '',
+	   		'term_query_fields' => 'all',
+	   		'term_query_number' => '5',
 				'acf' => false,
 				'acf_post_id' => '',
 				'acf_field_type' => 'repeater',
@@ -341,16 +345,16 @@ if( !class_exists('ALM_SHORTCODE') ):
    		// Filters - Set initial shortcode state
    		$filters = ($filters === 'true' && class_exists('ALMFilters')) ? true : false;
    		if($filters){      		
-      		$single_post = $seo = false;
+      		$single_post = $seo = $nextpage = false;
       		$transition_container = "true"; // required
       		if(defined('ALM_FILTERS_PATH')){
 	   			include(ALM_FILTERS_PATH .'includes/initial-state-params.php');
 	   		}
    		}   			
 			
-         $single_post = ($single_post === 'true') ? true : false;      
+         $single_post = ($single_post === 'true') ? true : false;  
 
-   		$transition_container = ($seo === "true" || $single_post || $filters) ? 'true' : $transition_container;
+   		$transition_container = ($seo === "true" || $single_post || $filters) ? 'true' : $transition_container;         
          
          // Transition Container Classes
 			$transition_container_classes = (!empty($transition_container_classes)) ? ' '. $transition_container_classes : '';
@@ -383,7 +387,10 @@ if( !class_exists('ALM_SHORTCODE') ):
    		
    		// Users
    		$users = ($users === 'true') ? true : false;   	
-
+   		
+   		// Terms Query
+   		$term_query = ($term_query === 'true') ? true : false; 
+   		
    		// Comments
    		$container_element = ($comments === 'true') ? $comments_style : $container_element;
 
@@ -434,7 +441,6 @@ if( !class_exists('ALM_SHORTCODE') ):
          	$paging_container_class = ' alm-paging-wrap';
             $paging_transition = ' style="-webkit-transition: height 0.25s ease; transition: height 0.25s ease;"';
             // If Preloaded & Paging, pause loading by default.
-            // Added in 2.14.0
          	if($preloaded === 'true'){
             	$pause = 'true';
             	$pause_override = 'false';
@@ -529,6 +535,11 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   		if($users){
 	      		$posts_per_page = $users_per_page;
 	   		}
+	   		
+	   		// Term Query
+	   		if($term_query){
+		   		$posts_per_page = $term_query_number;
+	   		}
 
 
 	   		// Nextpage Add-on
@@ -563,6 +574,11 @@ if( !class_exists('ALM_SHORTCODE') ):
             	'acf_field_type'  	=> $acf_field_type,
             	'acf_field_name'     => $acf_field_name,
             	'acf_parent_field_name' => $acf_parent_field_name,
+            	'term_query'			=> array(
+						'taxonomy' 		=> $term_query_taxonomy,
+						'fields'			=> $term_query_fields,
+						'number'			=> $term_query_number,
+      		   ),
             	'nextpage' 				=> $nextpage,
             	'users' 					=> $users,
             	'users_role' 			=> $users_role,
@@ -737,6 +753,19 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   			if($preloaded === 'true'){
 	   	   			$pause = "true";
    	   			}
+   	         }
+   	         
+   	         
+   	         // Term Query
+   	   		if(has_action('alm_terms_installed') && $term_query){
+   	   		   $term_query_return = apply_filters(
+   	   		   	'alm_terms_shortcode',
+   	      		   $term_query,
+   	      		   $term_query_taxonomy,
+   	      		   $term_query_fields,
+   	      		   $term_query_number
+   	   		   );
+   	   			$ajaxloadmore .= $term_query_return;
    	         }
    
    

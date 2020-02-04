@@ -6,7 +6,7 @@ if(!isset($alm_share_notification) || empty($alm_share_notification)){ // If tra
 <!-- 	<h3>Thank you for installing Ajax Load More</h3> -->
 	<div class="cta-inner alm-text-center"> 
    	<p class="opener">👋 <strong>Thank you for using Ajax Load More!</strong></p>
-   	<p>It would mean the world to me if you would consider sharing Ajax Load More with your social media networks or leaving a <a target="blank" href="//wordpress.org/support/plugin/ajax-load-more/reviews/">plugin review</a> on the WordPress forums.</p>
+   	<p>It would mean the world to me if you would consider sharing Ajax Load More with your social networks or leaving a <a target="blank" href="//wordpress.org/support/plugin/ajax-load-more/reviews/">plugin review</a> on the WordPress forums.</p>
    	<p>All reviews(good or bad) are important as they help the plugin grow and improve over time.</p>
 	</div>
 	<ul class="share">

@@ -3,8 +3,8 @@ Contributors: dcooney, connekthq
 Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.0
-Tested up to: 5.3
-Stable tag: 5.1.7.1
+Tested up to: 5.3.2
+Stable tag: 5.1.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -381,6 +381,23 @@ How to install Ajax Load More.
 
 
 == Changelog ==
+
+= 5.1.7.2 = January 25, 2020 = 
+* NEW - Added support for percentage values in `scroll_distance`. Users can now trigger Ajax requests based on the percentage height of their browsers. e.g. `scoll_distance="-50%"`
+* NEW - Added `alm_query_after_{id}` filter to allow for modification of the returned query.
+* NEW - Added new `alm_id` parameter for the `WP_Query` that allows for easier access of query args using `pre_get_post` using the Ajax Load More ID.
+```
+add_action( 'pre_get_posts', 'my_custom_category' );
+function my_custom_category( $query ) {	
+	if ( isset($query->query['alm_id']) && $query->query['alm_id'] === 'preloaded' ) {
+		$query->set( 'category_name', 'design' );
+	}
+}
+```
+* FIX - Added fix for Masonry functionality triggering callbacks to early.
+* FIX - Fixed issue with placeholder value in Shortcode Builder.
+* UPDATE - Updated the look and feel of the Shortcode Builder.
+
 
 = 5.1.7.1 - December 9, 2019 =
 * FIX - Hotfix to remove JavaSscript error/warning message for Single Posts and Next Page add-on users.

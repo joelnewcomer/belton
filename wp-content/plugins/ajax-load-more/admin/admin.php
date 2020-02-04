@@ -480,7 +480,8 @@ function alm_admin_vars() { ?>
         'activate_btn' => __('Activate', 'ajax-load-more'),
         'settings_saving' => '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i> ' . __('Saving Settings', 'ajax-load-more'),
         'settings_saved' => '<i class="fa fa-check" aria-hidden="true"></i> ' . __('Settings Saved Successfully', 'ajax-load-more'),
-        'settings_error' => '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' . __('Error Saving Settings', 'ajax-load-more')
+        'settings_error' => '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' . __('Error Saving Settings', 'ajax-load-more'),
+        'shortcode_max' => __('There is a maximum of 3 tax_query objects while using the shortcode builder', 'ajax-load-more'),
     )); ?>
     /* ]]> */
     </script>
