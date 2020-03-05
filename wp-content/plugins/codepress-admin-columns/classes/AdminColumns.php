@@ -5,9 +5,16 @@ namespace AC;
 use AC\Admin\GeneralSectionFactory;
 use AC\Admin\Page;
 use AC\Admin\PromoCollection;
+use AC\Admin\Section\ListScreenMenu;
 use AC\Admin\Section\Restore;
 use AC\Check;
+use AC\Controller\AjaxRequestCustomFieldKeys;
+use AC\Controller\AjaxRequestNewColumn;
+use AC\Controller\ListScreenRequest;
+use AC\Controller\ListScreenRestoreColumns;
 use AC\Deprecated;
+use AC\ListScreenRepository;
+use AC\ListScreenRepository\FilterStrategy;
 use AC\Screen\QuickEdit;
 use AC\Table;
 use AC\ThirdParty;
@@ -24,15 +31,8 @@ class AdminColumns extends Plugin {
 	 */
 	private $table_screen;
 
-	/**
-	 * @var API
-	 */
-	private $api;
-
-	/**
-	 * @var ListScreen[]
-	 */
-	private $list_screens;
+	/** @var ListScreenRepository\Aggregate */
+	private $list_screen_repository;
 
 	/**
 	 * @since 2.5
@@ -54,53 +54,103 @@ class AdminColumns extends Plugin {
 	 * @since 1.0
 	 */
 	private function __construct() {
-		$this->api = new API();
 
-		$modules = array(
+		$this->list_screen_repository = new ListScreenRepository\Aggregate();
+		$this->list_screen_repository->register_repository( new ListScreenRepository\DataBase( ListScreenTypes::instance() ) );
+
+		$services = [
+			new Ajax\NumberFormat( new Request() ),
 			new Deprecated\Hooks,
-			new QuickEdit(),
 			new Screen,
 			new Settings\General,
 			new ThirdParty\ACF,
 			new ThirdParty\NinjaForms,
 			new ThirdParty\WooCommerce,
 			new ThirdParty\WPML,
-		);
+			new DefaultColumnsController( new Request(), new DefaultColumns() ),
+			new QuickEdit( $this->list_screen_repository, $this->preferences() ),
+			new Capabilities\Manage(),
+			new AjaxRequestNewColumn( $this->list_screen_repository ),
+			new AjaxRequestCustomFieldKeys(),
+			new ListScreenRestoreColumns( $this->list_screen_repository ),
+		];
 
-		foreach ( $modules as $module ) {
-			if ( $module instanceof Registrable ) {
-				$module->register();
+		foreach ( $services as $service ) {
+			if ( $service instanceof Registrable ) {
+				$service->register();
 			}
 		}
 
 		$this->register_admin();
 		$this->localize();
 
-		$caps = new Capabilities\Manage();
-		$caps->register();
+		add_action( 'init', [ $this, 'install' ], 1000 );
+		add_action( 'init', [ $this, 'notice_checks' ] );
+		add_action( 'init', [ $this, 'register_global_scripts' ] );
 
-		add_action( 'init', array( $this, 'install' ) );
-		add_action( 'init', array( $this, 'notice_checks' ) );
-		add_action( 'init', array( $this, 'register_global_scripts' ) );
+		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 1, 2 );
+		add_filter( 'plugin_action_links', [ $this, 'add_pro_link' ], 10, 2 );
 
-		add_filter( 'plugin_action_links', array( $this, 'add_settings_link' ), 1, 2 );
+		add_action( 'ac/screen', [ $this, 'init_table_on_screen' ] );
+		add_action( 'wp_ajax_ac_get_column_value', [ $this, 'table_ajax_value' ] );
 
-		add_action( 'ac/screen', array( $this, 'init_table_on_screen' ) );
-		add_action( 'ac/screen/quick_edit', array( $this, 'init_table_on_quick_edit' ) );
-		add_action( 'wp_ajax_ac_get_column_value', array( $this, 'table_ajax_value' ) );
+		add_filter( 'wp_redirect', [ $this, 'redirect_after_status_change' ] );
 
-		add_filter( 'wp_redirect', array( $this, 'redirect_after_status_change' ) );
+		// run after all post types are registered
+		add_action( 'init', [ $this, 'register_list_screens' ], 1000 );
+	}
+
+	/**
+	 * @return ListScreenRepository\Aggregate
+	 */
+	public function get_listscreen_repository() {
+		return $this->list_screen_repository;
+	}
+
+	/**
+	 * @since 4.0.12
+	 */
+	public function preferences() {
+		return new Preferences\Site( 'layout_table' );
 	}
 
 	/**
 	 * @param Screen $screen
 	 */
 	public function init_table_on_screen( Screen $screen ) {
-		$list_screen = $screen->get_list_screen();
+		$key = $screen->get_list_screen();
 
-		if ( ! $list_screen instanceof ListScreen ) {
+		if ( ! $key ) {
 			return;
 		}
+
+		// Requested
+		$list_id = filter_input( INPUT_GET, 'layout' );
+
+		// Last visited
+		if ( ! $list_id ) {
+			$list_id = $this->preferences()->get( $key );
+		}
+
+		$permission_checker = ( new PermissionChecker( wp_get_current_user() ) );
+
+		if ( $list_id ) {
+			$_list_screen = $this->list_screen_repository->find( $list_id );
+
+			if ( $_list_screen && $permission_checker->is_valid( $_list_screen ) ) {
+				$list_screen = $_list_screen;
+			} else {
+
+				// List screen not found.
+				$list_screen = $this->get_first_list_screen( $key, $permission_checker );
+			}
+		} else {
+
+			// First visit.
+			$list_screen = $this->get_first_list_screen( $key, $permission_checker );
+		}
+
+		$this->preferences()->set( $key, $list_screen->get_layout_id() );
 
 		$table_screen = new Table\Screen( $list_screen );
 		$table_screen->register();
@@ -111,15 +161,24 @@ class AdminColumns extends Plugin {
 	}
 
 	/**
-	 * @param Screen\QuickEdit $screen
+	 * @param string $key
+	 *
+	 * @return ListScreen|null
 	 */
-	public function init_table_on_quick_edit( Screen\QuickEdit $screen ) {
-		$list_screen = $screen->get_list_screen();
+	private function get_first_list_screen( $key, PermissionChecker $permission_checker ) {
+		$list_screens = $this->list_screen_repository->find_all( [
+			'key'    => $key,
+			'filter' => new FilterStrategy\ByPermission( $permission_checker ),
+		] );
 
-		if ( $list_screen instanceof ListScreen ) {
-			$controller = new ScreenController( $list_screen );
-			$controller->register();
+		if ( $list_screens->count() > 0 ) {
+
+			// First visit. Load first available list Id.
+			return $list_screens->current();
 		}
+
+		// No available list screen found.
+		return ListScreenTypes::instance()->get_list_screen_by_key( $key );
 	}
 
 	/**
@@ -135,7 +194,7 @@ class AdminColumns extends Plugin {
 			wp_die( __( 'Invalid item ID.', 'codepress-admin-columns' ), null, 400 );
 		}
 
-		$list_screen = ListScreenFactory::create( filter_input( INPUT_POST, 'list_screen' ), filter_input( INPUT_POST, 'layout' ) );
+		$list_screen = $this->list_screen_repository->find( filter_input( INPUT_POST, 'layout' ) );
 
 		if ( ! $list_screen ) {
 			wp_die( __( 'Invalid list screen.', 'codepress-admin-columns' ), null, 400 );
@@ -160,12 +219,14 @@ class AdminColumns extends Plugin {
 	 * Init checks
 	 */
 	public function notice_checks() {
-		$checks = array(
+		$checks = [
 			new Check\Review(),
-		);
+		];
 
-		foreach ( new PromoCollection() as $promo ) {
-			$checks[] = new Check\Promotion( $promo );
+		if ( ! ac_is_pro_active() ) {
+			foreach ( new PromoCollection() as $promo ) {
+				$checks[] = new Check\Promotion( $promo );
+			}
 		}
 
 		foreach ( new Integrations() as $integration ) {
@@ -217,18 +278,27 @@ class AdminColumns extends Plugin {
 	}
 
 	/**
+	 * @param array  $links
+	 * @param string $file
+	 *
+	 * @return array
+	 */
+	public function add_pro_link( $links, $file ) {
+		if ( $file === $this->get_basename() && ! ac_is_pro_active() ) {
+			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>',
+				esc_url( ac_get_site_utm_url( 'admin-columns-pro', 'upgrade' ) ),
+				sprintf( '<span style="font-weight: bold;">%s</span>', __( 'Go Pro', 'codepress-admin-columns' ) )
+			);
+		}
+
+		return $links;
+	}
+
+	/**
 	 * @since 2.5
 	 */
 	public function use_delete_confirmation() {
 		return apply_filters( 'ac/delete_confirmation', true );
-	}
-
-	/**
-	 * @return API
-	 * @since 3.0
-	 */
-	public function api() {
-		return $this->api;
 	}
 
 	/**
@@ -247,34 +317,19 @@ class AdminColumns extends Plugin {
 	}
 
 	/**
-	 * @return ListScreen[]
-	 */
-	public function get_list_screens() {
-		if ( null === $this->list_screens ) {
-			$this->register_list_screens();
-		}
-
-		return $this->list_screens;
-	}
-
-	/**
 	 * @param ListScreen $list_screen
 	 *
 	 * @return self
 	 */
 	public function register_list_screen( ListScreen $list_screen ) {
-		$this->list_screens[ $list_screen->get_key() ] = $list_screen;
+		ListScreenTypes::instance()->register_list_screen( $list_screen );
 
 		return $this;
 	}
 
-	/**
-	 * Register List Screens
-	 */
 	public function register_list_screens() {
-		$list_screens = array();
+		$list_screens = [];
 
-		// Post types
 		foreach ( $this->get_post_types() as $post_type ) {
 			$list_screens[] = new ListScreen\Post( $post_type );
 		}
@@ -282,13 +337,12 @@ class AdminColumns extends Plugin {
 		$list_screens[] = new ListScreen\Media();
 		$list_screens[] = new ListScreen\Comment();
 
-		// Users, not for network users
 		if ( ! is_multisite() ) {
 			$list_screens[] = new ListScreen\User();
 		}
 
 		foreach ( $list_screens as $list_screen ) {
-			$this->register_list_screen( $list_screen );
+			ListScreenTypes::instance()->register_list_screen( $list_screen );
 		}
 
 		do_action( 'ac/list_screens', $this );
@@ -298,10 +352,10 @@ class AdminColumns extends Plugin {
 	 * @return void
 	 */
 	public function register_global_scripts() {
-		wp_register_script( 'ac-select2-core', $this->get_url() . 'assets/js/select2.js', array(), $this->get_version() );
-		wp_register_script( 'ac-select2', $this->get_url() . 'assets/js/select2_conflict_fix.js', array( 'jquery', 'ac-select2-core' ), $this->get_version() );
-		wp_register_style( 'ac-select2', $this->get_url() . 'assets/css/select2.css', array(), $this->get_version() );
-		wp_register_style( 'ac-jquery-ui', $this->get_url() . 'assets/css/ac-jquery-ui.css', array(), $this->get_version() );
+		wp_register_script( 'ac-select2-core', $this->get_url() . 'assets/js/select2.js', [], $this->get_version() );
+		wp_register_script( 'ac-select2', $this->get_url() . 'assets/js/select2_conflict_fix.js', [ 'jquery', 'ac-select2-core' ], $this->get_version() );
+		wp_register_style( 'ac-select2', $this->get_url() . 'assets/css/select2.css', [], $this->get_version() );
+		wp_register_style( 'ac-jquery-ui', $this->get_url() . 'assets/css/ac-jquery-ui.css', [], $this->get_version() );
 	}
 
 	/**
@@ -310,12 +364,12 @@ class AdminColumns extends Plugin {
 	 * @since 1.0
 	 */
 	public function get_post_types() {
-		$post_types = get_post_types( array(
+		$post_types = get_post_types( [
 			'_builtin' => false,
 			'show_ui'  => true,
-		) );
+		] );
 
-		foreach ( array( 'post', 'page' ) as $builtin ) {
+		foreach ( [ 'post', 'page' ] as $builtin ) {
 			if ( post_type_exists( $builtin ) ) {
 				$post_types[ $builtin ] = $builtin;
 			}
@@ -344,27 +398,22 @@ class AdminColumns extends Plugin {
 	 * @return void
 	 */
 	private function register_admin() {
-		$is_network = is_network_admin();
+		$listscreen_controller = new ListScreenRequest( new Request(), $this->list_screen_repository, new Preferences\Site( 'settings' ) );
 
-		$site_factory = new Admin\AdminFactory();
-		$this->admin = $site_factory->create( $is_network );
+		$this->admin = new Admin( 'options-general.php', 'admin_menu', admin_url() );
 
-		if ( ! $is_network ) {
+		$page_settings = new Page\Settings();
+		$page_settings
+			->register_section( GeneralSectionFactory::create() )
+			->register_section( new Restore( new ListScreenRepository\DataBase( ListScreenTypes::instance() ) ) );
 
-			$page_settings = new Page\Settings();
-			$page_settings
-				->register_section( GeneralSectionFactory::create() )
-				->register_section( new Restore() );
+		$page_columns = new Page\Columns( $listscreen_controller, new ListScreenMenu( $listscreen_controller ), new UnitializedListScreens( new DefaultColumns() ) );
 
-			$page_columns = new Page\Columns();
-			$page_columns->register_ajax();
-
-			$this->admin->register_page( $page_columns )
-			            ->register_page( $page_settings )
-			            ->register_page( new Page\Addons() )
-			            ->register_page( new Page\Help() )
-			            ->register();
-		}
+		$this->admin->register_page( $page_columns )
+		            ->register_page( $page_settings )
+		            ->register_page( new Page\Addons() )
+		            ->register_page( new Page\Help() )
+		            ->register();
 	}
 
 	/**
@@ -394,11 +443,11 @@ class AdminColumns extends Plugin {
 			return $location;
 		}
 
-		$location = add_query_arg( array(
+		$location = add_query_arg( [
 			'status'    => $status,
 			'plugin'    => $integration->get_slug(),
 			'_ac_nonce' => wp_create_nonce( 'ac-plugin-status-change' ),
-		), $this->admin()->get_url( 'addons' ) );
+		], $this->admin()->get_url( 'addons' ) );
 
 		return $location;
 	}
@@ -438,9 +487,9 @@ class AdminColumns extends Plugin {
 	 * @deprecated 3.2
 	 */
 	public function get_list_screen( $key ) {
-		_deprecated_function( __METHOD__, '3.2', 'ListScreenFactory::create()' );
+		_deprecated_function( __METHOD__, '3.2', 'ListScreenTypes::instance()->get_list_screen_by_key()' );
 
-		return ListScreenFactory::create( $key );
+		return ListScreenTypes::instance()->get_list_screen_by_key( $key );
 	}
 
 	/**
@@ -452,7 +501,7 @@ class AdminColumns extends Plugin {
 	public function list_screen_exists( $key ) {
 		_deprecated_function( __METHOD__, '3.2' );
 
-		return ListScreenFactory::create( $key ) ? true : false;
+		return ListScreenTypes::instance()->get_list_screen_by_key( $key ) ? true : false;
 	}
 
 	/**
@@ -498,13 +547,28 @@ class AdminColumns extends Plugin {
 	}
 
 	/**
-	 * @return Admin\Page\Columns
 	 * @deprecated 3.4
 	 */
 	public function admin_columns_screen() {
 		_deprecated_function( __METHOD__, '3.4' );
+	}
 
-		return new Admin\Page\Columns();
+	/**
+	 * @since      3.0
+	 * @deprecated 4.0
+	 */
+	public function api() {
+		_deprecated_function( __METHOD__, '4.0' );
+	}
+
+	/**
+	 * @return ListScreen[]
+	 * @deprecated 4.0
+	 */
+	public function get_list_screens() {
+		_deprecated_function( __METHOD__, '4.0', 'ListScreenTypes::instance()->get_list_screens()' );
+
+		return ListScreenTypes::instance()->get_list_screens();
 	}
 
 }

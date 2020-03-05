@@ -179,17 +179,18 @@
 *  Generic alm-listing styles
 *  @since 1.0.0
 */
+.alm-listing .alm-reveal {
+  outline: none; }
+  .alm-listing .alm-reveal:after {
+    display: table;
+    clear: both;
+    height: 0;
+    width: 100%;
+    content: ''; }
+
 .alm-listing {
   margin: 0;
   padding: 0; }
-  .alm-listing .alm-reveal {
-    outline: none; }
-    .alm-listing .alm-reveal:after {
-      display: table;
-      clear: both;
-      height: 0;
-      width: 100%;
-      content: ''; }
   .alm-listing .alm-reveal > li,
   .alm-listing .alm-paging-content > li,
   .alm-listing > li {
@@ -223,6 +224,15 @@
       left: 0;
       top: 0;
       border-radius: 2px; }
+
+.alm-listing.rtl .alm-reveal > li,
+.alm-listing.rtl .alm-paging-content > li {
+  padding: 0 170px 0 0;
+  text-align: right; }
+  .alm-listing.rtl .alm-reveal > li img,
+  .alm-listing.rtl .alm-paging-content > li img {
+    left: auto;
+    right: 0; }
 
 .alm-placeholder {
   opacity: 0;
