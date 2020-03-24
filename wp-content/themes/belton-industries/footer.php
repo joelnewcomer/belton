@@ -35,7 +35,8 @@ if (get_page_template_slug() == 'page-templates/product-search.php' || get_page_
 					if ($latest_post[0]->ID == $post->ID) {
 						$offset = 1;
 					}
-						
+					
+					// array( 'orderby' => 'date', 'posts_per_page' => '1', 'offset' => $offset)	
 					$query = new WP_Query(
 					    array( 'orderby' => 'date', 'posts_per_page' => '1')
 					);
