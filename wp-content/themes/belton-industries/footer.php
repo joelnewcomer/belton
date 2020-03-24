@@ -32,12 +32,12 @@ if (get_page_template_slug() == 'page-templates/product-search.php' || get_page_
 					global $post;
 					$offset = -1;
 					$latest_post = get_posts("numberposts=1");
-					/* if ($latest_post[0]->ID == $post->ID) {
+					if ($latest_post[0]->ID == $post->ID) {
 						$offset = 1;
-					} */
+					}
 						
 					$query = new WP_Query(
-					    array( 'orderby' => 'date', 'posts_per_page' => '1', 'offset' => $offset)
+					    array( 'orderby' => 'date', 'posts_per_page' => '1')
 					);
 					while($query->have_posts()) : $query->the_post(); ?>
 					    <a class="footer-blog-block <?php if (!has_post_thumbnail()) { echo 'no-thumb'; } ?>" href="<?php echo get_permalink(); ?>">
