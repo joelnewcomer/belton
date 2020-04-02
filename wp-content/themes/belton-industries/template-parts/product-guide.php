@@ -292,7 +292,7 @@ $default_bg_url = get_template_directory_uri() . '/assets/images/cat-bg.jpg';
 				var catName = jQuery(this).find('.cat-name').html();
 				jQuery('.market').html(catName);
 				var catID = jQuery(this).data( "cat-id" );
-				jQuery('a.cat-icon').fadeOut("slow", function() {
+				jQuery('a.cat-icon,a.info-circle').fadeOut("slow", function() {
 					jQuery('.' + catID).addClass('active').fadeIn("fast", function() {
 						jQuery.fn.matchHeight._update();
 						resetContBtn();

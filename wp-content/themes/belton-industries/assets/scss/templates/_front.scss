@@ -622,7 +622,7 @@ section.solutions {
 }
 
 .cat-match .icon-wrap {
-    display: inline;
+    display: inline-block;
     position: relative;
 }
 .cat-match .icon-wrap a.info-circle {
@@ -652,6 +652,7 @@ section.solutions {
 		max-height: 0;
 		opacity: 0;
 		overflow: hidden;
+		display: none;
 	}
 	a.cat-icon {
 		border: solid 2px transparent;
@@ -708,7 +709,9 @@ section.solutions .cat-products {
 	max-height: 0;
 	overflow: hidden;
 	opacity: 0;
+	display: none;
 	&.active {
+		display: block;
 		max-height: none;
 		opacity: 1;
 		@media only screen and (min-width: 1026px) {
