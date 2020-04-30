@@ -615,7 +615,7 @@ section.solutions {
 			padding: 20px;
 			width: 100%;
 			&.cat-match {
-				padding: 0;
+				/* padding: 0; */
 			}
 		}		
 	}
@@ -665,7 +665,7 @@ section.solutions {
 		width: 116px;
 		height: 116px;
 		@media only screen and (max-width: 40.063em) {
-			width: 33%;	
+			/* width: 33%;	*/
 		}
 		text-align: center;
 		padding: 18px 4px 4px 4px;
