@@ -27,6 +27,8 @@ if ( !function_exists( 'is_rest' ) ) {
 		// (#4)
 		$rest_url = wp_parse_url( trailingslashit( rest_url( ) ) );
 		$current_url = wp_parse_url( add_query_arg( array( ) ) );
+		if ( !$rest_url || !$current_url )
+			return false;
 		return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
 	}
 }

@@ -102,7 +102,7 @@ let almMasonry = (alm, init, filtering) => {
 	            	// Fade In
 						almFadeIn(container.parentNode, speed); 
 						resolve(true);
-	            }, 100 );				
+	            }, 25 );				
 					
 					
 				});

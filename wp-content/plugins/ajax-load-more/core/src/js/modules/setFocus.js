@@ -11,7 +11,17 @@
  
 let setFocus = (alm, element = null, total = 0, is_filtering = false) => {
 	
-	// If has total
+	if(!alm_localize.a11y_focus){
+		return false;
+	}
+	
+	// WooCommerce Add-on
+	if(alm.addons.woocommerce){
+		moveFocus(false, false, element, false, alm.isSafari);
+		return;
+	}
+	
+	// Has Total
 	if(alm.transition_container && total > 0){
 		if(alm.addons.paging){
 			// Paging

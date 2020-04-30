@@ -2,8 +2,8 @@
 Contributors: marclarr
 Tags: page, pages, post, posts, switch, admin, ui, edit, easy, quick, fast, wp-admin, metabox
 Requires at least: 3.1
-Tested up to: 4.7
-Stable tag: 1.5.7
+Tested up to: 5.4
+Stable tag: 1.5.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,10 @@ Please do not use the rating system for your support requests. Simply leave a me
 2. Preview of the admin settings page (since v1.4).
 
 == Changelog ==
+
+= 1.5.8 - April 4, 2020 =
+* Fixed Select2 dropdown width.
+* Upgraded Select2 version to 4.0.13 (from 4.0.3).
 
 = 1.5.7 - October 11, 2016 =
 * Removed "acf-disabled" from post-statuses setting.

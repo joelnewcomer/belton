@@ -333,7 +333,7 @@ else {
       
 
 	endif;
-
+	
 
 	// Add localized ALM JS variables
 	ALM_LOCALIZE::add_localized_var('total_posts', $alm_total_posts, $localize_id);

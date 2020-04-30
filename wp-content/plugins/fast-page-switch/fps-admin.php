@@ -108,7 +108,7 @@ function _fps_post_statuses_field_cb()
 
     foreach( $all_statuses as $status ) {
         $checked = in_array( $status, $user_statuses ) ? 'checked="checked"' : '';
-        echo "<label><input type='checkbox' name='fps_post_statuses[]' value='$status' $checked> $status</label> <br>";
+        echo "<label><input type='checkbox' name='fps_post_statuses[]' $checked> $status</label> <br>";
     }
 }
 

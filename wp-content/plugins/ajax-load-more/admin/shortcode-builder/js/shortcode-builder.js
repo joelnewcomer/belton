@@ -39,6 +39,8 @@ jQuery(document).ready(function($) {
       $('.ajax-load-more .categories select.multiple').select2();
       $('.ajax-load-more .tags select.multiple').select2();
       $('.ajax-load-more .authors select.multiple').select2();
+      $('.ajax-load-more .term_query select.multiple').select2();
+      $('.ajax-load-more .users select.multiple').select2();
    };
 
 
@@ -166,11 +168,16 @@ jQuery(document).ready(function($) {
       var loading_style = $('select#loading-style').val();
       var loading_style_default = $('select#loading-style').data('default');
       var loading_style_target = $('select#loading-style').parent().find('.ajax-load-more-wrap');
-      
       if(loading_style_target){
 	      var loading_style_base = loading_style_target.data('base');
 			loading_style_target.removeAttr('class');
 			loading_style_target.attr('class', loading_style_base + loading_style);
+			if(loading_style.indexOf('infinite') !== -1){
+				$('.ajax-load-more-wrap button').addClass('loading');
+			} else {
+				$('.ajax-load-more-wrap button').removeClass('loading');
+			}
+			
       }
       if(loading_style && loading_style !== loading_style_default){
          output += ' loading_style="'+loading_style+'"';
@@ -523,6 +530,31 @@ jQuery(document).ready(function($) {
       }
 
 
+
+      // ---------------------------
+      // - TERMS
+      // ---------------------------
+
+      var term_query = $('#alm-term_query input[name=term_query]:checked').val();
+      if(term_query !== 'false' && term_query != undefined){
+	      $('.term_query-options').slideDown(250, 'alm_easeInOutQuad');
+	      
+	      var term_query_taxonomy = $('#alm-term_query select#term_query-taxonomy-select').val();
+	      var term_query_number = $('#alm-term_query #term_query-number').val();
+	      var term_query_hide_empty = $('#alm-term_query #term_query-hide-empty').val();
+	      if(term_query_taxonomy){
+	         output += ' term_query="true"';
+	         output += ' term_query_taxonomy="'+ term_query_taxonomy +'"';
+	         output += ' term_query_number="'+ term_query_number +'"';
+	         output += ' term_query_hide_empty="'+ term_query_hide_empty +'"';
+         }
+
+
+      }else{
+         $('.term_query-options').slideUp(250, 'alm_easeInOutQuad')
+      }
+
+
       // ---------------------------
       // - SEO
       // ---------------------------
@@ -548,7 +580,8 @@ jQuery(document).ready(function($) {
              pp_taxonomy = $('#pp-taxonomy-select').val(),
              pp_excluded_terms = $('#pp-term-exclude').val(),
              pp_elementor = $('.previous-post input[name=elementor-single]:checked').val(),
-             pp_progress_bar = $('.previous-post input[name=prev-post-progress]:checked').val();
+             pp_progress_bar = $('.previous-post input[name=prev-post-progress]:checked').val(),
+             pp_target = $('.previous-post input#pp-target').val();
              
              
          $('.prev_post_options').slideDown(250, 'alm_easeInOutQuad');
@@ -581,6 +614,7 @@ jQuery(document).ready(function($) {
 
 			output += (pp_taxonomy !== '' ) ? ' single_post_taxonomy="'+ pp_taxonomy +'"' : '';
 			output += (pp_excluded_terms !== '' ) ? ' single_post_excluded_terms="'+ pp_excluded_terms +'"' : '';
+			output += (pp_target !== '' ) ? ' single_post_target="'+ pp_target +'"' : '';
          output += (pp_elementor === 't' ) ? ' elementor="true"' : '';
          
          
@@ -1692,6 +1726,17 @@ jQuery(document).ready(function($) {
       _alm.generateUniqueID(10, el);
    });
 
+	
+	// Button loader preview.
+	$('.ajax-load-more-wrap button').on('click', function(e){
+		var button = $(this).get(0);
+		var parent = button.parentNode;
+		if(parent.classList.contains('infinite')){
+			$(this).addClass('loading');
+		} else {
+			$(this).toggleClass('loading');
+		}
+	});
 
 
 });

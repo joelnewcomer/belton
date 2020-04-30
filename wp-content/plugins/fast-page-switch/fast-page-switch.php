@@ -3,7 +3,7 @@
 Plugin Name:    Fast Page Switch
 Plugin URI:     https://marcwiest.com
 Description:    Save time switching between posts of any post-type in wp-admin.
-Version:        1.5.7
+Version:        1.5.8
 Author:         Marc Wiest
 Author URI:     https://marcwiest.com
 License:        GPL-2.0+
@@ -138,8 +138,8 @@ function fps_admin_scripts( $admin_page_type )
     $user_types = fps_get_user_types();
 
     if ( in_array( $screen->post_type, array_keys($user_types) ) ) {
-        wp_enqueue_style( 'select2', FPS_PLUGIN_URL.'assets/css/select2.min.css', array(), '4.0.3' );
-        wp_enqueue_script( 'select2', FPS_PLUGIN_URL.'assets/js/select2.min.js', array('jquery'), '4.0.3' );
+        wp_enqueue_style( 'select2', FPS_PLUGIN_URL.'assets/css/select2.min.css', array(), '4.0.13' );
+        wp_enqueue_script( 'select2', FPS_PLUGIN_URL.'assets/js/select2.min.js', array('jquery'), '4.0.13' );
     }
 }
 
@@ -219,6 +219,8 @@ function _fps_metabox_cb( $post )
         jQuery(document).ready(function($) {
 
             var $fps = $('#fast-page-switch'),
+                $fpsWrapper = $('#fps-wrapper'),
+                $s2Cont = null,
                 s2Exists = $.isFunction( $.fn.select2 ),
                 s2Version3 = false,
                 admin_url = '<?php trailingslashit(admin_url()); ?>',
@@ -229,6 +231,8 @@ function _fps_metabox_cb( $post )
                     theme: 'classic',
                     placeholder: '<?php esc_html_e('Switch','fast-page-switch'); ?>'
                 });
+                console.log($fps)
+                $s2Cont = $('.select2-container');
             }
 
             /**
@@ -241,10 +245,10 @@ function _fps_metabox_cb( $post )
                 if ( hasChanges() ) {
                     // There is no way to check the return of the confirm window. Beacuse of this, if the
                     // user confirms to "leave", the spinner class can't be applied.
-                    $('#fps-wrapper').removeClass('fps-js-reveal-spinner');
+                    $fpsWrapper.removeClass('fps-js-reveal-spinner');
                     val = curPostId;
                 } else {
-                    $('#fps-wrapper').addClass('fps-js-reveal-spinner');
+                    $fpsWrapper.addClass('fps-js-reveal-spinner');
                 }
 
                 $fps.val( val ).trigger( 'change' );
@@ -269,10 +273,10 @@ function _fps_metabox_cb( $post )
                 if ( val !== curPostId && changeVal ) {
 
                     if ( hasChanges() ) {
-                        $('#fps-wrapper').removeClass('fps-js-reveal-spinner');
+                        $fpsWrapper.removeClass('fps-js-reveal-spinner');
                         val = curPostId;
                     } else {
-                        $('#fps-wrapper').addClass('fps-js-reveal-spinner');
+                        $fpsWrapper.addClass('fps-js-reveal-spinner');
                     }
 
                     if ( s2Version3 ) {
@@ -304,12 +308,13 @@ function _fps_metabox_cb( $post )
                 window.location.href = admin_url + 'post.php?post=' + val + '&action=edit';
             }
 
-            // resize select2
-            $(window).resize(function(){
-                window.setTimeout( function() {
-                    $('.select2-container').width( $('#fps-wrapper').width()+'px' );
-                }, 333 );
-            });
+            // NOTE: Was disabled to fix Gutenberg layout. See `.select2-container` CSS ruleset below.
+            // Resize select2.
+            // $(window).resize( function() {
+            //     window.setTimeout( function() {
+            //         $s2Cont.width( $fpsWrapper.width()+'px' );
+            //     }, 333 );
+            // });
         });
         </script>
         <style>
@@ -334,6 +339,7 @@ function _fps_metabox_cb( $post )
             }
             .select2-container {
                 display: block;
+                width: 100% !important;
             }
             #fps-wrapper.fps-js-reveal-spinner .select2-container {
                 -webkit-transition: width 333ms;

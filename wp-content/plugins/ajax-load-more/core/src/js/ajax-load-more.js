@@ -22,16 +22,16 @@ smoothscroll.polyfill();
 
 // ALM Modules
 import './helpers/helpers';
-import commentReplyFix from './helpers/commentReplyFix';
+//import commentReplyFix from './helpers/commentReplyFix';
 import getParameterByName from './helpers/getParameterByName';
 import almAppendChildren from './helpers/almAppendChildren';
-import almTableWrap from './helpers/almTableWrap';
-import almGetCacheUrl from './helpers/almGetCacheUrl';
+import tableWrap from './helpers/tableWrap';
+import getCacheUrl from './helpers/getCacheUrl';
 import almDomParser from './helpers/almDomParser';
 import stripEmptyNodes from './helpers/stripEmptyNodes'; 
 import * as queryParams from './helpers/queryParams';
 import * as resultsText from './modules/resultsText';
-import { anchorNav } from './modules/anchorNav';
+import { tableOfContents } from './modules/tableofcontents';
 import setLocalizedVars from './modules/setLocalizedVars';
 import insertScript from './modules/insertScript';
 import setFocus from './modules/setFocus';
@@ -44,6 +44,8 @@ import almDebug from './modules/almDebug';
 import getScrollPercentage from './modules/getScrollPercentage';
 import srcsetPolyfill from './helpers/srcsetPolyfill';
 import { showPlaceholder, hidePlaceholder } from './modules/placeholder';
+import { wooGetURL, wooGetContent, wooInit, woocommerce } from './modules/woocommerce';
+import singlePostHTML from './modules/singleposts';
 
 
 // Global filtering var
@@ -134,7 +136,8 @@ let alm_is_filtering = false;
       alm.btnWrap = Array.prototype.slice.call(alm.btnWrap); // Convert NodeList to array
       alm.btnWrap[alm.btnWrap.length - 1].style.visibility = 'visible'; // Get last element (used for nesting)
       alm.trigger = alm.btnWrap[alm.btnWrap.length - 1];
-
+		alm.button = alm.trigger.querySelector('button.alm-load-more-btn');
+		
       alm.button_label = alm.listing.dataset.buttonLabel;
       alm.button_loading_label = alm.listing.dataset.buttonLoadingLabel;
       alm.placeholder = alm.main.querySelector('.alm-placeholder');
@@ -159,13 +162,30 @@ let alm_is_filtering = false;
 
 
       // Addon Shortcode Params
+      alm.addons.woocommerce = (alm.localize.woocommerce) ? true : false; // Woocommerce add-on
+      if(alm.addons.woocommerce){
+      	alm.addons.woocommerce_columns = (alm.localize.woocommerce.columns) ? parseInt(alm.localize.woocommerce.columns) : 3; // Woocommerce columns
+      	alm.addons.woocommerce_paged = (alm.localize.woocommerce.paged) ? parseInt(alm.localize.woocommerce.paged) : 1; // Woocommerce Paged
+      	alm.addons.woocommerce_paged_urls = alm.localize.woocommerce.paged_urls;
+      	alm.addons.woocommerce_pages = parseInt(alm.localize.woocommerce.pages);
+      	alm.addons.woocommerce_classes = {};
+      	alm.addons.woocommerce_classes.container = alm.localize.woocommerce.container;
+      	alm.addons.woocommerce_classes.products = alm.localize.woocommerce.products;
+      	alm.addons.woocommerce_classes.results = alm.localize.woocommerce.results;
+      	alm.addons.woocommerce_results_text = document.querySelectorAll(alm.addons.woocommerce_classes.results);
+      	alm.addons.woocommerce_settings = alm.localize.woocommerce.settings;
+      	alm.page = parseInt(alm.page) + alm.addons.woocommerce_paged; 
+
+      }
+      
+            
       alm.addons.cache = alm.listing.dataset.cache; // Cache add-on
       alm.addons.cache = (alm.addons.cache === undefined) ? false : alm.addons.cache;
       alm.addons.cache_id = alm.listing.dataset.cacheId;
       alm.addons.cache_path = alm.listing.dataset.cachePath;
       alm.addons.cache_logged_in = alm.listing.dataset.cacheLoggedIn;
       alm.addons.cache_logged_in = (alm.addons.cache_logged_in === undefined) ? false : alm.addons.cache_logged_in;
-
+		
       alm.addons.cta = alm.listing.dataset.cta; // CTA add-on
       alm.addons.cta_position = alm.listing.dataset.ctaPosition;
       alm.addons.cta_repeater = alm.listing.dataset.ctaRepeater;
@@ -185,6 +205,7 @@ let alm_is_filtering = false;
       alm.addons.single_post_taxonomy = alm.listing.dataset.singlePostTaxonomy;
       alm.addons.single_post_excluded_terms = alm.listing.dataset.singlePostExcludedTerms;
       alm.addons.single_post_progress_bar = alm.listing.dataset.singlePostProgressBar;
+      alm.addons.single_post_target = alm.listing.dataset.singlePostTarget;
 
       alm.addons.comments = alm.listing.dataset.comments; // Comments add-on      
       alm.addons.comments_post_id = alm.listing.dataset.comments_post_id; // current post id
@@ -212,7 +233,7 @@ let alm_is_filtering = false;
          alm.orginal_posts_per_page = alm.listing.dataset.usersPerPage;
          alm.posts_per_page = alm.listing.dataset.usersPerPage;
       }
-
+		
       // Extension Shortcode Params
       alm.extensions.restapi = alm.listing.dataset.restapi; // REST API
       alm.extensions.restapi_base_url = alm.listing.dataset.restapiBaseUrl;
@@ -234,11 +255,10 @@ let alm_is_filtering = false;
       
       alm.extensions.term_query = alm.listing.dataset.termQuery; // TERM QUERY
       alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
-      alm.extensions.term_query_fields = alm.listing.dataset.termQueryFields;
+      alm.extensions.term_query_hide_empty = alm.listing.dataset.termQueryHideEmpty;
       alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
       alm.extensions.term_query = (alm.extensions.term_query === 'true') ? true : false;
       
-		
       /* Paging */
       if (alm.addons.paging === 'true') {
          alm.addons.paging = true;
@@ -300,7 +320,7 @@ let alm_is_filtering = false;
          if(alm.addons.tab_onload !== ''){
 	         let tabNav = document.querySelector(`.alm-tab-nav li [data-tab-url=${alm.addons.tab_onload}]`);
 	         alm.addons.tab_template = (tabNav) ? tabNav.dataset.tabTemplate : alm.addons.tab_template;
-	         alm.listing.dataset.tabOnload = '';
+	         alm.listing.dataset.tabOnload = ''; // Clear tabOnload param
 	         // Set selected tab
 	         if(tabNav){
 		         let activeTab = document.querySelector(`.alm-tab-nav li .active`);
@@ -419,6 +439,7 @@ let alm_is_filtering = false;
       alm.addons.single_post_taxonomy = (alm.addons.single_post_taxonomy === undefined) ? '' : alm.addons.single_post_taxonomy;
       alm.addons.single_post_excluded_terms = (alm.addons.single_post_excluded_terms === undefined) ? '' : alm.addons.single_post_excluded_terms;
       alm.addons.single_post_progress_bar = (alm.addons.single_post_progress_bar === undefined) ? '' : alm.addons.single_post_progress_bar;
+      alm.addons.single_post_target = (alm.addons.single_post_target === undefined) ? '' : alm.addons.single_post_target;
       alm.addons.single_post_title_template = alm.listing.dataset.singlePostTitleTemplate;
       alm.addons.single_post_siteTitle = alm.listing.dataset.singlePostSiteTitle;
       alm.addons.single_post_siteTagline = alm.listing.dataset.singlePostSiteTagline;
@@ -443,6 +464,7 @@ let alm_is_filtering = false;
       if (alm.addons.preloaded === 'true' && alm.addons.paging) {
          alm.pause = true;
       }
+
 
       /* Repeater and Theme Repeater */
       alm.repeater = (alm.repeater === undefined) ? 'default' : alm.repeater;
@@ -533,7 +555,6 @@ let alm_is_filtering = false;
          
          // Reset button state
          alm.button.disabled = false;
-
       }
 
 
@@ -558,14 +579,14 @@ let alm_is_filtering = false;
       }
 
 
-      // Anchor Nav
+      // Table of Contents
       // Render 1, 2, 3 etc. when pages are loaded
-      alm.anchorNav = document.querySelector('.alm-anchor-nav');
-      if (alm.anchorNav) {
-	      alm.anchorNav.setAttribute('aria-live', 'polite');
-	      alm.anchorNav.setAttribute('aria-atomic', 'true');
+      alm.tableofcontents = document.querySelector('.alm-toc');
+      if (alm.tableofcontents) {
+	      alm.tableofcontents.setAttribute('aria-live', 'polite');
+	      alm.tableofcontents.setAttribute('aria-atomic', 'true');
       } else {
-         alm.anchorNav = false;
+         alm.tableofcontents = false;
       }
 
 
@@ -595,7 +616,7 @@ let alm_is_filtering = false;
             
             if (alm.addons.cache === 'true' && !alm.addons.cache_logged_in) {
                // Cache               
-               let cache_page = almGetCacheUrl(alm);               
+               let cache_page = getCacheUrl(alm);               
                if(cache_page){ 
                                 
                   // Load `.html` page
@@ -659,7 +680,7 @@ let alm_is_filtering = false;
             alm.term_query_array = {
                'term_query': 'true',
                'taxonomy': alm.extensions.term_query_taxonomy,
-               'fields': alm.extensions.term_query_fields,
+               'hide_empty': alm.extensions.term_query_hide_empty,
                'number': alm.extensions.term_query_number,
             };
          }
@@ -775,17 +796,51 @@ let alm_is_filtering = false;
 				return config; 
 			});			         
          
-         // Get admin-ajax.php URL        
+         // Get Ajax URL        
          let ajaxURL = alm_localize.ajaxurl;       
 
 			// Get data params
-         let params = queryParams.almGetAjaxParams(alm, action, queryType); // [./helpers/queryParams.js
-                 
-         // Send HTTP request via Axios
+         let params = queryParams.almGetAjaxParams(alm, action, queryType); // [./helpers/queryParams.js         
+         
+         
+         // Single Posts Add-on
+         // If has `single_post_target`, adjust the Ajax URL to the post URL.
+         if(alm.addons.single_post && alm.addons.single_post_target){
+	         ajaxURL = alm.addons.single_post_permalink;
+	         params = '';
+         }	           
+         
+         
+         // WooCommerce Add-on
+         if(alm.addons.woocommerce){   
+	         ajaxURL = wooGetURL(alm);  
+	         params = '';
+	      }        
+
+
+         // Send HTTP request via axios         
          axios.get(ajaxURL, {params})
          .then(function(response){
+	         
             // Success            
-            let data = response.data; // Get data from response
+            let data = '';
+            
+            if(alm.addons.single_post && alm.addons.single_post_target){
+	            // Single Posts 
+	            data = singlePostHTML(response, alm.addons.single_post_target);
+	            
+            }
+            else if(alm.addons.woocommerce){
+	            // WooCommerce 
+	            data = wooGetContent(response, alm);
+	            
+            }
+            
+            else {
+	            // Get data from response
+	            data = response.data; 
+	            
+	         }
             
             // Standard Query
             if (queryType === 'standard') {
@@ -806,10 +861,12 @@ let alm_is_filtering = false;
             
          })
          .catch(function (error) { 
+	         
             // Error            
             alm.AjaxLoadMore.error(error, 'adminajax');    
              					
 			}); 
+			
       };
       
       
@@ -985,7 +1042,7 @@ let alm_is_filtering = false;
 			// Paging container
          let pagingContent = alm.listing.querySelector('.alm-paging-content');
 			
-         var html, meta, total;
+         var html, meta, total, totalLoaded;
 
          if (is_cache) {
             // If Cache, do not look for json data as we won't be querying the DB.
@@ -1007,7 +1064,7 @@ let alm_is_filtering = false;
 
          // If cache, get the length of the html object
          total = (is_cache) ? almDomParser(html).length : total;
-
+			
          // First Run Only
          if (alm.init) {
 	         // Set Meta		         
@@ -1051,7 +1108,7 @@ let alm_is_filtering = false;
                   }
                }               
             }
-         }       
+         }   
 			
 			
 			/*
@@ -1093,7 +1150,7 @@ let alm_is_filtering = false;
                   if (!alm.transition_container) { // No transition container
 	                 
 	                 	alm.el = alm.html;                     
-                     reveal = (alm.container_type === 'table') ? almTableWrap(alm.html) : almDomParser(alm.html, 'text/html');
+                     reveal = (alm.container_type === 'table') ? tableWrap(alm.html) : almDomParser(alm.html, 'text/html');
 
                   } else { // Standard container
 
@@ -1102,7 +1159,8 @@ let alm_is_filtering = false;
                      let seo_class = (alm.addons.seo) ? ' alm-seo' : '';
                      let filters_class = (alm.addons.filters) ? ' alm-filters' : '';
                      let preloaded_class = (alm.is_preloaded) ? ' alm-preloaded' : '';
-
+							
+							
                      // SEO and Filter Paged
                      if (alm.init && (alm.start_page > 1 || alm.addons.filters_startpage > 0)) {	                     
                         // loop through items and break into separate .alm-reveal divs for paging       
@@ -1187,7 +1245,6 @@ let alm_is_filtering = false;
                            // Run srcSet polyfill
 									srcsetPolyfill(alm_reveal, alm.ua);
                            
-                           
                            // Push alm_reveal elements into container_array
                            container_array.push(alm_reveal);
                            
@@ -1261,7 +1318,8 @@ let alm_is_filtering = false;
                               reveal.dataset.url = alm.canonical_url + querystring;
                               reveal.dataset.page = '1';
                               
-                           } else {
+                           }
+                           else {
                               // Basic ALM                 
                               reveal.setAttribute('class', 'alm-reveal' + alm.tcc);                              
                            }
@@ -1275,13 +1333,58 @@ let alm_is_filtering = false;
                   }
                   
                }
+                	
+                    
+		         // WooCommerce Add-on
+               if(alm.addons.woocommerce){
+	               
+	               (async function() {
+	               	
+	               	await woocommerce(reveal, alm, data.pageTitle);
+	               	
+	               	let nextPageNum = alm.page + 2;
+	               	
+							// Set button data attributes
+							
+							// Page
+							alm.button.dataset.page = nextPageNum;
+							
+							// URL
+							let nextPage = alm.addons.woocommerce_paged_urls[nextPageNum - 1];
+	               	alm.button.dataset.url = (nextPage) ? nextPage : '';
+
+	               	alm.AjaxLoadMore.transitionEnd();
+	               	
+	               	// almComplete
+		               if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
+		               	window.almComplete(alm);
+		               } 
+	               	
+	               	// ALM Done
+	                  if (nextPageNum > parseInt(alm.addons.woocommerce_pages)) {
+	                     alm.AjaxLoadMore.triggerDone();
+	                 
+	                  }
+		               
+	               	
+	               })().catch((e) => {
+		               console.log(e);
+   						console.log('There was an error loading woocommerce products');
+						});  
+						
+						alm.init = false; 
+						               
+	               return;
+               }  
+               
                
 
                // Append `reveal` div to ALM Listing container
                // Do not append when transtion == masonry OR init and !preloaded
                if (alm.transition !== 'masonry' || (alm.init && !alm.is_masonry_preloaded)) {
 	               
-	               if(!isPaged){   	               
+	               if(!isPaged){       
+		               
    	               if(!alm.transition_container){ 
 	   	               // No transition container      	               
       	               if (alm.images_loaded === 'true') {	                  
@@ -1306,6 +1409,7 @@ let alm_is_filtering = false;
 	               }
 	               
                }
+               
 					
 					// *****
                // Transitions	
@@ -1538,9 +1642,9 @@ let alm_is_filtering = false;
          
          
          /*
-          *  Display anchorNav
+          *  Display tableOfContents
           */ 
-         anchorNav(alm, alm.init);                 
+         tableOfContents(alm, alm.init);                 
 			
 			
 			// Set Focus for A11y
@@ -1548,7 +1652,7 @@ let alm_is_filtering = false;
          
                 
          // Comment Reply Fix
-         commentReplyFix(alm.addons.comments, alm.listing);   
+         // commentReplyFix(alm.addons.comments, alm.listing);   
          
          
          // Remove filtering class
@@ -1658,8 +1762,11 @@ let alm_is_filtering = false;
 	      // Set initial `.alm-listing` height
          alm.listing.style.height = h + pTop + pBtm + 'px'; 
          
+         // Insert Script		
+         insertScript.init(reveal); 
+         
          // Reset button text
-         alm.AjaxLoadMore.resetBtnText();  
+         alm.AjaxLoadMore.resetBtnText();
          
          // Delay reveal of paging to avoid positioning issues
          setTimeout(function() {	         
@@ -1779,11 +1886,14 @@ let alm_is_filtering = false;
        * @since 2.14.0
        */
       alm.AjaxLoadMore.triggerAddons = function(alm) {
+         if (typeof almSetNextPage === 'function') { // Next Page
+            window.almSetNextPage(alm);
+         }
          if (typeof almSEO === "function") { // SEO
             window.almSEO(alm, false);
          }
-         if (typeof almSetNextPage === 'function') { // Next Page
-            window.almSetNextPage(alm);
+         if (typeof almWooCommerce === 'function') { // WooCommerce
+            window.almWooCommerce(alm);
          } 
       };
 
@@ -2019,7 +2129,6 @@ let alm_is_filtering = false;
 				}
 			});
          
-         
       }
       
       
@@ -2176,11 +2285,10 @@ let alm_is_filtering = false;
             alm.AjaxLoadMore.getSinglePost(); // Set next post on load
             alm.loading = false;
             
-            
             /*
-	          *  Display anchorNav
+	          *  Display tableOfContents
 	          */ 
-	         anchorNav(alm, alm.init, true);
+	         tableOfContents(alm, true, true);
          }
 
 
@@ -2224,10 +2332,10 @@ let alm_is_filtering = false;
             }
             
             /*
-	          *  Display anchorNav
+	          *  Display tableOfContents
 	          */ 
-	         anchorNav(alm, alm.init, true);
-         }
+	         tableOfContents(alm, alm.init, true);
+         } 
 
 
          // Next Page Add-on
@@ -2235,15 +2343,14 @@ let alm_is_filtering = false;
 	         	         
 	        	// Check that posts remain on load
             if (alm.listing.querySelector('.alm-nextpage') && !alm.addons.paging) {
-               var alm_nextpage_pages = alm.listing.querySelectorAll('.alm-nextpage'),
-                   alm_nextpage_total = alm.listing.querySelector('.alm-nextpage:first-child');
+               let nextpage_pages = alm.listing.querySelectorAll('.alm-nextpage'); // All Next Page Items
                
-               if(alm_nextpage_total && alm_nextpage_pages){
-	               alm_nextpage_total = alm_nextpage_total.dataset.totalPosts;
-	               alm_nextpage_pages = alm_nextpage_pages.length; 
+               if(nextpage_pages){
+	               let nextpage_first = nextpage_pages[0];
+	               let nextpage_total = (alm.localize.total_posts) ? parseInt(alm.localize.total_posts) : nextpage_first.dataset.totalPosts;
 						
-						// Disable if on last page
-	               if (alm_nextpage_pages == alm_nextpage_total) {
+						// Disable if last page loaded
+	               if ( nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.id) === nextpage_total ){
 	                  alm.AjaxLoadMore.triggerDone();
 	               }
                }
@@ -2252,14 +2359,32 @@ let alm_is_filtering = false;
             if (alm.resultsText) {
                resultsText.almInitResultsText(alm, 'nextpage');
             }
-            
+             
             /*
-	          *  Display anchorNav
+	          *  Display tableOfContents
 	          */ 
-	         anchorNav(alm, alm.init, true);
+	         tableOfContents(alm, alm.init, true);
             
          }
-
+         
+         
+         // WooCommerce Add-on
+			if(alm.addons.woocommerce){
+				
+				// Initiate WooCommerce
+				wooInit(alm);
+				
+				// Set Results Text
+				if (alm.resultsText) {
+               //resultsText.almInitResultsText(alm, 'woocommerce');
+            }
+				
+				// Trigger Done if productsLoaded is less than woocommerce_total_posts
+				if (alm.addons.woocommerce_paged >= parseInt(alm.addons.woocommerce_pages)) {
+					alm.AjaxLoadMore.triggerDone();
+				}
+			}
+			
 
          // Window Load (Masonry + Preloaded)
          alm.window.addEventListener('load', function() {
