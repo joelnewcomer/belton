@@ -3765,7 +3765,7 @@ section.solutions .cat-products {
     opacity: 1; }
     @media only screen and (min-width: 1026px) {
       section.solutions .cat-products.active {
-        margin-top: -110px; } }
+        margin-top: -60px; } }
     @media only screen and (max-width: 40.063em) {
       section.solutions .cat-products.active {
         padding: 20px; } }
